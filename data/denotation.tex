@@ -1,19 +1,33 @@
 % !TeX root = ../main.tex
 
-\begin{denotation}[4.6cm]
+\begin{denotation}[4.8cm]
   \item[ANN] Approximate Nearest Neighbor，近似最近邻
   \item[AUC] Area Under Curve，曲线下面积
-  \item[BTO] Basic Tensor Operator，基础张量算子
-  \item[FAISS] Facebook AI Similarity Search
-  \item[FO] Functional Operator，功能算子
+  \item[BTO] Basic Tensor Operations，基础张量算子；在 TOD 中用于支撑异常检测算法的张量化执行\citep{zhao2022tod}
+  \item[CPU] Central Processing Unit，中央处理器
+  \item[DMA] Direct Memory Access，直接内存访问
+  \item[FAISS] Facebook AI Similarity Search，面向大规模相似性搜索的向量检索库；本文主要使用其 GPU 检索能力\citep{johnson2019faiss,faiss_gpu_wiki}
+  \item[FlashANNS] 面向大规模外存 ANN 检索的 GPU 驱动异步 I/O 候选召回框架，强调存储与计算协同\citep{xiao2025flashanns}
+  \item[FO] Functional Operations，功能算子；在 TOD 中由基础张量算子组合而成\citep{zhao2022tod}
+  \item[GDS] GPUDirect Storage，面向 GPU 与存储设备直连访问的 I/O 路径机制\citep{gds_overview,gds_design_guide}
   \item[GPU] Graphics Processing Unit，图形处理器
+  \item[H2D / D2H] Host-to-Device / Device-to-Host，主机到设备 / 设备到主机传输
+  \item[I/O] Input/Output，输入/输出
   \item[KNN] K-Nearest Neighbors，$k$ 近邻
-  \item[PR-AUC] Precision-Recall Area Under Curve
+  \item[NCCL] NVIDIA Collective Communications Library，面向多 GPU 集体通信的库\citep{nccl_stream_semantics}
+  \item[NIC] Network Interface Card，网络接口卡
+  \item[NUMA] Non-Uniform Memory Access，非一致内存访问
+  \item[PCIe] Peripheral Component Interconnect Express，外设组件高速互连
+  \item[PR-AUC] Precision-Recall Area Under Curve，精确率—召回率曲线下面积
+  \item[PyTOD] 沿 TOD 路线实现的 Python 异常检测框架，用于将多种离群检测方法组织为 GPU 张量算子执行链路\citep{zhao2022tod}
   \item[QPS] Queries Per Second，每秒查询数
-  \item[RAPIDS] 面向 GPU 数据科学与分析计算的开源加速生态
-  \item[ROC-AUC] Receiver Operating Characteristic Area Under Curve
-  \item[TOD] Tensor Operations for Outlier Detection
+  \item[RAPIDS] 面向 GPU 数据科学与分析计算的开源生态；本文主要使用其中的表格处理与内存管理能力\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}
+  \item[RMM] RAPIDS Memory Manager，RAPIDS 的内存资源管理组件，支持内存池与页锁定主机内存机制\citep{rapids_rmm_pinned}
+  \item[ROC-AUC] Receiver Operating Characteristic Area Under Curve，受试者工作特征曲线下面积
+  \item[SSD] Solid-State Drive，固态硬盘
+  \item[TOD] Tensor Operations for Outlier Detection，将异常检测统一组织为张量算子执行链路的方法\citep{zhao2022tod}
   \item[Top-$k$ overlap] 近似排序结果与基线排序结果的前 $k$ 重合度
+  \item[cuDF] RAPIDS 的 GPU DataFrame 组件，用于表格数据处理与列式计算\citep{rapids_cudf_pandas}
   \item[\texttt{adaptive\_ratio}] 多 GPU 动态分流比例策略
   \item[bounded batching] 在时延约束下受控执行的微批处理策略
   \item[rerank] 对粗排候选执行更高精度精排计算的步骤
