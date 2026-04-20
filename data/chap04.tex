@@ -113,7 +113,7 @@
 
 \section{拓扑感知 I/O lane 绑定与准入控制}
 
-在多 GPU 异常检测系统中，扩展上限不仅由 GPU 数量决定，还受制于存储路径和 PCIe/NUMA 拓扑。单卡阶段被压缩掉的路径开销，在多卡环境下可能以另一种形式重新出现：如果多张 GPU 共享同一 SSD 通道或 PCIe 路径，局部检索和候选读取虽然仍在设备侧执行，但共享链路上的排队会直接反映到吞吐下降和 p99 上升上。GDS 概览文档指出，GDS 通过在 GPU memory 与 storage 之间建立 direct DMA path 避免 CPU bounce buffer，并强调拓扑路径会影响传输效率\citep{gds_overview}。基于这一认识，本文引入拓扑感知 I/O lane 绑定与准入控制机制：运行前分析 GPU、SSD、PCIe root complex、PCIe switch 与 NUMA 节点之间的关系；运行时尽量将 GPU 与 SSD 通道进行 lane 级绑定，并对每条 lane 的 in-flight 请求数做有界控制，以避免过度并发导致尾延迟失控。
+在多 GPU 异常检测系统中，扩展上限不仅由 GPU 数量决定，还受制于存储路径和 PCIe/NUMA 拓扑。单卡阶段被压缩掉的路径开销，在多卡环境下可能以另一种形式重新出现：如果多张 GPU 共享同一 SSD 通道或 PCIe 路径，局部检索和候选读取虽然仍在设备侧执行，但共享链路上的排队会直接反映到吞吐下降和 p99 上升上。GDS 概览文档指出，GDS 通过在 GPU 显存与存储设备之间建立直接内存访问（Direct Memory Access，DMA）路径来避免 CPU bounce buffer，并强调拓扑路径会影响传输效率\citep{gds_overview}。基于这一认识，本文引入拓扑感知 I/O lane 绑定与准入控制机制：运行前分析 GPU、SSD、PCIe root complex、PCIe switch 与 NUMA 节点之间的关系；运行时尽量将 GPU 与 SSD 通道进行 lane 级绑定，并对每条 lane 的 in-flight 请求数做有界控制，以避免过度并发导致尾延迟失控。
 
 图~\ref{fig:topology} 以左右对比方式展示了拓扑感知 I/O lane 在合理绑定与共享冲突两种条件下的 GPU、SSD、PCIe 与 NUMA 关系，为后续扩展结果中的路径差异提供解释依据。
 
