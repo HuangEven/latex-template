@@ -1,0 +1,88 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram id="fig1-2-scale-bottleneck" name="Page-1">
+    <mxGraphModel dx="946" dy="732" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="axis_label" value="数据规模持续增长" style="text;html=1;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+          <mxGeometry x="422.5" y="20" width="400" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="lane1" value="小规模数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;fontSize=18;fontStyle=1;align=center;verticalAlign=top;spacingTop=12;" parent="1" vertex="1">
+          <mxGeometry x="85" y="90" width="245" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="中等规模数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;fontSize=18;fontStyle=1;align=center;verticalAlign=top;spacingTop=12;" parent="1" vertex="1">
+          <mxGeometry x="360" y="90" width="250" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="lane3" value="大规模数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;fontSize=18;fontStyle=1;align=center;verticalAlign=top;spacingTop=12;" parent="1" vertex="1">
+          <mxGeometry x="630" y="90" width="240" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="lane4" value="超大规模数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;strokeWidth=2;fontSize=18;fontStyle=1;align=center;verticalAlign=top;spacingTop=12;" parent="1" vertex="1">
+          <mxGeometry x="900" y="90" width="250" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" value="主要特征&#xa;样本量较小&#xa;单机内存可容纳" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="95" y="145" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="典型处理方式&#xa;单机 CPU 检测&#xa;规则与统计方法为主" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="95" y="240" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="主要瓶颈&#xa;CPU 计算开销&#xa;内存访问与算法复杂度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="97.5" y="330" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="研究关注点&#xa;算法效率优化&#xa;特征工程与规则筛查" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="95" y="420" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" value="主要特征&#xa;样本量继续增加&#xa;单机内存接近上限" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="145" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="典型处理方式&#xa;单机 GPU 加速&#xa;批处理与向量化计算" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="240" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="主要瓶颈&#xa;显存容量受限&#xa;CPU↔GPU 数据搬运" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="330" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="研究关注点&#xa;算子批处理、算子融合&#xa;减少主机与设备往返" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="420" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="主要特征&#xa;数据超出显存容量&#xa;索引与原始数据难以内存常驻" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="638" y="145" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="典型处理方式&#xa;分层索引 / 候选过滤&#xa;外存辅助的加速检索" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="637.5" y="240" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="主要瓶颈&#xa;I/O 带宽与访问粒度&#xa;计算与存储阶段串行化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="638" y="330" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="研究关注点&#xa;计算—I/O 协同&#xa;异步流水与访问优化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="638" y="420" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="x1" value="主要特征&#xa;百亿级 / 持续增长&#xa;查询并发与吞吐要求更高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="910" y="145" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="x2" value="典型处理方式&#xa;多 GPU / 分布式执行&#xa;跨设备并行与结果归并" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="910" y="240" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="x3" value="主要瓶颈&#xa;设备间通信与归并开销&#xa;负载均衡与 I/O 竞争" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="910" y="330" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="x4" value="研究关注点&#xa;多设备协同与扩展性&#xa;并行调度与资源利用率" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="910" y="420" width="225" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_top" value="" style="shape=mxgraph.arrows.chevron;html=1;fillColor=#e6e6e6;strokeColor=#999999;" parent="1" vertex="1">
+          <mxGeometry x="85" y="66" width="1075" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow_bottom" value="瓶颈迁移：CPU计算 → 显存与数据搬运 → I/O带宽与串行化 → 多设备通信与归并" style="text;html=1;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+          <mxGeometry x="95" y="530" width="1040" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;dashed=1;endArrow=block;endFill=1;strokeColor=#666666;" parent="1" source="n3" target="m3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;dashed=1;endArrow=block;endFill=1;strokeColor=#666666;" parent="1" source="m3" target="l3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;dashed=1;endArrow=block;endFill=1;strokeColor=#666666;" parent="1" source="l3" target="x3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

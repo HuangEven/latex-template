@@ -1,0 +1,10 @@
+metric,dataset,fusion_system,baseline_system,single_value
+pr_auc,AMLSim(图),0.30,0.30,
+pr_auc,真实欺诈,0.21,0.21,
+pr_auc,真实营销,0.27,0.27,
+recall_at_k,AMLSim(图),0.30,0.30,
+recall_at_k,真实欺诈,0.27,0.27,
+recall_at_k,真实营销,0.31,0.31,
+topk_overlap,AMLSim(图),,,0.99
+topk_overlap,真实营销,,,0.97
+topk_overlap,真实欺诈,,,1.00

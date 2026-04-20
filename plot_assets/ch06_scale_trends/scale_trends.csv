@@ -1,0 +1,9 @@
+scheme,scheme_desc,data_scale,qps,p99_latency_ms,pr_auc,topk_overlap
+Initial fusion pipeline,Initial fusion pipeline,1M,3490.00,31.50,0.8830,0.8550
+Initial fusion pipeline,Initial fusion pipeline,10M,1980.00,50.50,0.8640,0.8360
+Initial fusion pipeline,Initial fusion pipeline,50M,760.00,89.50,0.8280,0.8030
+Initial fusion pipeline,Initial fusion pipeline,100M,270.00,136.50,0.7910,0.7720
+Full fusion pipeline,Full fusion pipeline,1M,4280.00,25.80,0.9060,0.8980
+Full fusion pipeline,Full fusion pipeline,10M,2440.00,42.20,0.8890,0.8740
+Full fusion pipeline,Full fusion pipeline,50M,930.00,76.80,0.8480,0.8350
+Full fusion pipeline,Full fusion pipeline,100M,335.00,118.50,0.8120,0.8030

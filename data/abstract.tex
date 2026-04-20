@@ -1,0 +1,32 @@
+% !TEX root = ../main.tex
+
+\sysusetup{
+  keywords  = {异常检测, PyTOD, FlashANNS, 多 GPU 扩展, 金融风控},
+  keywords* = {Outlier Detection, PyTOD, FlashANNS, Multi-GPU Scaling, Financial Risk Control},
+}
+
+\begin{abstract}
+面向金融风控、反欺诈、反洗钱与交易监测等场景，异常检测系统既要识别少量高风险样本，又要在大规模数据条件下满足吞吐率和时延要求。随着交易规模持续增长，系统瓶颈已不再主要表现为单一检测模型能力不足，而更多集中在异常评分计算复杂、候选召回访问开销大、CPU 与 GPU 之间数据交换频繁以及多 GPU 扩展效率受限等环节。传统 CPU 方案难以同时兼顾大规模处理能力与近实时响应；如果只对个别算子或检索模块做局部加速，候选召回、异常评分和并行扩展之间的链路开销仍会限制系统整体性能。
+
+针对上述问题，本文围绕金融大规模数据异常检测任务，设计并实现了一种基于并行计算的 PyTOD--FlashANNS 融合系统。该系统以 PyTOD 作为异常评分主干，以 FlashANNS 作为高吞吐候选召回前端，在统一的数据流和执行链路下组织候选召回与异常评分。与直接对全量样本进行高代价评分的方式相比，该系统先在大规模数据中筛出候选集合，再在候选范围内完成张量化异常评分，从而把检测效果与系统开销放在同一框架内权衡。
+
+在单 GPU 场景下，本文构建了 GPU 主导的端到端执行链路。系统在 FlashANNS 异步 I/O--计算流水线基础上，使查询特征、候选结果和评分中间张量尽可能在 GPU 侧完成组织与传递，仅在必要边界通过 pinned memory 与主机交互。与此同时，结合 RAPIDS 对特征处理和表格型中间结果进行 GPU 化重构，并利用 FAISS-GPU 对检索后端进行工程增强，以减少候选重组、阶段同步和不必要的数据搬运开销。
+
+在多 GPU 场景下，系统优先采用基于数据并行与索引复制的 replicated 架构，使每张 GPU 独立完成本地候选召回与异常评分，CPU 主要负责控制面调度与小规模结果汇总。当索引容量或部署条件使跨卡归并不可避免时，系统进一步将归并逻辑下沉到 GPU 侧，并借助 NCCL 实现设备间通信，同时结合拓扑感知的 I/O 通道绑定与准入控制，减轻共享路径对扩展效率的影响。
+
+实验部分使用约 1M 规模的真实或半真实金融数据集验证系统有效性，并基于高保真合成数据构建 10M 和 50M 规模实验环境，对吞吐率、延迟、资源利用率和扩展能力进行测试。结果表明，在检测效果保持可接受的前提下，PyTOD--FlashANNS 融合系统能够提升整体吞吐率，并降低 CPU--GPU 数据往返与阶段同步开销；在多 GPU 场景下，数据并行与索引复制策略也表现出较好的扩展能力。
+
+本文的研究重点不在于提出新的异常检测理论模型，而是面向金融大规模数据处理场景，对候选召回、异常评分、数据路径组织和多 GPU 扩展进行系统设计与实现。相关结果表明，将 PyTOD 与 FlashANNS 结合后，能够较好地缓解异常检测流程中计算、存储访问和并行扩展方面的主要压力，为构建高吞吐、近实时的金融异常检测系统提供了可行的工程实现路径。
+\end{abstract}
+
+\begin{abstract*}
+In financial risk control, fraud detection, anti-money laundering, and transaction monitoring, outlier detection systems must identify a small number of high-risk samples while still meeting strict throughput and latency requirements at scale. As transaction volume grows, the main bottleneck is no longer limited to the accuracy of an individual model. It increasingly comes from expensive anomaly scoring, costly candidate retrieval, frequent CPU--GPU data movement, and limited multi-GPU scalability. Traditional CPU-based solutions struggle to balance large-scale processing with near-real-time response, while isolated acceleration of individual operators or retrieval modules cannot remove the overhead across the full pipeline.
+
+To address these issues, this thesis designs and implements a parallel-computing-based \emph{PyTOD--FlashANNS} integrated system for large-scale financial outlier detection. PyTOD serves as the anomaly scoring backbone, while FlashANNS provides high-throughput candidate retrieval. Instead of scoring all samples directly, the system first narrows the search space through candidate retrieval and then performs tensorized anomaly scoring on the candidate set, so that detection effectiveness and system cost can be considered together.
+
+For the single-GPU setting, a GPU-dominant end-to-end execution path is constructed. Built on the asynchronous I/O--compute pipeline of FlashANNS, the system keeps query features, candidate results, and intermediate scoring tensors on the GPU as much as possible, and limits host interaction to necessary boundaries through pinned memory. RAPIDS is used to restructure feature processing and tabular intermediate organization on the GPU, while FAISS-GPU strengthens the retrieval backend, reducing candidate packing overhead, synchronization cost, and unnecessary data transfers.
+
+For the multi-GPU setting, the system primarily adopts a replicated architecture based on data parallelism and index replication, so that each GPU can complete local candidate retrieval and anomaly scoring independently while the CPU remains responsible for control-plane scheduling and small-scale result collection. When index capacity or deployment constraints make cross-GPU merging necessary, the merge logic is moved to the GPU side and NCCL is used for inter-device communication. Topology-aware I/O lane binding and admission control are further introduced to reduce contention on shared paths.
+
+Experiments on real or semi-real financial datasets at around 1M scale, together with high-fidelity synthetic datasets at 10M and 50M scales, show that the proposed system improves overall throughput while reducing CPU--GPU round trips and stage synchronization overhead, with detection performance remaining acceptable. In multi-GPU experiments, the combination of data parallelism and index replication also provides solid support for further throughput scaling.
+\end{abstract*}

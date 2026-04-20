@@ -1,0 +1,51 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" compressed="false" version="28.1.2">
+  <diagram id="Fig2-5" name="Fig2-5">
+    <mxGraphModel dx="2593" dy="1562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="g1" value="候选召回阶段" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Microsoft YaHei;align=center;verticalAlign=top;spacingTop=14;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#F8FFF4;strokeColor=#82B366;" parent="1" vertex="1">
+          <mxGeometry x="310" y="190" width="430" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" value="异常评分阶段" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Microsoft YaHei;align=center;verticalAlign=top;spacingTop=14;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#FFF7F7;strokeColor=#B85450;" parent="1" vertex="1">
+          <mxGeometry x="1070" y="210" width="280" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="统一输入表示&lt;br&gt;交易 / 账户 / 图节点向量" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="277.5" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="FlashANNS&lt;br&gt;GPU + SSD out-of-core ANN 检索&lt;br&gt;异步 I/O—计算流水线" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#EAF4E6;strokeColor=#82B366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="395" y="280" width="260" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="大规模索引 / ANN 图结构 / 外存数据" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="375" y="430" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="候选集合 C_i&lt;br&gt;candidate IDs / local distances" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="810" y="280" width="210" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="PyTOD&lt;br&gt;距离 / 局部密度 / 统计型评分&lt;br&gt;输出异常分数 s_i" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FDE8E8;strokeColor=#B85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1115" y="280" width="190" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="风险排序 / 告警 / 日志输出" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1420" y="277.5" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="a1" target="a2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#82B366;" parent="1" source="a3" target="a2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="a2" target="a4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#B85450;" parent="1" source="a4" target="a5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="a5" target="a6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1410" y="339.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

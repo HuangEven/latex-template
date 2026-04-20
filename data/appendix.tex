@@ -1,0 +1,69 @@
+% !TEX root = ../main.tex
+
+\chapter{实验脚本与日志归档说明}
+
+本附录结合现有实验脚本与历史运行记录，对论文中各验证阶段所对应的脚本入口、日志归档方式和参数组织口径作统一说明。目的不是列出全部内部文件，而是将正文中需要复核的单卡、多 GPU、真实集有效性和论文出图阶段，整理为可复用的一套归档规范。
+
+\section{实验阶段与材料对应关系}
+
+\small
+\begin{tabularx}{\textwidth}{P{0.22\textwidth}P{0.29\textwidth}Y}
+论文验证阶段 & 代表性脚本或日志前缀 & 主要用途 \\
+真实集路径检查与冒烟验证 & \path|freeze_last_tune_<ts>/01_*| & 对真实集输入路径、基础运行链路和候选召回---评分接口进行快速联调，对应正文中的真实集有效性验证起点。 \\
+真实集校准与配置筛选 & \path|freeze_last_tune_<ts>/02_*| & 保存校准轮次的标准输出、排序摘要和配置对比结果，用于冻结论文定稿前的候选规模与评分配置。 \\
+单卡链路对比与阶段耗时分析 & \path|bench_flash_<scale>_<scene>_gpu<id>.log|、\path|compare_<topic>_<ts>.md| & 对应第四章单卡路径优化实验，重点记录原始链路、召回加速、GPU 主导链路和完整优化方案之间的耗时与吞吐差异。 \\
+多 GPU 扩展、归并与冲突对比 & \path|bench_flash_<scale>_replica_*|、\path|*_shard_*|、\path|gpu_<topic>_gpu<id>.csv| & 对应第五章 replicated 主方案、GPU merge 兜底路径、CPU aggregation 对比基线以及共享路径冲突实验。 \\
+论文图表整理与结果汇总 & \path|latest_<topic>_paper/|、\path|chart_ready_*.csv|、\path|session_meta.txt| & 将多轮实验结果整理为论文图表输入数据，保留轮次汇总、出图口径与会话元信息。 \\
+\end{tabularx}
+\normalsize
+
+\section{统一文件命名风格}
+
+\begin{itemize}
+  \item 会话目录统一采用“任务名 + 时间戳”形式，例如 \path|freeze_last_tune_<YYYYmmdd_HHMMSS>|，用于标识一轮冻结前复核或专题实验。
+  \item 单次运行日志统一采用 \path|bench_<route>_<scale>_<scene>_gpu<id>.log|，其中 \texttt{route} 表示单卡或多卡执行路径，\texttt{scale} 表示数据规模，\texttt{scene} 表示验证场景或配置标签。
+  \item 对比结果统一采用 \path|compare_<topic>_<timestamp>.md| 与 \path|compare_<topic>_<timestamp>.csv| 成对保存，其中 Markdown 文件用于保留人工可读结论，CSV 文件用于后续绘图与表格汇总。
+  \item 过程检查类文件统一采用 \path|0N_<step>.prompt.txt|、\path|0N_<step>.stdout.log| 和 \path|checklist.log| 的组合形式，用于保留命令入口、标准输出和阶段性检查记录。
+  \item 出图目录统一保留 \path|all_rounds.csv|、\path|chart_ready_*.csv| 和 \path|session_meta.txt| 三类文件，分别对应原始轮次结果、绘图输入和会话说明。
+\end{itemize}
+
+\section{统一参数设置风格}
+
+\begin{itemize}
+  \item 数据与划分参数统一使用 \texttt{real-root}、\texttt{real-datasets}、\texttt{synthetic-root}、\texttt{synthetic-scales}、\texttt{input-npz}、\texttt{out-dir}、\texttt{seed} 等名称，明确区分真实集入口、合成集规模和数据切分位置。
+  \item 单卡热路径参数统一使用 \texttt{device}、\texttt{batch-size}、\texttt{score-chunk-size}、\texttt{warmup}、\texttt{repeats}、\texttt{max-run-seconds}，分别控制设备绑定、批大小、评分块大小、预热次数和单轮运行上限。
+  \item 候选召回与索引参数统一使用 \texttt{flash-search-k}、\texttt{flash-rerank-exact}、\texttt{flash-indices-only}、\texttt{faiss-index}、\texttt{faiss-nlist}、\texttt{faiss-nprobe}、\texttt{faiss-pq-m}、\texttt{faiss-pq-bits} 等名称，避免在不同脚本中混用语义相近的别名。
+  \item 多 GPU 相关参数统一使用 \texttt{gpu-list}、\texttt{flash-multi-gpu-route}、\texttt{flash-service-topology}、\texttt{flash-service-protocol}、\texttt{flash-multi-gpu-devices}、\texttt{flash-multi-gpu-gather-device}、\texttt{flash-shards}、\texttt{flash-service-batch-size}，明确区分 replicated 主路径、分片兜底路径和聚合位置。
+  \item 监控与分析参数统一使用 \texttt{gpu-log-path}、\texttt{gpu-log-interval-ms}、\texttt{chain-profile}、\texttt{trace-output-dir} 等名称；Shell 包装脚本中对应使用全大写环境变量，如 \texttt{BATCH\_SIZE}、\texttt{FLASH\_SEARCH\_K}，冻结配置则统一使用 \texttt{FREEZE\_*} 前缀。
+\end{itemize}
+
+
+\chapter{图表补充说明}
+
+本附录对正文图表中反复出现的变量命名、单位和比较口径作统一补充，便于阅读时快速核对不同章节之间的含义是否一致。
+
+\section{图表口径说明}
+
+\begin{itemize}
+  \item 图中的 QPS、平均时延和 p99 时延均指对应实验场景下的端到端统计结果；若未特别说明，时延单位统一为 ms。
+  \item 单卡结果图主要用于比较数据路径优化前后的链路差异，多 GPU 结果图主要用于比较 replicated 主方案、GPU 侧归并兜底路径以及共享路径冲突条件下的扩展差异。
+  \item 真实集结果用于有效性验证，1M 及以上合成数据结果用于系统性能与扩展分析，二者不直接比较绝对吞吐数值。
+  \item 正文结果图中的方案名称均对应具体验证场景或系统路径，不再使用含义不明确的编号标签。
+\end{itemize}
+
+\chapter{缩写、变量与配置对照}
+
+本附录列出正文中频繁出现的关键变量、配置项及其含义，便于后续统一实验脚本和结果复核。
+
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabularx}{\textwidth}{P{0.34\textwidth}Y}
+变量或配置项 & 含义 \\
+\texttt{batch\_size} & 单次提交到候选召回或精排路径中的批处理大小。 \\
+\texttt{rerank\_budget} & 进入高精度精排阶段的候选数量预算。 \\
+\texttt{nlist} & 索引聚类桶数量或粗排分区规模参数。 \\
+\texttt{nprobe} & 查询阶段实际访问的粗排桶数量。 \\
+\texttt{device\_id} & 当前任务绑定的 GPU 设备标识。 \\
+\texttt{replica\_mode} & 多 GPU 复制式多实例执行模式开关。 \\
+\texttt{bounded\_batch\_size} & 在时延约束下允许形成的微批上限。 \\
+\end{tabularx}

@@ -1,0 +1,105 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram id="fig34" name="Page-1">
+    <mxGraphModel dx="1113" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gpu_bg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#b3b3b3;dashed=1;arcSize=12;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="60" y="85" width="1040" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu_bg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;arcSize=12;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="1120" y="85" width="250" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="gpu_lbl" value="&lt;font style=&quot;&quot;&gt;GPU 侧连续传递主路径&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=18;fontColor=#000000;fontFamily=Helvetica;" parent="1" vertex="1">
+          <mxGeometry x="80" y="85" width="260" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu_lbl" value="CPU / 主机侧" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=18;fontColor=#000000;fontFamily=Helvetica;" parent="1" vertex="1">
+          <mxGeometry x="1165" y="98" width="160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="q" value="统一查询向量&lt;br&gt;&lt;span&gt;v&lt;sub&gt;i&lt;/sub&gt; ∈ R&lt;sup&gt;d&lt;/sup&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=17;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="70" y="158" width="140" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="recall" value="候选召回模块&lt;br&gt;&lt;span&gt;FlashANNS / FAISS-GPU&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=17;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="255" y="158" width="215" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="cand" value="候选结果缓冲&lt;br&gt;&lt;span&gt;ID / distance / local rank / reference&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="505" y="158" width="215" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="reorg" value="候选组织与重排" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=17;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="755" y="158" width="140" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="score" value="PyTOD 评分主干" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#f8cecc;strokeColor=#b85450;fontSize=17;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="925" y="158" width="140" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="out" value="最终小规模结果&lt;br&gt;&lt;span&gt;score / rank / logs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFB570;strokeColor=#d6b656;fontSize=17;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="147.5" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ann_q" value="输入：查询向量" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontColor=#000000;fontFamily=Helvetica;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="260" y="230" width="205" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ann_c" value="输出：候选集合 C&lt;sub&gt;i&lt;/sub&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontColor=#000000;fontFamily=Helvetica;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="522.5" y="230" width="180" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ann_r" value="形成可直接进入评分的设备侧张量" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontColor=#000000;fontFamily=Helvetica;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="700" y="230" width="250" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ann_s" value="&lt;span&gt;评分中间张量：&lt;/span&gt;&lt;div&gt;&lt;span&gt;distance matrix / local sorting / aggregation stats&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13;fontColor=#000000;fontFamily=Helvetica;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="455" y="98" width="300" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="gpu_note" value="查询向量、候选结果与评分中间张量尽量保留在 GPU 侧连续流转" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontColor=#000000;fontStyle=3;fontFamily=Helvetica;" parent="1" vertex="1">
+          <mxGeometry x="245" y="260" width="650" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cpu_note" value="仅最终结果与日志回传主机" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;fontColor=#000000;fontStyle=3;fontFamily=Helvetica;" parent="1" vertex="1">
+          <mxGeometry x="1135" y="258" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" source="q" target="recall" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" source="recall" target="cand" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" source="cand" target="reorg" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" source="reorg" target="score" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" target="out" edge="1" source="score">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1100" y="195" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="1110" y="191" />
+              <mxPoint x="1110" y="191" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;dashed=1;endArrow=none;strokeColor=#000000;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" source="q" target="score" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="155" y="140" />
+              <mxPoint x="995" y="140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l1" value="模块间传递对象" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;fontStyle=1;fontFamily=Helvetica;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="80" y="310" width="170" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="① 查询向量 v&lt;sub&gt;i&lt;/sub&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="265" y="310" width="155" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="② 候选结果 C&lt;sub&gt;i&lt;/sub&gt; 及其字段" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="435" y="310" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="③ 候选张量 / index mapping" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="650" y="310" width="220" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l5" value="④ 评分中间张量" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="885" y="310" width="170" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l6" value="⑤ 最终结果与日志" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#999999;fontSize=15;fontFamily=Helvetica;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="1070" y="310" width="180" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

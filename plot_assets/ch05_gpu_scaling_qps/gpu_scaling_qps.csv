@@ -1,0 +1,4 @@
+scheme,scheme_desc,gpu_count,qps
+Replicated path,Replicated primary path,1,4550.00
+Replicated path,Replicated primary path,2,7780.00
+Replicated path,Replicated primary path,4,13620.00
