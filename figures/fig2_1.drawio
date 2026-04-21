@@ -7,52 +7,52 @@
         <mxCell id="F5PJG-h7fjzLsTTjwBdm-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=none;" parent="1" vertex="1">
           <mxGeometry x="160" y="230" width="478" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="topTitleBox" value="异常检测任务" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ddd1b8;strokeColor=none;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="topTitleBox" value="异常检测任务" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ddd1b8;strokeColor=none;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="160" y="24" width="476" height="26" as="geometry" />
         </mxCell>
         <mxCell id="upperPanel" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ddd5d4;strokeColor=none;" parent="1" vertex="1">
           <mxGeometry x="160" y="71" width="476" height="139" as="geometry" />
         </mxCell>
-        <mxCell id="programmingModel" value="编程模型" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+        <mxCell id="programmingModel" value="编程模型" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="288" y="80" width="220" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="decompText" value="分解为优化后的算子" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+        <mxCell id="decompText" value="分解为优化后的算子" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="480" y="53" width="160" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="func1" value="功能算子1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="func1" value="功能算子1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="226" y="107" width="104" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="func2" value="功能算子2" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="func2" value="功能算子2" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="344" y="107" width="104" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="func3" value="..." style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="func3" value="..." style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#9a7300;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="460" y="107" width="103" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="tensor1" value="基础张量算子1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="tensor1" value="基础张量算子1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="163" y="157" width="123" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="tensor2" value="基础张量算子2" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="tensor2" value="基础张量算子2" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="286" y="157" width="123" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="tensor3" value="基础张量算子3" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="tensor3" value="基础张量算子3" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="409" y="157" width="124" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="tensor4" value="..." style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="tensor4" value="..." style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#8b6e64;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="534" y="157" width="99" height="39" as="geometry" />
         </mxCell>
-        <mxCell id="saveGPUText" value="在无精度损失下节省GPU显存" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+        <mxCell id="saveGPUText" value="在无精度损失下节省GPU显存" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="480" y="214" width="180" height="16" as="geometry" />
         </mxCell>
-        <mxCell id="quantTitle" value="可证明量化" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+        <mxCell id="quantTitle" value="可证明量化" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="286" y="235" width="225" height="22" as="geometry" />
         </mxCell>
-        <mxCell id="quant1" value="数据量化" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="quant1" value="数据量化" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="168" y="262" width="133" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="quant2" value="低精度评估" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="quant2" value="低精度评估" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="306" y="262" width="157" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="quant3" value="精确性验证" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="quant3" value="精确性验证" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#578ab7;strokeColor=none;fontColor=#ffffff;fontSize=15;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="468" y="262" width="160" height="45" as="geometry" />
         </mxCell>
         <mxCell id="lowerBorder" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;dashed=1;dashPattern=6 3;" parent="1" vertex="1">
@@ -64,13 +64,13 @@
         <mxCell id="rightLowerBg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dde6e0;strokeColor=none;" parent="1" vertex="1">
           <mxGeometry x="398" y="339" width="240" height="121" as="geometry" />
         </mxCell>
-        <mxCell id="divideText" value="在单GPU或多GPU上分而治之" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;" parent="1" vertex="1">
+        <mxCell id="divideText" value="在单GPU或多GPU上分而治之" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="480" y="323" width="170" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="batchingTitle" value="自动批处理" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+        <mxCell id="batchingTitle" value="自动批处理" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="194" y="344" width="170" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="multiTitle" value="多GPU支持" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+        <mxCell id="multiTitle" value="多GPU支持" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="428" y="344" width="180" height="20" as="geometry" />
         </mxCell>
         <mxCell id="g1v1" value="" style="shape=line;strokeColor=#f07f2f;strokeWidth=1;" parent="1" vertex="1">
@@ -97,22 +97,22 @@
         <mxCell id="g4v2" value="" style="shape=line;strokeColor=#f07f2f;strokeWidth=1;" parent="1" vertex="1">
           <mxGeometry x="342" y="428" width="1" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="gpu1" value="GPU 1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="gpu1" value="GPU 1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="425" y="369" width="77" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="gpu2" value="GPU 2" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="gpu2" value="GPU 2" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=14;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="425" y="400" width="77" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="gpu3" value="..." style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="gpu3" value="..." style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=18;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="425" y="431" width="77" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="resultBox" value="结果聚合" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=16;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="resultBox" value="结果聚合" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#5a8a7e;strokeColor=none;fontColor=#ffffff;fontSize=16;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="528" y="379" width="97" height="72" as="geometry" />
         </mxCell>
-        <mxCell id="resultBrace" value="}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=38;fontColor=#7a7a7a;" parent="1" vertex="1">
+        <mxCell id="resultBrace" value="}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=38;fontColor=#7a7a7a;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="503" y="379" width="17" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="bottomBox" value="输入任务的异常分数" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ddd1b8;strokeColor=none;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="bottomBox" value="输入任务的异常分数" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ddd1b8;strokeColor=none;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="217.5" y="490" width="365" height="26" as="geometry" />
         </mxCell>
         <mxCell id="arrowTopToModel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#7a7a7a;strokeWidth=2;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="topTitleBox" target="upperPanel" edge="1">
