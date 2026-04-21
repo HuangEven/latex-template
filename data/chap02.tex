@@ -175,14 +175,14 @@
   \small
   \renewcommand{\arraystretch}{1.2}
   \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.0cm} P{4.0cm} P{3.1cm} P{4.3cm} P{2.2cm} P{3.5cm}}
+  \begin{tabular}{P{2.1cm} P{4.0cm} P{3.5cm} P{3.2cm} P{3.7cm}}
     \toprule
-    评分类型 & 代表性评分思路 & 候选集上的计算对象 & PyTOD 主要张量算子链 & 评分输出 & 在本文中的定位\\
+    评分类型 & 代表性评分思路 & 候选集上的计算对象 & 简化算子链 & 在本文中的定位\\
     \midrule
-    距离型评分 & 依据查询样本与候选邻域的距离分布刻画异常程度，如第 $k$ 近邻距离、平均近邻距离 & 查询向量与候选集合之间的局部距离关系 & \texttt{cdist $\rightarrow$ topk $\rightarrow$ distance aggregation} & 距离型异常分数 & 作为主评分方式，直观反映样本偏离正常模式的程度\\
-    局部密度型评分 & 比较查询样本局部密度与邻域样本局部密度的差异，如局部可达密度比值 & 查询样本及其候选邻域的局部密度结构 & \texttt{cdist $\rightarrow$ topk $\rightarrow$ local density estimation $\rightarrow$ ratio aggregation} & 密度型异常分数 & 用于补充识别“相对异常”样本，增强对局部稀疏模式的敏感性\\
-    统计型评分 & 基于候选邻域内特征分布、分位点或边缘偏离程度进行评分 & 查询样本在候选邻域中的特征偏离情况 & \texttt{feature statistics / histogram / quantile ops $\rightarrow$ feature aggregation} & 统计型异常分数 & 作为轻量级辅助评分或对照评分方式\\
-    融合评分接口 & 对不同评分结果进行统一输出，形成最终风险排序 & 距离、密度、统计等候选集评分结果 & \texttt{score normalization $\rightarrow$ weighted / unified output} & 最终异常分数与排序结果 & 体现 PyTOD 作为统一评分主干的可扩展性\\
+    距离型评分 & 依据查询样本与候选邻域的距离分布刻画异常程度 & 查询向量与候选集合的局部距离关系 & \texttt{cdist $\rightarrow$ topk $\rightarrow$ 聚合} & 主评分方式，直观反映样本偏离程度\\
+    局部密度型评分 & 比较查询样本与邻域样本的局部密度差异 & 查询样本及其候选邻域的局部密度结构 & \texttt{cdist $\rightarrow$ topk $\rightarrow$ 密度比值} & 补充识别“相对异常”样本\\
+    统计型评分 & 基于候选邻域内特征分布、分位点或边缘偏离程度评分 & 查询样本在候选邻域中的特征偏离情况 & \texttt{统计/直方图 $\rightarrow$ 聚合} & 轻量级辅助评分或对照评分方式\\
+    融合评分接口 & 对不同评分结果进行统一输出，形成最终风险排序 & 距离、密度、统计等候选集评分结果 & \texttt{归一化 $\rightarrow$ 加权输出} & 体现统一评分主干的可扩展性\\
     \bottomrule
   \end{tabular}
   \end{adjustbox}

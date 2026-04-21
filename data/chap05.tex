@@ -357,18 +357,18 @@
   \label{tab:core-summary}
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{2.0pt}
+  \setlength{\tabcolsep}{2.4pt}
   \renewcommand{\arraystretch}{1.18}
   \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.3cm}P{2.0cm}P{2.6cm}P{5.8cm}P{1.6cm}}
+  \begin{tabular}{P{2.4cm}P{2.1cm}P{2.6cm}P{4.8cm}P{2.0cm}}
     \toprule
     结果主题 & 代表方案 & 核心指标 & 关键结果 & \makecell[c]{支撑\\图表} \\
     \midrule
-    融合架构总体有效性 & 完整融合 & PR-AUC, QPS & 在 PR-AUC 仅略低于全量评分的前提下，QPS 相比全量评分显著提升，说明``候选召回 + 张量化评分''能够兼顾效果与吞吐 & 图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling} \\
-    单卡链路优化收益 & 单卡优化 & QPS, p99 Latency, CPU Utilization & GPU 主导执行链路显著压缩阶段边界开销，p99 延迟和 CPU 负载同步下降，端到端吞吐明显提升 & 图~\ref{fig:single-stage-breakdown}--图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} \\
-    多 GPU replicated 扩展性 & 2/4 GPU replicated & QPS, CPU Utilization & GPU 数量增加时系统吞吐近似线性增长，CPU 利用率未同步放大，说明控制面/数据平面分离设计有效 & 图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} \\
-    跨卡归并策略差异 & GPU merge vs.\ CPU aggregation & avg/p99 Latency & 当索引无法完整复制时，GPU 侧归并优于 CPU 聚合，说明``CPU 退出数据平面''在多 GPU 场景中仍然重要 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} \\
-    跨规模可行性 & 完整融合 & QPS, p99 Latency, PR-AUC & 从 1M 扩展到 100M 时，QPS 随规模增大而下降、p99 上升，PR-AUC 与候选覆盖类指标在 10M 之后出现更明显回落，但完整融合在可扩展口径下仍持续优于初步融合基线 & 图~\ref{fig:scale-trend} \\
+    融合架构总体有效性 & 完整融合 & PR-AUC, QPS & PR-AUC 接近全量评分，QPS 显著提升 & 图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling} \\
+    单卡链路优化收益 & 单卡优化 & QPS, p99 Latency, CPU Utilization & p99 延迟和 CPU 负载下降，端到端吞吐提升 & 图~\ref{fig:single-stage-breakdown}--图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} \\
+    多 GPU replicated 扩展性 & 2/4 GPU replicated & QPS, CPU Utilization & QPS 随卡数提升，CPU 利用率未同步放大 & 图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} \\
+    跨卡归并策略差异 & GPU merge vs.\ CPU aggregation & avg/p99 Latency & GPU 侧归并的平均延迟和 p99 延迟更低 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} \\
+    跨规模可行性 & 完整融合 & QPS, p99 Latency, PR-AUC & 规模增大后性能退化可解释，完整融合仍优于初步融合 & 图~\ref{fig:scale-trend} \\
     \bottomrule
   \end{tabular}
   \end{adjustbox}
@@ -428,16 +428,16 @@
   \small
   \renewcommand{\arraystretch}{1.15}
   \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{3.1cm}P{3.4cm}P{5.4cm}P{2.0cm}}
+  \begin{tabular}{P{4.3cm}P{7.6cm}P{2.0cm}}
     \toprule
-    结论 & 直接证据（图/表） & 描述性说明 & 章节位置 \\
+    结论 & 主要证据 & 章节位置 \\
     \midrule
-    融合系统在接近最佳检测效果下显著提升吞吐 & 图~\ref{fig:fusion-vs-baselines}，图~\ref{fig:single-gpu-before-after}，图~\ref{fig:multi-gpu-scaling}，表~\ref{tab:core-summary} & 完整融合方案的 PR-AUC 接近全量评分，但 QPS 显著领先，证明两阶段融合路线在效果与性能之间取得更优平衡 & 6.4.1 \\
-    单卡优化的核心收益来自数据通路压缩而非单一算子加速 & 图~\ref{fig:single-stage-breakdown}，图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} & 查询组织、候选打包和结果回传阶段开销下降最明显，说明 GPU 主导链路实质上减少了 CPU$\leftrightarrow$GPU 往返与同步等待 & 4.8，6.4.2 \\
-    多 GPU 主方案应优先采用 replicated 架构 & 表~\ref{tab:primary-vs-fallback}，图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} & 在显存允许的前提下，replicated 方案扩展路径更简单、CPU 压力更低，吞吐随 GPU 数量增加保持稳定增长 & 5.3，5.8，6.4.2 \\
-    必须跨卡归并时 GPU 侧归并优于 CPU 聚合 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} & GPU merge 的平均延迟与 p99 延迟均低于 CPU aggregation，说明大规模中间结果不宜回流主机侧处理 & 5.5，5.8 \\
-    I/O 路径组织决定多 GPU 扩展上限 & 图~\ref{fig:topology}，图~\ref{fig:io-lane-impact}，图~\ref{fig:scale-trend} & 当多卡共享 PCIe/SSD 路径时，p99 延迟上升且 QPS 恶化，合理 lane 绑定是释放多 GPU 吞吐的必要条件 & 5.6，5.8，6.4.3 \\
-    out-of-core 融合方案在超大规模下仍具工程可行性 & 图~\ref{fig:scale-trend}，表~\ref{tab:core-summary} & 即便扩展到 100M 规模，完整融合方案的 PR-AUC 已下降到约 0.8 附近，但仍在吞吐和尾延迟上继续优于可扩展弱基线，说明外存候选召回结合 GPU 评分仍具有工程可行性 & 6.4.3 \\
+    融合系统在接近最佳检测效果下显著提升吞吐 & 图~\ref{fig:fusion-vs-baselines}，图~\ref{fig:single-gpu-before-after}，图~\ref{fig:multi-gpu-scaling}，表~\ref{tab:core-summary} & 6.4.1 \\
+    单卡优化的核心收益来自数据通路压缩而非单一算子加速 & 图~\ref{fig:single-stage-breakdown}，图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} & 4.8，6.4.2 \\
+    多 GPU 主方案应优先采用 replicated 架构 & 表~\ref{tab:primary-vs-fallback}，图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} & 5.3，5.8，6.4.2 \\
+    必须跨卡归并时 GPU 侧归并优于 CPU 聚合 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} & 5.5，5.8 \\
+    I/O 路径组织决定多 GPU 扩展上限 & 图~\ref{fig:topology}，图~\ref{fig:io-lane-impact}，图~\ref{fig:scale-trend} & 5.6，5.8，6.4.3 \\
+    out-of-core 融合方案在超大规模下仍具工程可行性 & 图~\ref{fig:scale-trend}，表~\ref{tab:core-summary} & 6.4.3 \\
     \bottomrule
   \end{tabular}
   \end{adjustbox}
@@ -462,18 +462,18 @@
   \label{tab:limitations}
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{1.9pt}
+  \setlength{\tabcolsep}{2.2pt}
   \renewcommand{\arraystretch}{1.18}
   \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{1.9cm}P{2.2cm}P{4.8cm}P{2.3cm}P{3.4cm}}
+  \begin{tabular}{P{2.5cm}P{4.1cm}P{3.2cm}P{4.1cm}}
     \toprule
-    局限性 & 影响因素 & 原因分析 & 影响范围 & 应对策略 \\
+    局限性 & 主要原因 & 影响范围 & 应对方向 \\
     \midrule
-    replicated 扩展受显存限制 & 索引规模、候选预算、GPU 显存容量 & replicated 方案需要在每张 GPU 上复制索引与候选缓存，规模继续增大时显存先成为硬约束 & 限制可直接扩展的 GPU 数量与单卡可容纳索引规模 & 转向 sharded + GPU 归并，配合压缩索引或分层召回 \\
-    I/O 路径仍可能成为大规模吞吐瓶颈 & SSD 带宽、PCIe lane、队列深度 & out-of-core 场景下 SSD 访问与 GPU 计算虽可重叠，但共享路径冲突仍会拉高排队时间与 p99 & 对 50M/100M 规模及多卡并发场景影响更明显 & 采用拓扑感知 I/O 绑定、独立 lane 准入控制与队列参数调优 \\
-    部署收益依赖硬件拓扑条件 & GPU--SSD--PCIe--NUMA 布局、驱动/GDS 支持 & 本文优化收益建立在较好的本地 NVMe、PCIe Gen4 和可控 NUMA 路径基础上，不同部署环境下收益会波动 & 影响方案跨平台复现的一致性 & 部署前进行拓扑画像与基准测试，优先在路径清晰的节点上落地 \\
-    超大规模真实金融数据验证仍有限 & 真实数据可得性、合规约束 & 10M/50M/100M 规模实验主要依赖高保真合成数据，尚不能完全替代真实业务负载 & 影响结论向生产金融场景外推时的置信度 & 与机构数据平台联合验证，并补充真实在线负载回放实验 \\
-    尚未覆盖多机分布式扩展 & 网络带宽、跨机通信、分布式索引管理 & 本文重点解决单机多 GPU 路径，尚未进一步讨论跨机查询分发与层次化归并 & 限制结论直接外推到更大规模集群部署 & 后续引入 RDMA/NVLink-aware 通信与分布式索引分层调度 \\
+    replicated 扩展受显存限制 & 索引副本、候选缓存与中间张量占用随规模增长 & 限制 GPU 数量与单卡可容纳索引规模 & 转向 sharded + GPU 归并，配合压缩索引或分层召回 \\
+    I/O 路径仍可能成为大规模吞吐瓶颈 & SSD/PCIe 共享路径会增加排队时间并抬高 p99 & 对 50M/100M 规模及多卡并发场景更明显 & 采用拓扑感知 I/O 绑定、独立 lane 准入控制与队列参数调优 \\
+    部署收益依赖硬件拓扑条件 & GPU--SSD--PCIe--NUMA 布局和 GDS 支持存在平台差异 & 影响方案跨平台复现的一致性 & 部署前进行拓扑画像与基准测试，优先选择路径清晰的节点 \\
+    超大规模真实金融数据验证仍有限 & 真实数据可得性和合规约束限制实验规模 & 影响结论向生产金融场景外推时的置信度 & 与机构数据平台联合验证，并补充真实在线负载回放实验 \\
+    尚未覆盖多机分布式扩展 & 本文重点解决单机多 GPU 路径，尚未展开跨机调度 & 限制结论直接外推到更大规模集群部署 & 后续引入 RDMA/NVLink-aware 通信与分布式索引分层调度 \\
     \bottomrule
   \end{tabular}
   \end{adjustbox}

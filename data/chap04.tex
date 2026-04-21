@@ -31,33 +31,30 @@
   \label{tab:primary-vs-fallback}
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{1.9pt}
+  \setlength{\tabcolsep}{2.6pt}
   \renewcommand{\arraystretch}{1.18}
   \begin{adjustbox}{max width=\linewidth}
-    \begin{tabular}{P{1.75cm}P{2.55cm}P{3.85cm}P{3.05cm}P{2.85cm}P{1.45cm}}
+    \begin{tabular}{P{2.4cm}P{3.1cm}P{3.7cm}P{3.0cm}P{2.4cm}}
       \toprule
-      方案 & 核心思路 & 适用条件 & 优势 & 代价 & 定位 \\
+      方案 & 组织方式 & 适用场景 & 主要收益 & 定位/代价 \\
       \midrule
       \makecell[l]{replicated} &
-      完整索引复制到每张 GPU，按查询级或微批级并行分发任务，每卡独立完成候选召回、异常评分与局部结果输出闭环 &
-      单卡可容纳完整索引副本；系统目标以高吞吐和低尾延迟为主；允许用显存换取调度简单性和扩展稳定性 &
-      数据平面最清晰；CPU 仅保留控制面职责；几乎不需要跨卡归并；与单卡优化链路复用度最高 &
-      显存占用高；索引构建与更新需要维护多份副本；当索引继续增大时可扩展性受显存约束 &
-      主方案 \\
+      每卡保留完整索引，按查询或微批分发 &
+      单卡可容纳完整索引副本，且目标以吞吐和低尾延迟为主 &
+      路径简单，CPU 主要保留控制面职责，跨卡归并少 &
+      主方案；代价是显存占用高 \\
       \midrule
       \makecell[l]{sharded +\\GPU 归并} &
-      索引按卡分片，各卡先完成局部召回或局部评分，再通过 NCCL 等通信机制在 GPU 侧完成归并和最终结果合并 &
-      完整索引无法复制到单卡；业务必须覆盖更大索引容量；可以接受额外的设备间通信与 GPU 侧归并复杂度 &
-      支持更大索引规模；CPU 不再回收大规模候选集合；相较 CPU 聚合路径尾延迟更可控 &
-      归并逻辑更复杂；通信开销与 stream 协调成本更高；性能更容易受到拓扑与 I/O 路径限制 &
-      兜底方案 \\
+      索引按卡分片，局部结果在 GPU 侧归并 &
+      完整索引无法复制到单卡，需要覆盖更大索引容量 &
+      支持更大规模，避免大规模候选集合回流 CPU &
+      兜底方案；代价是通信与归并逻辑更复杂 \\
       \midrule
       \makecell[l]{CPU\\聚合} &
-      各 GPU 仅输出局部结果，统一回传 CPU 进行排序、合并与最终输出，CPU 重新承担跨卡聚合职责 &
-      主要用于原型验证、调试、小规模实验或需要显式检查中间结果的离线分析场景 &
-      实现路径最直接；中间结果易于观察；便于快速构造对比基线 &
-      CPU 重新进入数据平面；D2H/H2D 往返明显增加；高并发下 p99 延迟与吞吐表现最差 &
-      对比基线 \\
+      各 GPU 输出局部结果后回传 CPU 排序合并 &
+      原型验证、调试、小规模实验或离线分析 &
+      实现直接，中间结果易观察，便于构造对比基线 &
+      对比基线；代价是 CPU 重回数据平面 \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
@@ -143,22 +140,41 @@
   \label{tab:multi-gpu-exp-setup}
   \centering
   \small
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.18}
+  \textbf{（a）固定参数与实验口径}
   \begin{adjustbox}{max width=\linewidth}
-    \begin{tabular}{P{0.8cm}P{2.6cm}P{1.0cm}P{1.9cm}P{1.0cm}P{1.0cm}P{0.7cm}P{2.2cm}P{1.8cm}P{2.7cm}}
+    \begin{tabular}{C{0.9cm}P{3.1cm}C{1.2cm}C{1.2cm}C{1.2cm}C{0.8cm}P{4.3cm}}
       \toprule
-      GPU数 & 方案 & 数据规模 & 索引组织 & 批大小 & 候选数 & $k$ & 归并路径 & I/O 绑定 & 备注 \\
+      GPU数 & 方案 & 数据规模 & 批大小 & 候选数 & $k$ & 实验目的 \\
       \midrule
-      1 & Replicated & 10M & Full replica & 4096 & 128 & 50 & None & Topology-aware & 单卡吞吐扩展基线 \\
-      2 & Replicated & 10M & Full replica & 4096 & 128 & 50 & None & Topology-aware & 2 GPU replicated 扩展基线 \\
-      4 & Replicated & 10M & Full replica & 4096 & 128 & 50 & None & Topology-aware & 四卡 replicated 扩展基线 \\
-      4 & Local scoring + GPU merge & 100M & Sharded index & 3072 & 128 & 50 & NCCL all-gather + GPU merge & Topology-aware & 显存受限时的 GPU 侧归并兜底方案 \\
-      4 & Local scoring + CPU aggregation & 100M & Sharded index & 3072 & 128 & 50 & CPU aggregation & Topology-aware & CPU 聚合对比基线 \\
-      2 & Topology-aware binding & 100M & Full replica & 4096 & 128 & 50 & None & Topology-aware & I/O lane 绑定对比实验 \\
-      4 & Topology-aware binding & 100M & Full replica & 4096 & 128 & 50 & None & Topology-aware & I/O lane 绑定对比实验 \\
-      2 & Shared-path conflict & 100M & Full replica & 4096 & 128 & 50 & None & Shared PCIe/SSD path & 共享路径冲突对比基线 \\
-      4 & Shared-path conflict & 100M & Full replica & 4096 & 128 & 50 & None & Shared PCIe/SSD path & 共享路径冲突对比基线 \\
+      1 & Replicated & 10M & 4096 & 128 & 50 & 单卡吞吐扩展基线 \\
+      2 & Replicated & 10M & 4096 & 128 & 50 & 2 GPU replicated 扩展基线 \\
+      4 & Replicated & 10M & 4096 & 128 & 50 & 四卡 replicated 扩展基线 \\
+      4 & Local scoring + GPU merge & 100M & 3072 & 128 & 50 & 显存受限时的 GPU 侧归并兜底方案 \\
+      4 & Local scoring + CPU aggregation & 100M & 3072 & 128 & 50 & CPU 聚合对比基线 \\
+      2 & Topology-aware binding & 100M & 4096 & 128 & 50 & I/O lane 绑定对比实验 \\
+      4 & Topology-aware binding & 100M & 4096 & 128 & 50 & I/O lane 绑定对比实验 \\
+      2 & Shared-path conflict & 100M & 4096 & 128 & 50 & 共享路径冲突对比基线 \\
+      4 & Shared-path conflict & 100M & 4096 & 128 & 50 & 共享路径冲突对比基线 \\
+      \bottomrule
+    \end{tabular}
+  \end{adjustbox}
+
+  \vspace{0.6em}
+  \textbf{（b）方案配置说明}
+  \begin{adjustbox}{max width=\linewidth}
+    \begin{tabular}{P{3.2cm}P{3.0cm}P{3.5cm}P{3.1cm}P{3.4cm}}
+      \toprule
+      方案 & 索引组织 & 归并路径 & I/O 绑定 & 定位 \\
       \midrule
-      \multicolumn{10}{p{15.6cm}}{\footnotesize 注：多 GPU 实验规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织。表中列出的是正文展示所对应的代表性配置，其中 10M 主要服务于 replicated 主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
+      Replicated & Full replica & None & Topology-aware & 主扩展方案，验证随 GPU 数量增加的吞吐收益 \\
+      Local scoring + GPU merge & Sharded index & NCCL all-gather + GPU merge & Topology-aware & 显存受限时的设备侧归并兜底路径 \\
+      Local scoring + CPU aggregation & Sharded index & CPU aggregation & Topology-aware & 用于对比 CPU 回到数据平面的额外代价 \\
+      Topology-aware binding & Full replica & None & Topology-aware & 验证 I/O lane 绑定对扩展效率的影响 \\
+      Shared-path conflict & Full replica & None & Shared PCIe/SSD path & 作为共享路径冲突下的对比基线 \\
+      \midrule
+      \multicolumn{5}{p{14.8cm}}{\footnotesize 注：多 GPU 实验规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织。10M 主要服务于 replicated 主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
