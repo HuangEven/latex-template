@@ -4,20 +4,13 @@
 
 \section{异常检测方法研究现状}
 
-异常检测旨在从大量正常样本中识别出少数偏离总体分布的对象；其研究长期以来围绕距离型、密度型、统计型、集成型以及深度学习型方法展开\citep{chandola2009survey,markou2003novelty,aggarwal2017outlier,zhao2022tod}。在金融场景下，异常不仅可能表现为单笔交易的数值偏离，也可体现在账户行为、设备特征、时序模式或多实体交互关系的结构性异常中。相应地，金融欺诈检测综述和图异常检测综述都表明，方法选择不能只考察离线识别能力，还必须兼顾可解释性、推理代价，以及在高吞吐、低时延条件下的可执行性\citep{phua2010fraudsurvey,akoglu2015graph}。基于这一判断，本文在梳理这些方法时，更关注它们是否适合作为大规模系统中的评分主干，以及是否便于与候选召回链路衔接；相比之下，哪一类方法更先进并不是本文最关心的问题。本文后续涉及的代表性异常检测方法包括 Angle-Based Outlier Detection（ABOD）、Connectivity-Based Outlier Factor（COF）、Local Outlier Factor（LOF）、Local Correlation Integral（LOCI）、Histogram-Based Outlier Score（HBOS）、Copula-Based Outlier Detection（COPOD）、Empirical Cumulative Distribution Functions for Outlier Detection（ECOD）和 Principal Component Analysis（PCA）等；涉及深度模型时，则以图神经网络（Graph Neural Network，GNN）为代表。图~\ref{fig:ad-taxonomy}从建模对象和评分机制两个维度对异常检测方法进行了分类；表~\ref{tab:ad-complexity}则进一步比较了各类代表方法在复杂度、可解释性以及大规模金融场景适配性上的差异。
+异常检测旨在从大量正常样本中识别出少数偏离总体分布的对象；其研究长期以来围绕距离型、密度型、统计型、集成型以及深度学习型方法展开\citep{chandola2009survey,markou2003novelty,aggarwal2017outlier,zhao2022tod}。在金融场景下，异常不仅可能表现为单笔交易的数值偏离，也可体现在账户行为、设备特征、时序模式或多实体交互关系的结构性异常中。相应地，金融欺诈检测综述和图异常检测综述都表明，方法选择不能只考察离线识别能力，还必须兼顾可解释性、推理代价，以及在高吞吐、低时延条件下的可执行性\citep{phua2010fraudsurvey,akoglu2015graph}。基于这一判断，本文在梳理这些方法时，更关注它们是否适合作为大规模系统中的评分主干，以及是否便于与候选召回链路衔接；相比之下，哪一类方法更先进并不是本文最关心的问题。本文后续涉及的代表性异常检测方法包括 Angle-Based Outlier Detection（ABOD）、Connectivity-Based Outlier Factor（COF）、Local Outlier Factor（LOF）、Local Correlation Integral（LOCI）、Histogram-Based Outlier Score（HBOS）、Copula-Based Outlier Detection（COPOD）、Empirical Cumulative Distribution Functions for Outlier Detection（ECOD）和 Principal Component Analysis（PCA）等；涉及深度模型时，则以图神经网络（Graph Neural Network，GNN）为代表。表~\ref{tab:ad-complexity}则进一步比较了各类代表方法在复杂度、可解释性以及大规模金融场景适配性上的差异。
 
 距离型方法是金融异常检测中最常见的一类路线，其核心思想是通过样本与近邻之间的距离、局部连通结构或几何关系来刻画异常程度\citep{aggarwal2017outlier,angiulli2002fast}。例如，基于 $k$ 近邻的异常检测通常将样本与其第 $k$ 个近邻的距离、平均近邻距离或邻域集合结构作为风险评分依据；ABOD、COF、LOF 等方法则进一步引入角度、可达距离或局部密度等信息，以提高对复杂异常模式的识别能力。对于本研究而言，这类方法的重要性主要体现在两方面：一方面，其业务语义相对直观，便于与金融风控中偏离正常行为模式的概念相对应；另一方面，其评分过程天然围绕距离、排序和局部聚合展开，因而具备被张量化组织的潜力。然而，这类方法也恰恰最容易暴露大规模系统中的复杂度问题。TOD 对表格型异常检测算法的梳理表明，多种 proximity-based 方法在朴素实现下至少具有二次时间或空间复杂度，这直接限制了它们在近实时金融场景中的可部署性\citep{zhao2022tod}。这也成为了本文后续选择“先候选召回，再精细评分”两阶段路线的重要背景。
 
 与距离型方法相比，密度型和统计型方法更强调样本在局部分布或全局分布中的稀有程度。密度型方法通常通过比较样本局部密度与邻域密度之间的差异来识别异常，典型代表包括 LOF、LOCI 等；统计型方法则通过特征分布、边缘概率或直方图结构来评估异常程度，例如 HBOS、COPOD 与 ECOD 等\citep{zhao2022tod,breunig2000lof}。若仅从公式复杂度来看，统计型方法往往显得更轻量，密度型方法则介于距离型与统计型之间。然而，一旦将问题置于系统实现层面，这种区分便显得不够充分：密度型方法仍然需要处理近邻结构，而统计型方法对数据预处理、分布表达和批量组织方式十分敏感，其大规模效率同样受到数据路径与资源组织方式的强烈影响。因此，这两类方法虽可为评分设计提供参考，却难以单独回答“如何让异常检测稳定运行在大规模金融链路上”这一系统性问题。
 
 集成型方法与深度学习型方法代表了另外两种常见思路：前者通过组合多个检测器或多个子空间模型来提高稳健性，后者则利用深层表征能力处理更复杂的数据分布和非线性模式\citep{aggarwal2017outlier,zhao2022tod}。这些方法具有其价值，但与本文所面对的系统目标并不完全契合。集成方法往往会进一步抬升推理成本和链路复杂度；深度模型虽然表达能力更强，但通常伴随着更高的在线部署成本、更复杂的训练依赖以及较弱的业务可解释性。就本文的系统目标而言，更合适的仍是一类能够融入统一 GPU 执行路径、并与候选召回自然衔接的评分主干。因此，后续研究聚焦于“候选召回 + 张量化异常评分”的两阶段系统路线，并没有继续探索更复杂的端到端模型，这一取舍的核心在于明确研究边界和工程目标。
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig2_1_anomaly_detection_taxonomy.pdf}
-  \caption{异常检测方法分类图}
-  \label{fig:ad-taxonomy}
-\end{figure}
 
 \begin{table}[htbp]
   \caption{各类异常检测方法复杂度与系统适配性比较}
