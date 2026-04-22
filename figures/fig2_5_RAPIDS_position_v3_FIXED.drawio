@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" compressed="false" version="28.1.2">
   <diagram id="Fig2-6" name="Fig2-6">
-    <mxGraphModel dx="1113" dy="861" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="946" dy="590" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -37,7 +37,7 @@
         <mxCell id="b10" value="风险排序 / 日志输出" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="990" y="480" width="160" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" target="b2" edge="1">
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" target="b2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="270" y="273" as="sourcePoint" />
             <Array as="points">
@@ -45,42 +45,42 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;" parent="1" source="b2" target="b3" edge="1">
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b2" target="b3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;" parent="1" source="b3" target="b6" edge="1">
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b3" target="b6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="b6" target="b7" edge="1">
+        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b6" target="b7" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="b7" target="b8" edge="1">
+        <mxCell id="f5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b7" target="b8" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#6C8EBF;" parent="1" source="b8" target="b5" edge="1">
+        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b8" target="b5" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="900" y="460" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="b5" target="b9" edge="1">
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b5" target="b9" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1040" y="470" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="b9" target="b10" edge="1">
+        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;" parent="1" source="b9" target="b10" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#6C8EBF;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b2" edge="1">
+        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b2" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#6C8EBF;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b3" edge="1">
+        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#6C8EBF;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b5" edge="1">
+        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;" parent="1" source="b4" target="b5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>

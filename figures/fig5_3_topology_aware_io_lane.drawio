@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
   <diagram id="topology-aware-io-lane" name="Page-1">
-    <mxGraphModel dx="1397" dy="912" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="946" dy="590" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -46,7 +46,7 @@
         <mxCell id="rightRoot" value="共享 PCIe Root / Switch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;fontStyle=1;fontSize=15;fontColor=#000000;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="510" y="190" width="140" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="yGtZBOIBvOfYEVo_oVB8-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endArrow=block;endFill=1;fontColor=#000000;fontStyle=1" edge="1" parent="1" source="rightHotspot" target="rightGpu0">
+        <mxCell id="yGtZBOIBvOfYEVo_oVB8-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endArrow=block;endFill=1;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightHotspot" target="rightGpu0" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="rightHotspot" value="共享路径拥塞 / 排队等待" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;fontStyle=1;fontSize=15;fontColor=#000000;fontFamily=Times New Roman;" parent="1" vertex="1">
@@ -64,7 +64,7 @@
         <mxCell id="rightNote" value="多张 GPU 共用同一 PCIe / SSD 路径时，I/O 排队与冲突会放大尾延迟，p99 上升" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontSize=15;fontStyle=1;fontColor=#000000;rotation=0;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="430" y="369" width="320" height="45" as="geometry" />
         </mxCell>
-        <mxCell id="l1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="leftCpu" target="leftLaneA" edge="1">
+        <mxCell id="l1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftCpu" target="leftLaneA" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="200" y="175" />
@@ -72,7 +72,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="l2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="leftCpu" target="leftLaneB" edge="1">
+        <mxCell id="l2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftCpu" target="leftLaneB" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="200" y="175" />
@@ -96,7 +96,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="l5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.143;entryY=0.014;entryDx=0;entryDy=0;entryPerimeter=0;fontColor=#000000;fontStyle=1" parent="1" source="leftLaneA" target="leftSsd0" edge="1">
+        <mxCell id="l5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.143;entryY=0.014;entryDx=0;entryDy=0;entryPerimeter=0;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftLaneA" target="leftSsd0" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="60" y="315" />
@@ -104,14 +104,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="l6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;fontStyle=1" parent="1" source="leftLaneA" target="leftGpu0" edge="1">
+        <mxCell id="l6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftLaneA" target="leftGpu0" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="183" y="275" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="l7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;fontStyle=1" parent="1" source="leftLaneB" target="leftSsd1" edge="1">
+        <mxCell id="l7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftLaneB" target="leftSsd1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="238" y="265" />
@@ -119,7 +119,7 @@
             <mxPoint x="270" y="325" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="l8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="leftLaneB" target="leftGpu1" edge="1">
+        <mxCell id="l8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="leftLaneB" target="leftGpu1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="350" y="315" />
@@ -127,27 +127,27 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="rightCpu" target="rightRoot" edge="1">
+        <mxCell id="r1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightCpu" target="rightRoot" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="rightRoot" target="rightHotspot" edge="1">
+        <mxCell id="r2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightRoot" target="rightHotspot" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="rightHotspot" target="rightSsd0" edge="1">
+        <mxCell id="r3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightHotspot" target="rightSsd0" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="580" y="303" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="rightHotspot" target="rightSsd1" edge="1">
+        <mxCell id="r4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightHotspot" target="rightSsd1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="580" y="343" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="r6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1" parent="1" source="rightHotspot" target="rightGpu1" edge="1">
+        <mxCell id="r6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;fontSize=15;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;" parent="1" source="rightHotspot" target="rightGpu1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="580" y="343" />
