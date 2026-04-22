@@ -42,8 +42,8 @@
     Python / CUDA & Python 3.11.14；CUDA Runtime 12.4 & 基础运行时环境 \\
     深度学习框架 & PyTorch 2.5.0+cu124；NCCL 2.21.5 & GPU 张量计算与通信环境 \\
     驱动环境 & NVIDIA Driver 550.120 & 与 CUDA 12.4 对应 \\
-    异常检测框架 & PyTOD（\href{https://github.com/yzhao062/pytod}{yzhao062/pytod}） & 以 GitHub 主仓库为版本口径更稳妥 \\
-    ANN 检索组件 & FlashANNS / ann\_search（\href{https://github.com/Tinkerver/ann_search}{Tinkerver/ann\_search}） & Preview Release；默认分支 main；无正式 release \\
+    异常检测框架 & PyTOD（\href{https://github.com/yzhao062/pytod}{yzhao062/pytod}） &  GitHub 主仓库默认分支 main \\
+    ANN 检索组件 & FlashANNS / ann\_search（\href{https://github.com/Tinkerver/ann_search}{Tinkerver/ann\_search}） & GitHub 主仓库默认分支 main \\
     其他核心库 & FAISS 1.13.2；PyOD 2.0.6；NumPy 2.2.6；SciPy 1.13.1；scikit-learn 1.6.1 & 实验所用主要 Python 依赖 \\
     RAPIDS 相关 & cuDF / cuML / RMM 未安装 & 非本轮统一复现实验默认依赖 \\
     \bottomrule
@@ -138,7 +138,7 @@
     \node[main, below=10mm of m50] (m100) {100M};
 
     % 真实集 -> 2 子项
-    \node[child, right=12mm of real, yshift=2mm] (real_a) {真实场景有效性验证};
+    \node[child, right=12mm of real, yshift=5mm] (real_a) {真实场景有效性验证};
     \node[child, below=2mm of real_a] (real_b) {单卡 / 多 GPU 真实口径基准};
     \draw[link] (real.east) -- (real_a.west);
     \draw[link] (real.east) -- (real_b.west);
