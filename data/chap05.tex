@@ -130,7 +130,7 @@
 
 在数据使用方式上，有效性验证任务按训练集、验证集和测试集划分，以保证 PR-AUC、Recall@$k$ 等指标可比；性能与扩展实验则采用固定索引集与固定查询集，将查询批量持续注入系统，以更准确地衡量 QPS、延迟分位数与资源利用率。这样区分能够避免把“检测效果评估”和“系统压测”混在同一套数据口径下讨论。
 
-图~\ref{fig:scale-vs-exp} 展示了规模层级与实验类型的映射，表~\ref{tab:data-split} 则进一步说明了不同实验口径下的数据使用方式。
+图~\ref{fig:scale-vs-exp} 展示了规模层级与实验类型的映射。
 
 \begin{figure}[htbp]
   \centering
@@ -182,25 +182,7 @@
   \label{fig:scale-vs-exp}
 \end{figure}
 
-\begin{table}[htbp]
-  \caption{训练集、验证集和测试集划分说明}
-  \label{tab:data-split}
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.15}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.3cm}P{2.2cm}P{3.3cm}P{2.9cm}P{3.4cm}P{2.6cm}}
-    \toprule
-    实验类型 & 数据规模 & 数据使用方式 & 划分方式 & 主要用途 & 说明 \\
-    \midrule
-    方法有效性验证 & 真实集 & 训练集 / 验证集 / 测试集 & 固定随机种子划分 & 评估 PR-AUC、Recall@k & 用于真实/半真实数据上的检测效果验证 \\
-    方法有效性桥接实验 & 1M & 训练集 / 验证集 / 测试集 & 与真实集一致的固定划分方式 & 评估 PR-AUC、Recall@k、Top-$k$ overlap & 连接真实集实验与单卡 / 多 GPU 合成扩展实验 \\
-    单卡性能实验 & 10M、50M & 固定索引集 + 固定查询集 & 不再进行 train/val/test 划分 & 评估 QPS、p99 Latency、GPU Utilization & 强调端到端吞吐与稳定性 \\
-    多 GPU 扩展实验 & 10M、50M、100M & 固定索引集 + 固定查询集 & 不再进行 train/val/test 划分 & 评估 QPS、p99 Latency、CPU/GPU Utilization & 强调扩展收益与控制面负担 \\
-    \bottomrule
-  \end{tabular}
-  \end{adjustbox}
-\end{table}
+在数据划分上，真实集和 1M 桥接实验采用固定随机种子下的训练/验证/测试集划分，以保证 PR-AUC、Recall@$k$ 与 Top-$k$ overlap 等效果指标可比。10M、50M、100M 的单卡和多 GPU 性能实验则使用固定索引集与固定查询集，不再沿用 train/val/test 口径，而是将查询持续注入系统以衡量 QPS、p99 延迟和资源利用率；这样可以将检测效果评估与系统压测明确区分。
 
 
 \section{评价指标与比较原则}
@@ -211,7 +193,7 @@
 
 比较原则同样围绕这一逻辑展开。首先，同一类实验尽量共享相同数据集、向量表示和硬件配置，以避免数据口径与平台差异掩盖系统设计差异。其次，在比较不同召回配置时，控制候选集合规模或召回质量处于同一数量级，以保证检测效果与吞吐变化具有可解释性。再次，在多 GPU 实验中固定软件环境与相近查询到达方式，使 replicated、GPU merge、CPU aggregation 和共享路径冲突基线之间的差异尽量来自扩展策略本身，避免外部扰动影响。
 
-图~\ref{fig:metric-taxonomy} 给出了指标体系结构，表~\ref{tab:fairness-controls} 则明确了比较原则与控制变量。
+图~\ref{fig:metric-taxonomy} 给出了指标体系结构。
 
 \begin{figure}[htbp]
   \centering
@@ -261,30 +243,7 @@
   \label{fig:metric-taxonomy}
 \end{figure}
 
-\begin{table}[htbp]
-  \caption{比较原则与实验控制变量}
-  \label{tab:fairness-controls}
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.15}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.2cm}P{4.0cm}P{4.6cm}P{3.5cm}}
-    \toprule
-    比较维度 & 比较原则 & 主要控制变量 & 说明 \\
-    \midrule
-    数据一致性 & 相同实验类型共享相同数据源与标签口径 & dataset、label definition & 防止不同数据口径导致指标不可比 \\
-    划分一致性 & 有效性实验共享相同 train/val/test 划分 & split seed、train/val/test ratio & 保证 PR-AUC、Recall@k 可比 \\
-    查询负载一致性 & 性能实验共享相同索引集与查询集 & index set、query set、query count & 保证 QPS 与 p99 Latency 可比 \\
-    候选预算一致性 & 不同方法使用相同候选预算 & topk、rerank\_budget & 保证 Top-$k$ overlap 与性能比较公平 \\
-    批处理一致性 & 不同方案控制相同 batch 组织策略 & batch\_size、bounded\_batch\_size & 避免批大小掩盖系统差异 \\
-    硬件一致性 & 同类比较在相同 GPU/CPU/SSD 条件下进行 & gpu\_model、gpu\_count、cpu、ssd & 保证单卡与多 GPU 实验口径清晰 \\
-    软件环境一致性 & 固定软件栈版本 & CUDA、PyTorch、FAISS-GPU、RAPIDS、NCCL & 保证复现实验结果 \\
-    单卡/多 GPU 口径一致性 & 相同规模下分别比较单卡与多 GPU & gpu\_count、replica\_mode & 避免不同架构混比 \\
-    统计一致性 & 统一重复轮次与汇总方式 & round、seed、mean & 每组 3 轮取均值 \\
-    \bottomrule
-  \end{tabular}
-  \end{adjustbox}
-\end{table}
+为保证比较口径一致，所有实验首先保持数据源和标签定义一致；有效性实验共享相同训练、验证和测试划分，性能实验共享相同索引集与查询集。在不同方案对比中，候选预算、批大小、硬件环境和 CUDA、PyTorch、FAISS-GPU、RAPIDS、NCCL 等软件栈均保持一致；单卡与多 GPU 仅在相同规模下分别比较，每组实验使用统一重复轮次和统计方式汇总结果。
 
 \section{核心结果展示}
 
@@ -387,29 +346,7 @@
 
 最后，本文的实验范围仍然限制在单机多 GPU 场景，多机分布式环境中的跨机通信、分布式索引管理和更复杂的调度问题尚未进入验证范围。这一限制并不影响本文对单机大规模异常检测系统的结论，但确实限定了结论的外推边界。
 
-表~\ref{tab:limitations} 汇总了主要局限性及其影响范围。
-
-\begin{table}[htbp]
-  \caption{研究局限性与影响范围}
-  \label{tab:limitations}
-  \centering
-  \footnotesize
-  \setlength{\tabcolsep}{2.2pt}
-  \renewcommand{\arraystretch}{1.18}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.5cm}P{4.1cm}P{3.2cm}P{4.1cm}}
-    \toprule
-    局限性 & 主要原因 & 影响范围 & 应对方向 \\
-    \midrule
-    replicated 扩展受显存限制 & 索引副本、候选缓存与中间张量占用随规模增长 & 限制 GPU 数量与单卡可容纳索引规模 & 转向 sharded + GPU 归并，配合压缩索引或分层召回 \\
-    I/O 路径仍可能成为大规模吞吐瓶颈 & SSD/PCIe 共享路径会增加排队时间并抬高 p99 & 对 50M/100M 规模及多卡并发场景更明显 & 采用拓扑感知 I/O 绑定、独立 lane 准入控制与队列参数调优 \\
-    部署收益依赖硬件拓扑条件 & GPU--SSD--PCIe--NUMA 布局和 GDS 支持存在平台差异 & 影响方案跨平台复现的一致性 & 部署前进行拓扑画像与基准测试，优先选择路径清晰的节点 \\
-    超大规模真实金融数据验证仍有限 & 真实数据可得性和合规约束限制实验规模 & 影响结论向生产金融场景外推时的置信度 & 与机构数据平台联合验证，并补充真实在线负载回放实验 \\
-    尚未覆盖多机分布式扩展 & 本文重点解决单机多 GPU 路径，尚未展开跨机调度 & 限制结论直接外推到更大规模集群部署 & 后续引入 RDMA/NVLink-aware 通信与分布式索引分层调度 \\
-    \bottomrule
-  \end{tabular}
-  \end{adjustbox}
-\end{table}
+上述讨论限定了本文结论的适用边界。总体来看，replicated 主方案仍受显存容量和索引规模限制；out-of-core 与拓扑感知 I/O 优化虽然能够缓解路径争用，但收益依赖 GPU--SSD--PCIe--NUMA 等硬件路径和 GDS 支持条件；超大规模实验主要建立在高保真合成数据上，真实金融机构在线负载验证仍有限；此外，本文尚未覆盖多机分布式扩展，跨机通信、分布式索引管理和集群调度仍需后续研究进一步验证。
 
 \section{本章小结}
 
