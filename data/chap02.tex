@@ -250,7 +250,7 @@
 
 至此，第三章所完成的主要是功能级衔接：系统知道输入从哪里来、候选如何生成、评分如何执行、结果如何输出，但功能可行并不等于数据路径已经低开销。若候选召回结果仍需频繁回传 CPU 再被整理成评分输入，系统链路就会重新引入高昂的 CPU$\leftrightarrow$GPU 往返与阶段同步成本；若中间结果能够以 GPU 常驻张量或低开销设备对象表达，则整个``候选召回---异常评分''过程才更接近统一 GPU 执行链路。因此，第四章的重点不再停留在证明两阶段流程“能否工作”，转而继续压缩这条流程在单卡上的数据路径成本。
 
-图~\ref{fig:intermediate-dataflow} 进一步展示查询向量、候选结果与评分中间张量在模块间的传递方式，表~\ref{tab:module-interfaces} 则对接口字段与数据驻留位置进行了统一定义。
+图~\ref{fig:intermediate-dataflow} 进一步展示查询向量、候选结果与评分中间张量在模块间的传递方式。
 
 \begin{figure}[htbp]
   \centering
@@ -258,27 +258,6 @@
   \caption{模块间中间结果传递示意图}
   \label{fig:intermediate-dataflow}
 \end{figure}
-
-\begin{table}[htbp]
-  \caption{模块接口定义}
-  \label{tab:module-interfaces}
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.2}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{3.4cm}P{4.2cm}P{2.8cm}P{4.6cm}P{3.2cm}}
-    \toprule
-    模块/阶段 & 输入格式 & 输出格式 & 主要字段 & 数据默认驻留位置\\
-    \midrule
-    数据预处理与特征构造 & 原始交易记录、账户行为摘要、图节点与边关系数据 & 统一固定维度向量表示 & 样本 ID、连续特征、类别编码、时间窗统计、节点聚合特征 & CPU 预处理后转入 GPU，后续逐步向 GPU 侧组织迁移\\
-    候选召回模块（FlashANNS / ANN 后端） & 查询向量 ($v_i\in\mathbb{R}^d$)、候选索引 ($\mathcal{I}$) & 候选集合 ($C_i$) & candidate ID、distance、local rank、必要索引引用 & 优先 GPU 侧驻留\\
-    候选组织与重排模块 & 候选 ID、局部距离、索引引用 & 可直接进入 PyTOD 的候选张量 & candidate tensor、distance tensor、mask / index mapping & GPU\\
-    异常评分模块（PyTOD） & 查询向量、候选张量、评分配置 & 异常分数与排序结果 & 距离矩阵、局部排序、聚合统计、异常分数 & GPU\\
-    结果输出与日志模块 & 异常分数、排序结果、运行时统计 & 风险样本列表、Top-$k$ 结果、日志记录 & sample ID、score、rank、timing、resource metrics & 最终小规模结果回传 CPU，日志落盘于主机侧\\
-    \bottomrule
-  \end{tabular}
-  \end{adjustbox}
-\end{table}
 
 \FloatBarrier
 
