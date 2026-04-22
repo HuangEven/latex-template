@@ -127,7 +127,7 @@
 
 \section{多 GPU 扩展实验与结果分析}
 
-多 GPU 实验按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”统一组织，并比较 replicated、GPU merge、CPU aggregation 与 shared-path conflict 四类路径。详细实验配置见附录B中的补充表~\ref{tab:multi-gpu-exp-setup}，图~\ref{fig:qps-vs-gpu} 与图~\ref{fig:latency-quantiles} 展示 replicated 扩展曲线以及不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O lane 配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
+多 GPU 实验沿“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”逐级组织，并围绕 replicated、GPU merge、CPU aggregation 与 shared-path conflict 四类路径展开；对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 与图~\ref{fig:latency-quantiles} 展示 replicated 扩展曲线以及不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O lane 配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
 
 从结果上看，replicated 方案在 1/2/4 GPU 条件下保持了较为稳定的 QPS 增长和相对平稳的延迟变化，说明在索引可复制的前提下，查询级并行和本地闭环执行确实更符合本文的吞吐优先目标。与之对应，Local scoring + GPU merge 和 Local scoring + CPU aggregation 的对比主要用于回答兜底路径如何选的问题：两者都建立在索引分片的前提下，但 GPU merge 在平均延迟、p99 延迟和 CPU 利用率上都明显优于 CPU aggregation，说明一旦必须跨卡归并，把局部结果留在设备侧处理仍然更有利于控制路径开销。
 
