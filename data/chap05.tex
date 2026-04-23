@@ -8,7 +8,7 @@
 
 硬件环境方面，实验平台由多张同型号 GPU、主机 CPU、内存、SSD 以及对应 PCIe 拓扑组成。单卡实验使用 1 张 GPU 运行完整的候选召回与异常评分链路，主要观察第四章提出的数据路径优化、异步流组织、RAPIDS 后端重构和 FAISS-GPU 检索增强在单设备上的综合表现；多卡实验使用 2 张及以上 GPU，主要对应第五章中的 replicated 扩展、控制面调度、GPU 侧归并和 I/O lane 控制。由于本文后续还需要讨论拓扑差异对扩展结果的影响，GPU 型号、显存容量、CPU 型号、主机内存、SSD 容量、PCIe 代际和 NUMA 关系都需要作为实验前提显式给出。
 
-软件环境方面，实验系统由 PyTOD/TOD 评分实现、FlashANNS 候选召回模块、RAPIDS 数据处理组件、FAISS-GPU 检索后端增强组件以及多 GPU 通信和调度运行时共同组成。为了保证结果可复核，本文固定 Python、PyTorch、PyTOD、FAISS-GPU、CUDA、NCCL 以及操作系统版本，并把这些版本视为统一的软件环境快照。
+软件环境方面，实验系统由 PyTOD 评分实现、FlashANNS 候选召回模块、RAPIDS 数据处理组件、FAISS-GPU 检索后端增强组件以及多 GPU 通信和调度运行时共同组成。为了保证结果可复核，本文固定 Python、PyTorch、PyTOD、FAISS-GPU、CUDA、NCCL 以及操作系统版本，并把这些版本视为统一的软件环境快照。
 
 在实验分类上，本文将综合实验划分为三组：方法有效性验证实验，对应真实或半真实数据及 1M 合成桥接口径；单卡系统性能实验，规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据”组织；多 GPU 扩展实验，规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织，用于比较 replicated 主方案、GPU 侧归并兜底路径以及 I/O 路径组织方式。三类实验共享一套基础代码框架，但在数据规模、硬件使用方式和评价重点上各有分工。
 
