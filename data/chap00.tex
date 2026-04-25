@@ -19,14 +19,14 @@
 
 \begin{figure}[htbp]
   \centering
-\includegraphics[width=\textwidth]{figures/fig1_1_financial_anomaly_business_scene.pdf}
+\includegraphics[width=\textwidth]{figures/fig1-1.png}
   \caption{金融异常检测业务场景总览图}
   \label{fig:fin-ad-business-scene}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig1_2_scale_bottleneck_migration.pdf}
+  \includegraphics[width=\linewidth]{figures/fig1-2.png}
   \caption{数据规模增长与系统瓶颈迁移示意图}
   \label{fig:scale-bottleneck-migration}
 \end{figure}
@@ -83,20 +83,37 @@
 
 \section{研究目标与技术路线}
 
-本文将研究目标落在一个可部署、可扩展的金融异常检测系统上：在保证检测效果可接受的前提下，使系统能够面向大规模金融数据运行，并兼顾较高吞吐率、较低时延与多 GPU 扩展能力。全文从系统功能组织、单卡数据路径优化和多 GPU 扩展机制三个层面展开，整体技术路线如图~\ref{fig:technical-route} 所示。
+本文将研究目标落在一个可部署、可扩展的金融大规模异常检测系统上。在保证检测效果可接受的前提下，系统需要能够面向大规模金融数据稳定运行，并兼顾较高吞吐率、较低端到端时延以及多 GPU 条件下的扩展能力。与单纯比较异常检测算法效果不同，本文更关注候选召回、异常评分、数据路径组织和多 GPU 扩展之间的协同关系，即如何将异常检测任务组织为一条能够在真实工程环境中持续运行的系统链路。
 
-在系统功能层面，以 PyTOD 为异常评分主干、以 FlashANNS 为候选召回模块，建立``候选召回---异常评分''二阶段执行结构：前者负责在大规模数据中快速收缩搜索范围，后者负责在候选集合上完成张量化异常评分。这一层的目标是先把系统主干搭起来，明确各模块的输入输出边界和协同关系。
+围绕上述目标，本文的技术路线可概括为“统一建模—候选召回—张量化评分—数据路径优化—多 GPU 扩展”五个连续环节。首先，对金融交易记录、账户行为统计和图结构关系信息进行预处理与特征构造，将异构金融数据统一映射为固定维度向量表示，为后续候选召回和异常评分提供一致的输入接口。其次，以 FlashANNS 作为候选召回前端，在大规模样本中快速筛选与查询样本相关的候选集合，从而避免直接对全量样本执行高代价评分。再次，以 PyTOD 作为异常评分主干，在候选集合上完成距离型、局部密度型或统计型异常评分，并输出异常分数、风险排序结果及必要的日志信息。
 
 在单卡性能优化层面，工作重点放在数据路径压缩上。在 FlashANNS 异步 I/O---计算流水线基础上构建 GPU 主导执行链路，使查询特征、候选结果与评分中间张量尽量保持在 GPU 侧，仅在必要边界通过页锁定内存（pinned memory）与主机交互；同时引入 RAPIDS 开源 GPU 数据科学与数据处理生态（下文简称 RAPIDS）\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned} 与 FAISS（Facebook AI Similarity Search）的 GPU 检索实现（下文简称 FAISS-GPU）\citep{johnson2019faiss,faiss_gpu_wiki}，对特征处理、中间结果组织和检索后端做工程增强。对应解决的是单卡场景下最容易被忽视、但对端到端性能影响最直接的链路开销问题。
 
 在多 GPU 扩展层面，优先采用数据并行与索引复制策略，使每张 GPU 独立完成本地候选召回与异常评分闭环，而 CPU 主要承担控制面职责；当索引容量或部署条件使完整复制不再可行时，再采用 GPU 侧归并与 NVIDIA 集合通信库（NVIDIA Collective Communications Library，NCCL）通信作为兜底\citep{nccl_stream_semantics}，并结合拓扑感知 I/O lane 控制降低共享路径冲突，在控制实现复杂度的同时尽可能把扩展收益保留下来。
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig1_5_pytod_flashanns_technical_route.pdf}
-  \caption{全文技术路线图}
-  \label{fig:technical-route}
-\end{figure}
+为保持全文结构清晰，本文将上述技术路线分别落实到后续章节，如表~\ref{tab:research_route}：第三章完成金融异常检测任务建模、数据准备、PyTOD 评分主干和 FlashANNS 候选召回模块设计；第四章讨论单卡场景下的 GPU 主导执行链路、数据路径压缩和工程后端优化；第五章进一步讨论多 GPU 数据并行、索引复制、CPU 控制面调度、GPU 侧归并和拓扑感知 I/O 控制；第六章从检测效果、吞吐率、时延、资源利用率和扩展能力等角度对系统进行综合验证。
+
+
+\begin{table}[htbp]
+\centering
+\caption{本文研究目标与技术路线对应关系}
+\label{tab:research_route}
+\begin{tabular}{p{0.23\textwidth} p{0.47\textwidth} p{0.18\textwidth}}
+\hline
+技术路线环节 & 核心任务 & 对应章节 \\
+\hline
+金融数据统一建模与向量化表示 & 将交易记录、账户行为和图节点关系整理为统一输入接口 & 第三章 \\
+FlashANNS 候选召回 & 在大规模样本中快速生成规模可控的候选集合 & 第三章 \\
+PyTOD 张量化异常评分 & 在候选集合上完成距离、密度或统计型异常评分 & 第三章 \\
+单卡 GPU 主导执行链路 & 压缩 CPU 与 GPU 之间的数据搬运和阶段同步开销 & 第四章 \\
+RAPIDS 与 FAISS-GPU 工程增强 & 优化数据处理、内存管理和设备侧检索路径 & 第四章 \\
+多 GPU 数据并行与索引复制 & 使每张 GPU 独立完成本地候选召回与异常评分 & 第五章 \\
+GPU 侧归并与拓扑感知 I/O 控制 & 降低跨卡归并和共享 I/O 路径带来的扩展损耗 & 第五章 \\
+综合实验验证 & 从检测效果、吞吐率、时延和扩展性验证系统表现 & 第六章 \\
+\hline
+\end{tabular}
+\end{table}
+
 
 \section{本文主要工作与创新点}
 
