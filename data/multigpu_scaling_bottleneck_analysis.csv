@@ -1,0 +1,11 @@
+figure_id,scheme,metric,value,unit,data_source,note
+fig_multigpu_scaling_bottleneck,Replicated path,QPS_1GPU,4550.00,QPS,existing_reported,来自现有图5-4使用的 gpu_scaling_qps.csv
+fig_multigpu_scaling_bottleneck,Replicated path,QPS_2GPU,7780.00,QPS,existing_reported,来自现有图5-4使用的 gpu_scaling_qps.csv
+fig_multigpu_scaling_bottleneck,Replicated path,QPS_4GPU,13620.00,QPS,existing_reported,来自现有图5-4使用的 gpu_scaling_qps.csv
+fig_multigpu_scaling_bottleneck,Ideal linear reference,QPS_1GPU,4550.00,QPS,existing_reported,由现有1GPU QPS推导的理想线性参考线，仅作理论参照，不作为实测结果
+fig_multigpu_scaling_bottleneck,Ideal linear reference,QPS_2GPU,9100.00,QPS,existing_reported,由现有1GPU QPS推导的理想线性参考线，仅作理论参照，不作为实测结果
+fig_multigpu_scaling_bottleneck,Ideal linear reference,QPS_4GPU,18200.00,QPS,existing_reported,由现有1GPU QPS推导的理想线性参考线，仅作理论参照，不作为实测结果
+fig_multigpu_scaling_bottleneck,Topology-aware,p99_2GPU,37.20,ms,existing_reported,来自现有图5-6使用的 io_lane_impact.csv
+fig_multigpu_scaling_bottleneck,Topology-aware,p99_4GPU,45.10,ms,existing_reported,来自现有图5-6使用的 io_lane_impact.csv
+fig_multigpu_scaling_bottleneck,Shared conflict,p99_2GPU,41.40,ms,existing_reported,来自现有图5-6使用的 io_lane_impact.csv
+fig_multigpu_scaling_bottleneck,Shared conflict,p99_4GPU,56.60,ms,existing_reported,来自现有图5-6使用的 io_lane_impact.csv

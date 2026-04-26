@@ -14,7 +14,7 @@
 
 在多 GPU 场景下，系统优先采用基于数据并行与索引复制的 replicated 架构，使每张 GPU 独立完成本地候选召回与异常评分，CPU 主要负责控制面调度与小规模结果汇总。当索引容量或部署条件使跨卡归并不可避免时，系统进一步将归并逻辑下沉到 GPU 侧，并借助 NCCL 实现设备间通信，同时结合拓扑感知的 I/O 通道绑定与准入控制，减轻共享路径对扩展效率的影响。
 
-实验部分使用约 1M 规模的真实或半真实金融数据集验证系统有效性，并基于高保真合成数据构建 10M 和 50M 规模实验环境，对吞吐率、延迟、资源利用率和扩展能力进行测试。结果表明，在检测效果保持可接受的前提下，FlashTOD 能够提升整体吞吐率，并降低 CPU--GPU 数据往返与阶段同步开销；在多 GPU 场景下，数据并行与索引复制策略也表现出较好的扩展能力。
+实验部分使用约 1M 规模的真实或半真实金融数据集验证系统有效性，并基于高保真合成数据构建 10M 和 50M 规模实验环境，对吞吐率、延迟、资源利用率和扩展能力进行测试。在本文设定的数据规模、硬件平台和候选预算条件下，实验结果显示 FlashTOD 相比简单融合基线在吞吐、尾延迟和数据路径开销方面表现更优；在多 GPU 场景下，数据并行与索引复制策略也表现出一定的吞吐扩展能力。
 
 本文的研究重点不在于提出新的异常检测理论模型，而是面向金融大规模数据处理场景，对候选召回、异常评分、数据路径组织和多 GPU 扩展进行系统设计与实现。相关结果表明，将 PyTOD 与 FlashANNS 结合后，能够较好地缓解异常检测流程中计算、存储访问和并行扩展方面的主要压力，为构建高吞吐、近实时的金融异常检测系统提供了可行的工程实现路径。
 \end{abstract}
@@ -28,5 +28,5 @@ For the single-GPU setting, a GPU-dominant end-to-end execution path is construc
 
 For the multi-GPU setting, the system primarily adopts a replicated architecture based on data parallelism and index replication, so that each GPU can complete local candidate retrieval and anomaly scoring independently while the CPU remains responsible for control-plane scheduling and small-scale result collection. When index capacity or deployment constraints make cross-GPU merging necessary, the merge logic is moved to the GPU side and NCCL is used for inter-device communication. Topology-aware I/O lane binding and admission control are further introduced to reduce contention on shared paths.
 
-Experiments on real or semi-real financial datasets at around 1M scale, together with high-fidelity synthetic datasets at 10M and 50M scales, show that FlashTOD improves overall throughput while reducing CPU--GPU round trips and stage synchronization overhead, with detection performance remaining acceptable. In multi-GPU experiments, the combination of data parallelism and index replication also provides solid support for further throughput scaling.
+Under the data scales, hardware platform, and candidate budgets used in this thesis, experiments on real or semi-real financial datasets at around 1M scale and high-fidelity synthetic datasets at 10M and 50M scales show that FlashTOD performs better than the simple integration baseline in throughput, tail latency, and data-path overhead, while keeping detection performance within an acceptable range. In multi-GPU experiments, the combination of data parallelism and index replication also shows practical throughput scalability.
 \end{abstract*}
