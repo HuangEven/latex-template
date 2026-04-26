@@ -1,55 +1,55 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" compressed="false" version="28.1.2">
   <diagram id="Fig3-3" name="Fig3-3">
-    <mxGraphModel dx="946" dy="732" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="859" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="g1" value="离线准备" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#F5FAFF;strokeColor=#6C8EBF;arcSize=17;" parent="1" vertex="1">
+        <mxCell id="g1" value="离线准备" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#f5f5f5;strokeColor=#000000;arcSize=17;fontColor=#333333;" parent="1" vertex="1">
           <mxGeometry x="40" y="80" width="340" height="400" as="geometry" />
         </mxCell>
-        <mxCell id="g2" value="在线候选召回执行" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#F8FFF4;strokeColor=#82B366;" parent="1" vertex="1">
+        <mxCell id="g2" value="在线候选召回执行" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#f5f5f5;strokeColor=#000000;fontColor=#333333;" parent="1" vertex="1">
           <mxGeometry x="400" y="80" width="530" height="400" as="geometry" />
         </mxCell>
-        <mxCell id="g3" value="候选输出与后续衔接" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#FFF9F2;strokeColor=#000000;" parent="1" vertex="1">
+        <mxCell id="g3" value="候选输出与后续衔接" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#f5f5f5;strokeColor=#000000;fontColor=#333333;" parent="1" vertex="1">
           <mxGeometry x="955" y="80" width="230" height="400" as="geometry" />
         </mxCell>
-        <mxCell id="s1" value="统一向量化样本库 {v₁, v₂, …, vₙ}" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;" parent="1" vertex="1">
+        <mxCell id="s1" value="统一向量化样本库 {v₁, v₂, …, vₙ}" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;" parent="1" vertex="1">
           <mxGeometry x="60" y="140" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="s2" value="索引构建 GPU-resident 或 out-of-core" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+        <mxCell id="s2" value="索引构建 GPU-resident 或 out-of-core" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EEF5EE;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="60" y="235" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="s3" value="候选索引 𝓘 支持大规模 ANN 检索" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;" parent="1" vertex="1">
+        <mxCell id="s3" value="候选索引 𝓘 支持大规模 ANN 检索" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EEF5EE;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="60" y="330" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="s4" value="索引组织目标： 低延迟定位局部候选邻域 并支持召回质量 / 吞吐折中" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=left;spacingLeft=12;verticalAlign=middle;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="s4" value="索引组织目标： 低延迟定位局部候选邻域 并支持召回质量 / 吞吐折中" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=left;spacingLeft=12;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="60" y="412.5" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="q1" value="&lt;font&gt;查询样本向量 vᵢ&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#DAE8FC;strokeColor=#6C8EBF;rotation=0;" parent="1" vertex="1">
+        <mxCell id="q1" value="&lt;font&gt;查询样本向量 vᵢ&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EAF2F8;strokeColor=#000000;rotation=0;" parent="1" vertex="1">
           <mxGeometry x="420" y="125" width="170" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="q2" value="召回参数配置 |Cᵢ|、k_recall、检索深度" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="q2" value="召回参数配置 |Cᵢ|、k_recall、检索深度" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EAF2F8;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="625" y="125" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="q3" value="FlashANNS 候选召回执行 异步 I/O—计算流水线" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#D5E8D4;strokeColor=#82B366;" parent="1" vertex="1">
+        <mxCell id="q3" value="FlashANNS 候选召回执行 异步 I/O—计算流水线" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EAF2F8;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="420" y="240" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="q4" value="局部候选扩展与维护 距离计算 / 候选筛选 / 邻域更新" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#E1D5E7;strokeColor=#9673A6;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="q4" value="局部候选扩展与维护 距离计算 / 候选筛选 / 邻域更新" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#E8EEF5;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="420" y="322.5" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="q5" value="召回质量—吞吐平衡 候选过小：异常覆盖不足 候选过大：后续评分负担上升" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=left;spacingLeft=12;verticalAlign=middle;strokeWidth=2;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="q5" value="召回质量—吞吐平衡 候选过小：异常覆盖不足 候选过大：后续评分负担上升" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=left;spacingLeft=12;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="725" y="297.5" width="185" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="q6" value="设备侧候选结果组织 避免大量 CPU 侧重组" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFF2CC;strokeColor=#D6B656;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="q6" value="设备侧候选结果组织 避免大量 CPU 侧重组" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="420" y="410" width="290" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="o1" value="候选输出字段 ID / distance / local rank / reference" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+        <mxCell id="o1" value="候选输出字段 ID / distance / local rank / reference" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="975" y="140" width="190" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="o2" value="候选集合 Cᵢ" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#FFE6CC;strokeColor=#D79B00;" parent="1" vertex="1">
+        <mxCell id="o2" value="候选集合 Cᵢ" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="1005" y="280" width="130" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="o3" value="直接传递至 PyTOD 评分模块 作为后续精排评分输入" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=2;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="o3" value="直接传递至 PyTOD 评分模块 作为后续精排评分输入" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="970" y="380" width="200" height="80" as="geometry" />
         </mxCell>
         <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=16;fontStyle=1" parent="1" source="s1" target="s2" edge="1">
@@ -59,10 +59,20 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;curved=0;fontFamily=Times New Roman;fontSize=16;fontStyle=1" parent="1" source="q1" target="q3" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="208" />
+              <mxPoint x="565" y="208" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;curved=0;fontFamily=Times New Roman;fontSize=16;fontStyle=1" parent="1" source="q2" target="q3" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="208" />
+              <mxPoint x="565" y="208" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=block;endFill=1;strokeColor=#000000;curved=0;fontFamily=Times New Roman;fontSize=16;fontStyle=1" parent="1" source="s3" target="q3" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -96,7 +106,7 @@
           <mxGeometry x="190" y="190" width="170" height="30" as="geometry" />
         </mxCell>
         <mxCell id="t2" value="在线查询路径" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="500" y="175" width="160" height="30" as="geometry" />
+          <mxGeometry x="510" y="175" width="110" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

@@ -1,46 +1,46 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
   <diagram id="flashanns-async-io-compute" name="Page-1">
-    <mxGraphModel dx="1426" dy="912" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1320" pageHeight="680" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="859" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1320" pageHeight="680" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="ssdFrame" value="SSD" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.4;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
+        <mxCell id="ssdFrame" value="SSD" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fillColor=#E8EEF5;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontColor=#333333;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="20" y="70" width="130" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="gpuFrame" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;GPU&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;fontStyle=1;fontSize=14;fillColor=#EAF3FF;strokeColor=#6C8EBF;strokeWidth=1.5;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
+        <mxCell id="gpuFrame" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;GPU&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=16;spacingTop=12;fontStyle=1;fontSize=14;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;fontFamily=Times New Roman;fontColor=#333333;dashed=1;" parent="1" vertex="1">
           <mxGeometry x="180" y="20" width="520" height="280" as="geometry" />
         </mxCell>
-        <mxCell id="ioLane" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;I/O 泳道&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=14;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
+        <mxCell id="ioLane" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;I/O 泳道&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=14;fillColor=#EEF5EE;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="205" y="55" width="485" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="computeLane" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;计算泳道&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=14;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
+        <mxCell id="computeLane" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;计算泳道&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fontStyle=1;fontSize=14;fillColor=#E8EEF5;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="205" y="165" width="485" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="ssdRead" value="SSD读页" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FDE9E7;strokeColor=#B85450;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="ssdRead" value="SSD读页" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;strokeWidth=1.2;fontFamily=Times New Roman;fontStyle=1;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="33" y="93" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="asyncQueue" value="异步I/O队列" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="asyncQueue" value="异步I/O队列" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="220" y="95" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="gpuRecv" value="GPU接收" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FFFFFF;strokeColor=#6C8EBF;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="gpuRecv" value="GPU接收" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="370" y="95" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="distanceExpand" value="GPU距离计算&lt;br&gt;与扩展" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FFFFFF;strokeColor=#82B366;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="distanceExpand" value="GPU距离计算&lt;br&gt;与扩展" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="270" y="205" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="candidateCache" value="GPU候选缓存&lt;br&gt;(ID / distance / rank)" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FFFFFF;strokeColor=#82B366;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="candidateCache" value="GPU候选缓存&lt;br&gt;(ID / distance / rank)" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="440" y="205" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="pytodScore" value="PyTOD评分" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#FFFFFF;strokeColor=#82B366;strokeWidth=1.2;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="pytodScore" value="PyTOD评分" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fillColor=#F6EAEA;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="590" y="205" width="90" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="overlapBand" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;I/O 与 GPU 计算重叠推进&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=#E1F5E1;strokeColor=#82B366;strokeWidth=1.2;opacity=85;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="overlapBand" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;I/O 与 GPU 计算重叠推进&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=#EEF5EE;strokeColor=#000000;strokeWidth=1;opacity=100;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="485" y="147" width="190" height="23" as="geometry" />
         </mxCell>
-        <mxCell id="handoffNote" value="候选不回CPU&lt;br&gt;连续传递到评分模块" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.1;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="handoffNote" value="候选不回CPU&lt;br&gt;连续传递到评分模块" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=#F6EAEA;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="490" y="73" width="180" height="64" as="geometry" />
         </mxCell>
-        <mxCell id="stageNote" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;页到达后即可触发局部距离计算和候选扩展&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#000000;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1" parent="1" vertex="1">
+        <mxCell id="stageNote" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;页到达后即可触发局部距离计算和候选扩展&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#000000;fillColor=#E8EEF5;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="220" y="272" width="255" height="20" as="geometry" />
         </mxCell>
         <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;fontColor=#000000;fontStyle=1;startSize=3;jumpSize=2;" parent="1" source="ssdRead" target="asyncQueue" edge="1">
@@ -57,7 +57,7 @@
         <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Times New Roman;fontSize=14;fontColor=#000000;fontStyle=1;startSize=3;" parent="1" source="gpuRecv" target="distanceExpand" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="410" y="215" />
+              <mxPoint x="430" y="215" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -77,14 +77,14 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ssdToQueueLabel" value="页块异步提交" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;labelBackgroundColor=#FFFFFF;" parent="1" vertex="1">
-          <mxGeometry x="160" y="205" width="120" height="26" as="geometry" />
+        <mxCell id="ssdToQueueLabel" value="&lt;span&gt;页块异步提交&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;labelBackgroundColor=#FFFFFF;" parent="1" vertex="1">
+          <mxGeometry x="170" y="205" width="120" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="queueLabel" value="提交后无需等待全部 I/O 完成" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#000000;fontFamily=Times New Roman;labelBackgroundColor=#FFFFFF;fontStyle=1" parent="1" vertex="1">
-          <mxGeometry x="210" y="149.5" width="195" height="26" as="geometry" />
+        <mxCell id="y34KBO7lLtx0ZfAbqXpT-1" value="&lt;span style=&quot;font-size: 12px; text-wrap-mode: nowrap;&quot;&gt;提交后无需等待全部 I/O 完成&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#000000;fillColor=#EEF5EE;strokeColor=#000000;strokeWidth=1;opacity=100;fontFamily=Times New Roman;" vertex="1" parent="1">
+          <mxGeometry x="225" y="148.5" width="190" height="23" as="geometry" />
         </mxCell>
-        <mxCell id="handoffLabel" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;设备侧连续交接&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=14;fontColor=#000000;fontStyle=1;fontFamily=Times New Roman;labelBackgroundColor=#FFFFFF;" parent="1" vertex="1">
-          <mxGeometry x="510" y="268" width="130" height="24" as="geometry" />
+        <mxCell id="y34KBO7lLtx0ZfAbqXpT-2" value="&lt;span style=&quot;font-size: 12px; text-wrap-mode: nowrap;&quot;&gt;设备侧连续交接&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#000000;fillColor=#E8EEF5;strokeColor=#000000;strokeWidth=1;fontFamily=Times New Roman;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="527.5" y="272" width="105" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
