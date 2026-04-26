@@ -18,7 +18,7 @@
 
 图~\ref{fig:fin-ad-model} 对这一统一任务建模过程进行了整体展示。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-1_financial_anomaly_task_model.pdf}
   \caption{金融异常检测任务建模图}
@@ -96,7 +96,7 @@
 
 图~\ref{fig:pytod-backbone} 给出了评分主干的执行流程，表~\ref{tab:score-ops-map} 对常用评分方式与张量算子映射进行了归纳。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-2_PyTOD_scoring_backbone.pdf}
   \caption{PyTOD 评分主干流程图}
@@ -137,7 +137,7 @@
 
 图~\ref{fig:flashanns-workflow} 展示了候选召回模块的基本执行过程，表~\ref{tab:recall-module-params} 总结了关键控制参数。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-3_FlashANNS_candidate_recall_flow.pdf}
   \caption{FlashANNS 候选召回执行流程图}
@@ -187,7 +187,7 @@
 
 图~\ref{fig:intermediate-dataflow} 进一步展示查询向量、候选结果与评分中间张量在模块间的传递方式。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-4_intermediate_results_transfer.pdf}
   \caption{模块间中间结果传递示意图}
@@ -206,7 +206,7 @@
 
 本节实验以真实或半真实数据和 1M 合成桥接规模为入口，统一采用固定维度向量表示，并以候选集评分对照小规模全量评分。关注重点是候选预算变化对排序一致性、Top-$k$ 风险样本重合度以及 PR-AUC、Recall@$k$ 的影响，从而判断两阶段流程是否足以支撑后续系统优化。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-5_initial_effectiveness_across_datasets.pdf}
   \caption{不同数据集上的初步有效性结果}

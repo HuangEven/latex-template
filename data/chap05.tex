@@ -51,7 +51,7 @@
   \end{adjustbox}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   % 图 6-1：黑白学术风格硬件拓扑示意图（Host—双 CPU/NUMA—GPU—NVMe）
   \resizebox{0.95\linewidth}{!}{%
@@ -121,7 +121,7 @@
 
 图~\ref{fig:scale-vs-exp} 展示了规模层级与实验类型的映射。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \begin{tikzpicture}[
     font=\small,
@@ -184,7 +184,7 @@
 
 图~\ref{fig:metric-taxonomy} 给出了指标体系结构。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   % 让图形“天然”不超出版心，避免 \resizebox 被迫缩小导致字太小
   % 统一 boxleaf 上下留白：用 \strut 固定字高/字深，换行后也能保持上下边距更对称
@@ -278,35 +278,35 @@
   \end{adjustbox}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{plot_assets/ch06_fusion_compare/fig6_4_fusion_accuracy.pdf}
   \caption{FlashTOD 与基线系统检测效果对比}
   \label{fig:fusion-vs-baselines}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{plot_assets/ch06_fusion_compare/fig6_5_fusion_qps.pdf}
   \caption{FlashTOD 与基线系统吞吐对比}
   \label{fig:single-gpu-before-after}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.82\linewidth]{plot_assets/ch06_fusion_compare/fig6_6_fusion_tradeoff.pdf}
   \caption{FlashTOD 效果与性能折中}
   \label{fig:multi-gpu-scaling}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch06_single_multi_summary/fig6_7_single_multi_summary.pdf}
   \caption{单卡优化与多 GPU 扩展收益对比}
   \label{fig:scale-comparison}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch06_scale_trends/fig6_8_scale_trends.pdf}
   \caption{不同规模下系统表现趋势}
@@ -321,7 +321,7 @@
 
 多 GPU 结果则进一步说明，第五章给出的结构判断是必要的，而不是形式上的方案区分。replicated 能够成为主方案，并不是因为它在所有条件下都最节省资源，而是因为它最符合吞吐优先场景下的路径组织方式：查询分发简单，单卡链路可以直接复用，CPU 不需要重新承担大规模中间结果处理。当容量约束使 replicated 不再可行时，GPU merge 比 CPU aggregation 更合理，但它仍然只是一条代价更高的兜底路径。
 
-最后，I/O 路径对扩展上限的影响在综合实验中表现得比单卡阶段更直接。随着规模继续增大，系统瓶颈会逐步从计算资源扩展到共享存储路径与拓扑组织上。这一点也解释了为何本章在扩展收益之外，还必须单独比较 topology-aware binding 与 shared-path conflict 两组结果。
+最后，I/O 路径对扩展上限的影响在综合实验中表现得比单卡阶段更直接。随着规模继续增大，系统瓶颈会逐步从计算资源扩展到共享存储路径与拓扑组织上。这一点也解释了为何本章在扩展收益之外，还必须单独比较拓扑感知绑定与共享路径冲突两组结果。
 
 \section{局限性分析}
 

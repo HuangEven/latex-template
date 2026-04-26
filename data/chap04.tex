@@ -16,11 +16,11 @@
 
 多 GPU 扩展方案的设计必须建立在系统目标与瓶颈分析的基础上。结合第四章单卡结论与第二章相关工作梳理，本文将多 GPU 扩展方案归纳为四项基本原则：查询级并行优于单查询跨卡并行；数据并行与索引复制优先于直接采用索引分片；CPU 保持在控制面；当跨卡归并不可避免时，优先采用 GPU 侧归并。这四项原则并非并列罗列，其中前两项决定主方案形态，后两项负责约束兜底路径和运行边界。
 
-首先，查询级并行优于单查询跨卡并行。若一个查询必须在多张 GPU 上分别完成局部搜索并在末端归并，系统会额外承担局部结果表达、跨卡通信和同步等待等成本；而当不同查询被均衡分发到不同 GPU 时，每张设备就更容易复用单卡阶段已经压缩好的``候选召回---异常评分''闭环。cuVS 多 GPU 文档将 replicated 模式描述为通过在各 GPU 间分发查询以获得更高 query throughput，这一点与本文的吞吐目标一致\citep{cuvs_multi_gpu_nn}。
+首先，查询级并行优于单查询跨卡并行。若一个查询必须在多张 GPU 上分别完成局部搜索并在末端归并，系统会额外承担局部结果表达、跨卡通信和同步等待等成本；而当不同查询被均衡分发到不同 GPU 时，每张设备就更容易复用单卡阶段已经压缩好的``候选召回---异常评分''闭环。cuVS 多 GPU 文档将 replicated 模式描述为通过在各 GPU 间分发查询以获得更高查询吞吐（query throughput），这一点与本文的吞吐目标一致\citep{cuvs_multi_gpu_nn}。
 
 在此前提下，第二项原则进一步限定了主方案选择：数据并行与索引复制优先于一开始即采用索引分片。cuVS 的分布模式定义表明，replicated 更偏向吞吐优先，sharded 更偏向容量扩展\citep{cuvs_multi_gpu_nn,cuvs_dist_mode}。因此，只要索引仍可复制，完整副本在每张 GPU 上独立服务本地查询，通常比从一开始就引入跨卡依赖更符合本文的系统目标。
 
-第三项原则主要约束控制边界，即 CPU 保持在控制面而不重新回到结果处理主路径。cuVS 文档提示，多 GPU ANN 的部分实现要求数据集、查询与输出数组位于 host memory，这意味着若直接沿用 host-centric 默认路径，则 CPU 与主机内存会重新进入关键路径\citep{cuvs_multi_gpu_ivf_host}。基于这一认识，本文在多 GPU 方案中将 CPU 定位为控制面调度者：它负责请求队列管理、负载均衡、bounded batching、运行时监控和最终小规模结果汇总，但不承担大规模候选集合或评分中间张量的重新组织。
+第三项原则主要约束控制边界，即 CPU 保持在控制面而不重新回到结果处理主路径。cuVS 文档提示，多 GPU ANN 的部分实现要求数据集、查询与输出数组位于主机内存（host memory），这意味着若直接沿用主机中心式（host-centric）默认路径，则 CPU 与主机内存会重新进入关键路径\citep{cuvs_multi_gpu_ivf_host}。基于这一认识，本文在多 GPU 方案中将 CPU 定位为控制面调度者：它负责请求队列管理、负载均衡、有界批处理（bounded batching）、运行时监控和最终小规模结果汇总，但不承担大规模候选集合或评分中间张量的重新组织。
 
 最后一项原则只在主方案不能直接成立时才发挥作用，即当必须跨卡归并时，归并逻辑尽量下沉到 GPU 侧，并通过 NCCL 等设备间通信机制完成。NCCL 文档指出其通信操作会异步入队到 CUDA stream 上执行，但也警告在同一 \texttt{ncclGroupStart/End()} 中混用多个 stream 会形成全局同步点\citep{nccl_stream_semantics}。这意味着 GPU 侧归并虽然优于 CPU 聚合，却仍然带来额外通信组织成本，因此它在本文中是明确的兜底路径，并不作为第二主线考虑。
 
@@ -74,7 +74,7 @@
 
 图~\ref{fig:replicated-arch} 给出了 replicated 主方案的总体结构，直观展示了 CPU 控制面与 GPU 本地闭环在多卡场景下的分工关系。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
   \caption{数据并行与索引复制多 GPU 架构}
@@ -93,7 +93,7 @@
 
 图~\ref{fig:control-plane} 展示了 CPU 控制面的调度与回收流程，控制面与数据平面的职责边界将在正文中结合各组件的关键参数分别说明。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-2_cpu_control_plane_microbatch.pdf}
   \caption{CPU 控制面调度与微批示意}
@@ -104,17 +104,17 @@
 
 当索引容量超过单卡显存可容纳范围，或业务约束要求单一查询必须访问分布在多张 GPU 上的局部索引时，replicated 主方案就不再直接适用，系统必须进入跨卡归并场景。本文把这一场景明确界定为兜底路径：只有在主方案因容量或部署条件失效时，才引入 sharded 索引与跨卡结果合并。因为一旦进入归并路径，系统就必须额外承担局部结果表达、设备间通信和流协调等成本。
 
-在此条件下，本文仍坚持一个约束：局部结果尽量在 GPU 侧组织与合并，CPU 只接收最终极小规模结果。cuVS 在 sharded 模式下给出了 \texttt{MERGE\_ON\_ROOT\_RANK} 与 \texttt{TREE\_MERGE} 两类归并方式，为本文设计 GPU 侧归并路径提供了参考\citep{cuvs_dist_mode}。与 CPU aggregation 相比，GPU merge 的主要收益在于减少大规模结果回传和主机侧排序开销，使跨卡合并仍尽可能延续设备侧处理逻辑；但它并不会像 replicated 那样天然简单，因为额外的通信与同步组织是无法完全省掉的。
+在此条件下，本文仍坚持一个约束：局部结果尽量在 GPU 侧组织与合并，CPU 只接收最终极小规模结果。cuVS 在 sharded 模式下给出了 \texttt{MERGE\_ON\_ROOT\_RANK} 与 \texttt{TREE\_MERGE} 两类归并方式，为本文设计 GPU 侧归并路径提供了参考\citep{cuvs_dist_mode}。与 CPU 聚合路径（CPU aggregation）相比，GPU 侧归并路径（GPU merge）的主要收益在于减少大规模结果回传和主机侧排序开销，使跨卡合并仍尽可能延续设备侧处理逻辑；但它并不会像 replicated 那样天然简单，因为额外的通信与同步组织是无法完全省掉的。
 
 在设备间通信实现方面，本文采用 NCCL 作为主要通信机制，并将通信流与局部计算流明确分离。NCCL 文档指出其通信操作异步入队到指定 CUDA stream，但在同一 \texttt{ncclGroupStart/End()} 组内混用多个 stream 会形成全局同步点\citep{nccl_stream_semantics}。因此，GPU 侧归并的收益建立在一个前提上：通信必须被控制在必要范围内，并与本地计算流合理解耦。若通信组织不当，兜底方案很容易因同步点过多而侵蚀掉原本希望保留的扩展收益。
 
 \section{拓扑感知 I/O lane 绑定与准入控制}
 
-在多 GPU 异常检测系统中，扩展上限不仅由 GPU 数量决定，还受制于存储路径和 PCIe/NUMA 拓扑。单卡阶段被压缩掉的路径开销，在多卡环境下可能以另一种形式重新出现：如果多张 GPU 共享同一 SSD 通道或 PCIe 路径，局部检索和候选读取虽然仍在设备侧执行，但共享链路上的排队会直接反映到吞吐下降和 p99 上升上。GDS 概览文档指出，GDS 通过在 GPU 显存与存储设备之间建立直接内存访问（Direct Memory Access，DMA）路径来避免 CPU bounce buffer，并强调拓扑路径会影响传输效率\citep{gds_overview}。基于这一认识，本文引入拓扑感知 I/O lane 绑定与准入控制机制：运行前分析 GPU、SSD、PCIe root complex、PCIe switch 与 NUMA 节点之间的关系；运行时尽量将 GPU 与 SSD 通道进行 lane 级绑定，并对每条 lane 的 in-flight 请求数做有界控制，以避免过度并发导致尾延迟失控。
+在多 GPU 异常检测系统中，扩展上限不仅由 GPU 数量决定，还受制于存储路径和 PCIe/NUMA 拓扑。单卡阶段被压缩掉的路径开销，在多卡环境下可能以另一种形式重新出现：如果多张 GPU 共享同一 SSD 通道或 PCIe 路径，局部检索和候选读取虽然仍在设备侧执行，但共享链路上的排队会直接反映到吞吐下降和 p99 上升上。GDS 概览文档指出，GDS 通过在 GPU 显存与存储设备之间建立直接内存访问（Direct Memory Access，DMA）路径来避免 CPU bounce buffer，并强调拓扑路径会影响传输效率\citep{gds_overview}。基于这一认识，本文引入拓扑感知 I/O lane 绑定与准入控制机制：运行前分析 GPU、SSD、PCIe 根复合体（PCIe root complex）、PCIe 交换机（PCIe switch）与 NUMA 节点之间的关系；运行时尽量将 GPU 与 SSD 通道进行 lane 级绑定，并对每条 lane 的在途请求（in-flight requests）数做有界控制，以避免过度并发导致尾延迟失控。
 
 图~\ref{fig:topology} 以左右对比方式展示了拓扑感知 I/O lane 在合理绑定与共享冲突两种条件下的 GPU、SSD、PCIe 与 NUMA 关系，为后续扩展结果中的路径差异提供解释依据。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-3_topology_aware_io_lane.pdf}
   \caption{拓扑感知 I/O lane 示意}
@@ -127,27 +127,27 @@
 
 \section{多 GPU 扩展实验与结果分析}
 
-多 GPU 实验沿“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”逐级组织，并围绕 replicated、GPU merge、CPU aggregation 与 shared-path conflict 四类路径展开；对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 与图~\ref{fig:latency-quantiles} 展示 replicated 扩展曲线以及不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O lane 配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
+多 GPU 实验沿“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”逐级组织，并围绕 replicated、GPU merge、CPU aggregation 与共享路径冲突（shared-path conflict）四类路径展开；对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 与图~\ref{fig:latency-quantiles} 展示 replicated 扩展曲线以及不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O lane 配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
 
-从结果上看，replicated 方案在 1/2/4 GPU 条件下保持了较为稳定的 QPS 增长和相对平稳的延迟变化，说明在索引可复制的前提下，查询级并行和本地闭环执行确实更符合本文的吞吐优先目标。与之对应，Local scoring + GPU merge 和 Local scoring + CPU aggregation 的对比主要用于回答兜底路径如何选的问题：两者都建立在索引分片的前提下，但 GPU merge 在平均延迟、p99 延迟和 CPU 利用率上都明显优于 CPU aggregation，说明一旦必须跨卡归并，把局部结果留在设备侧处理仍然更有利于控制路径开销。
+从结果上看，replicated 方案在 1/2/4 GPU 条件下保持了较为稳定的 QPS 增长和相对平稳的延迟变化，说明在索引可复制的前提下，查询级并行和本地闭环执行确实更符合本文的吞吐优先目标。与之对应，本地评分 + GPU 侧归并（Local scoring + GPU merge）和本地评分 + CPU 聚合（Local scoring + CPU aggregation）的对比主要用于回答兜底路径如何选的问题：两者都建立在索引分片的前提下，但 GPU merge 在平均延迟、p99 延迟和 CPU 利用率上都明显优于 CPU aggregation，说明一旦必须跨卡归并，把局部结果留在设备侧处理仍然更有利于控制路径开销。
 
-另一方面，Topology-aware binding 与 Shared-path conflict 的对比表明，即便计算资源足够，当多张 GPU 共享同一 PCIe/SSD 路径时，QPS 仍会明显下降，p99 延迟也会迅速抬升。这意味着，多 GPU 扩展的实际表现并不只由归并方式决定，还受到共享路径组织方式的直接限制。
+另一方面，拓扑感知绑定（Topology-aware binding）与共享路径冲突（Shared-path conflict）的对比表明，即便计算资源足够，当多张 GPU 共享同一 PCIe/SSD 路径时，QPS 仍会明显下降，p99 延迟也会迅速抬升。这意味着，多 GPU 扩展的实际表现并不只由归并方式决定，还受到共享路径组织方式的直接限制。
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.86\linewidth]{plot_assets/ch05_gpu_scaling_qps/fig5_15_qps_vs_gpu.pdf}
   \caption{QPS 随 GPU 数量变化}
   \label{fig:qps-vs-gpu}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.84\linewidth]{plot_assets/ch05_latency_merge_compare/fig5_16_latency_merge_compare.pdf}
   \caption{平均延迟与 p99 延迟变化}
   \label{fig:latency-quantiles}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch05_io_lane_impact/fig5_18_io_lane_impact.pdf}
   \caption{I/O lane 配置对扩展性的影响}

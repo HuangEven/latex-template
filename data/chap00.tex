@@ -8,28 +8,27 @@
 
 如图~\ref{fig:fin-ad-business-scene} 所示，在金融业务场景中，异常检测通常服务于实时交易风控、支付反欺诈、账户行为审计、洗钱交易排查与交易路径审查等任务。这类任务同时受到两方面约束。其一，输入数据规模大、维度高且更新频繁，交易行为、账户状态、地理位置、设备指纹、操作轨迹与时间统计特征往往需要共同参与异常判定；其二，系统必须在有限时间内输出可执行的异常评分或告警结果，延迟过高会削弱业务决策时效，吞吐不足则容易在高峰期形成检测堆积\citep{aggarwal2017outlier}。也就是说，金融异常检测不仅要求检测结果可用，还要求系统在高并发条件下持续可运行。在高吞吐数据处理场景中，系统瓶颈往往并不只来自单个算子的计算代价，还会进一步体现在数据驻留位置、查询执行模型以及 CPU--GPU 协同组织方式上\citep{pei2021gpudatabase,zhang2023gpuolap}。
 
-传统基于中央处理器（Central Processing Unit，CPU）的异常检测系统在小规模数据环境下能够完成较为稳定的训练与推理，但当样本规模持续增大时，距离计算、排序、候选组织与统计聚合等操作带来的时间与空间开销会迅速放大\citep{aggarwal2017outlier}。如图~\ref{fig:scale-bottleneck-migration} 所示，瓶颈会随数据规模变化发生迁移：在早期，问题主要表现为算子计算慢；而在单算子加速之后，CPU 与图形处理器（Graphics Processing Unit，GPU）之间的数据传输、检索与评分之间的中间结果组织，以及多 GPU 条件下的任务调度与结果聚合，会逐渐成为新的限制因素。这意味着，仅对某个检测器或某类算子做局部加速，并不足以支撑金融场景下的大规模异常检测。
-
-在这一背景下，近似最近邻（Approximate Nearest Neighbor，ANN）检索为异常检测系统提供了更具工程可行性的组织方式。对于金融大规模异常检测任务，并不一定需要对全量样本直接执行高代价评分；更现实的路径是先借助高吞吐候选召回模块从海量数据中筛出规模可控的候选集合，再对候选集合执行更精细的异常评分。这种``候选召回---异常评分''的两阶段路线能够有效压缩评分范围，并为后续吞吐扩展预留空间。在大规模向量检索场景下，近似最近邻搜索已不再只是索引结构设计问题，而是同时涉及硬件加速、磁盘--内存混合访问和数据路径优化的系统性问题\citep{song2026vectoranns}。但系统是否真正受益，取决于候选质量、候选组织代价、跨阶段数据搬运、输入/输出（Input/Output，I/O）与计算重叠程度，以及多 GPU 扩展时的归并方式，而不是简单地把两个模块首尾相接。
-
-基于上述认识，本文从系统实现角度切入金融大规模异常检测问题，聚焦于 PyTOD 异常评分框架（下文简称 PyTOD）与 FlashANNS 候选召回系统（下文简称 FlashANNS）的融合。PyTOD 作为沿 TOD 路线实现的 Python 异常检测框架，通过张量算子抽象承担异常评分主干\citep{zhao2022tod}；FlashANNS 则是面向大规模外存 ANN 检索的 GPU 驱动候选召回系统，借助异步 I/O---计算流水线提供高吞吐候选召回能力\citep{xiao2025flashanns}。沿着这一组合继续向下看，单卡场景的关键在于能否让查询特征、候选结果与评分中间张量尽量驻留 GPU，减少主机侧反复介入；多卡场景的关键则在于能否让每张 GPU 完成本地闭环，并把 CPU 的职责收敛到控制面，避免重新回到数据平面。这也构成了本文的主要切入点。
-
-从这个意义上说，围绕金融大规模异常检测系统展开研究，既有方法层面的价值，也有明确的工程意义。它将研究重心从单一检测器的性能比较推进到候选召回、异常评分和并行执行机制的协同设计，也为金融风控场景下构建高吞吐、低时延、可扩展的异常检测系统提供了更贴近实际部署的技术路线。
-
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
 \includegraphics[width=\textwidth]{figures/fig1-1_financial_anomaly_business_scene.pdf}
   \caption{金融异常检测业务场景总览图}
   \label{fig:fin-ad-business-scene}
 \end{figure}
 
-\begin{figure}[htbp]
+传统基于中央处理器（Central Processing Unit，CPU）的异常检测系统在小规模数据环境下能够完成较为稳定的训练与推理，但当样本规模持续增大时，距离计算、排序、候选组织与统计聚合等操作带来的时间与空间开销会迅速放大\citep{aggarwal2017outlier}。如图~\ref{fig:scale-bottleneck-migration} 所示，瓶颈会随数据规模变化发生迁移：在早期，问题主要表现为算子计算慢；而在单算子加速之后，CPU 与图形处理器（Graphics Processing Unit，GPU）之间的数据传输、检索与评分之间的中间结果组织，以及多 GPU 条件下的任务调度与结果聚合，会逐渐成为新的限制因素。这意味着，仅对某个检测器或某类算子做局部加速，并不足以支撑金融场景下的大规模异常检测。
+
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig1-2.pdf}
+  \includegraphics[width=0.94\linewidth]{figures/fig1-2.pdf}
   \caption{数据规模增长与系统瓶颈迁移示意图}
   \label{fig:scale-bottleneck-migration}
 \end{figure}
+
+在这一背景下，近似最近邻（Approximate Nearest Neighbor，ANN）检索为异常检测系统提供了更具工程可行性的组织方式。对于金融大规模异常检测任务，并不一定需要对全量样本直接执行高代价评分；更现实的路径是先借助高吞吐候选召回模块从海量数据中筛出规模可控的候选集合，再对候选集合执行更精细的异常评分。这种``候选召回---异常评分''的两阶段路线能够有效压缩评分范围，并为后续吞吐扩展预留空间。在大规模向量检索场景下，近似最近邻搜索已不再只是索引结构设计问题，而是同时涉及硬件加速、磁盘--内存混合访问和数据路径优化的系统性问题\citep{song2026vectoranns}。但系统是否真正受益，取决于候选质量、候选组织代价、跨阶段数据搬运、输入/输出（Input/Output，I/O）与计算重叠程度，以及多 GPU 扩展时的归并方式，而不是简单地把两个模块首尾相接。
+
+基于上述认识，本文从系统实现角度切入金融大规模异常检测问题，聚焦于 PyTOD 异常评分框架（下文简称 PyTOD）与 FlashANNS 候选召回系统（下文简称 FlashANNS）的融合。PyTOD 作为沿 TOD 路线实现的 Python 异常检测框架，通过张量算子抽象承担异常评分主干\citep{zhao2022tod}；FlashANNS 则是面向大规模外存 ANN 检索的 GPU 驱动候选召回系统，借助异步 I/O---计算流水线提供高吞吐候选召回能力\citep{xiao2025flashanns}。沿着这一组合继续向下看，单卡场景的关键在于能否让查询特征、候选结果与评分中间张量尽量驻留 GPU，减少主机侧反复介入；多卡场景的关键则在于能否让每张 GPU 完成本地闭环，并把 CPU 的职责收敛到控制面，避免重新回到数据平面。这也构成了本文的主要切入点。
+
+从这个意义上说，围绕金融大规模异常检测系统展开研究，既有方法层面的价值，也有明确的工程意义。它将研究重心从单一检测器的性能比较推进到候选召回、异常评分和并行执行机制的协同设计，也为金融风控场景下构建高吞吐、低时延、可扩展的异常检测系统提供了更贴近实际部署的技术路线。
 
 \section{本文研究内容}
 
@@ -42,19 +41,21 @@
 在这一处理链路上，本文选择由 PyTOD 与 FlashANNS 协同构成的异常检测系统作为具体研究对象，并将其命名为 FlashTOD，其中 Flash 取自候选召回前端 FlashANNS，TOD 对应 PyTOD 所沿用的 TOD 路线。PyTOD 将异常检测过程抽象为可复用的张量算子，适合作为异常评分主干；FlashANNS 则通过异步 I/O---计算流水线提供高吞吐候选召回能力，适合作为候选召回前端，如图~\ref{fig:pytod-flashanns-concept} 所示。二者的角色分工相对清晰，但真正落到工程实现时，阶段边界上的开销并不会因为模块职责明确而自动消失。若查询特征先在 CPU 上构造，再传输至 GPU 检索，而候选结果又回到 CPU 重新组织后再送回 GPU 评分，那么瓶颈会很快转移到 CPU$\leftrightarrow$GPU 数据搬运与阶段同步上；进一步地，在多 GPU 场景中，若将多个 GPU 的局部结果重新集中到 CPU 归并，CPU 还可能再次成为系统瓶颈。
 
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig1-3_financial_anomaly_standard_flow.pdf}
   \caption{金融大规模异常检测系统标准处理流程图}
   \label{fig:fin-ad-standard-flow}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/fig1-4_pytod_flashanns_concept.pdf}
   \caption{FlashTOD 系统概念图}
   \label{fig:pytod-flashanns-concept}
 \end{figure}
+
+\FloatBarrier
 
 \subsection{本文关注的核心系统问题}
 
@@ -66,7 +67,7 @@
 
 \paragraph{候选召回阶段的存储访问与吞吐瓶颈问题}
 
-候选召回的作用在于为后续评分提供规模可控且质量可接受的候选集合。在大规模数据环境中，召回模块既要保证候选质量，又要控制访问代价；一旦索引规模超过显存容量并进入 out-of-core 路径，I/O 与计算之间能否有效重叠，就会直接决定系统吞吐上限。也就是说，大规模候选召回的性能上限并不只取决于近邻搜索本身，还同时受数据组织方式、外存访问路径与硬件加速策略共同影响\citep{song2026vectoranns}。
+候选召回的作用在于为后续评分提供规模可控且质量可接受的候选集合。在大规模数据环境中，召回模块既要保证候选质量，又要控制访问代价；一旦索引规模超过显存容量并进入外存驻留（out-of-core）路径，I/O 与计算之间能否有效重叠，就会直接决定系统吞吐上限。也就是说，大规模候选召回的性能上限并不只取决于近邻搜索本身，还同时受数据组织方式、外存访问路径与硬件加速策略共同影响\citep{song2026vectoranns}。
 
 \paragraph{CPU--GPU 数据传输与阶段同步问题}
 
@@ -89,7 +90,7 @@
 
 在单卡性能优化层面，工作重点放在数据路径压缩上。在 FlashANNS 异步 I/O---计算流水线基础上构建 GPU 主导执行链路，使查询特征、候选结果与评分中间张量尽量保持在 GPU 侧，仅在必要边界通过页锁定内存（pinned memory）与主机交互；同时引入 RAPIDS 开源 GPU 数据科学与数据处理生态（下文简称 RAPIDS）\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned} 与 FAISS（Facebook AI Similarity Search）的 GPU 检索实现（下文简称 FAISS-GPU）\citep{johnson2019faiss,faiss_gpu_wiki}，对特征处理、中间结果组织和检索后端做工程增强。对应解决的是单卡场景下最容易被忽视、但对端到端性能影响最直接的链路开销问题。
 
-在多 GPU 扩展层面，优先采用数据并行与索引复制策略，使每张 GPU 独立完成本地候选召回与异常评分闭环，而 CPU 主要承担控制面职责；当索引容量或部署条件使完整复制不再可行时，再采用 GPU 侧归并与 NVIDIA 集合通信库（NVIDIA Collective Communications Library，NCCL）通信作为兜底\citep{nccl_stream_semantics}，并结合拓扑感知 I/O lane 控制降低共享路径冲突，在控制实现复杂度的同时尽可能把扩展收益保留下来。
+在多 GPU 扩展层面，优先采用数据并行与索引复制策略，使每张 GPU 独立完成本地候选召回与异常评分闭环，而 CPU 主要承担控制面职责；当索引容量或部署条件使完整复制不再可行时，再采用 GPU 侧归并与 NVIDIA 集合通信库（NVIDIA Collective Communications Library，NCCL）通信作为兜底\citep{nccl_stream_semantics}，并结合拓扑感知 I/O 通道（I/O lane）控制降低共享路径冲突，在控制实现复杂度的同时尽可能把扩展收益保留下来。
 
 为保持全文结构清晰，本文将上述技术路线分别落实到后续章节，如~\ref{tab:research_route}：第三章完成金融异常检测任务建模、数据准备、PyTOD 评分主干和 FlashANNS 候选召回模块设计；第四章讨论单卡场景下的 GPU 主导执行链路、数据路径压缩和工程后端优化；第五章进一步讨论多 GPU 数据并行、索引复制、CPU 控制面调度、GPU 侧归并和拓扑感知 I/O 控制；第六章从检测效果、吞吐率、时延、资源利用率和扩展能力等角度对系统进行综合验证。
 
@@ -123,7 +124,7 @@ GPU 侧归并与拓扑感知 I/O 控制 & 降低跨卡归并和共享 I/O 路径
 \begin{enumerate}
   \item 系统融合创新：面向金融大规模异常检测任务，将高吞吐候选召回与张量化异常评分组织为统一执行链路，使 PyTOD 与 FlashANNS 不再作为彼此割裂的独立模块运行。
   \item 单卡数据路径优化创新：围绕候选召回与异常评分之间的阶段边界开销，提出 GPU 主导执行链路，并结合 RAPIDS、FAISS-GPU、pinned memory 与异步流压缩 CPU$\leftrightarrow$GPU 数据路径。
-  \item 多 GPU 扩展创新：以 replicated 作为主扩展方案，将 CPU 收敛到控制面；在容量或部署约束下，再引入 GPU 侧跨卡归并、NCCL 通信与拓扑感知 I/O 优化，以支撑更复杂的多 GPU 运行场景。
+  \item 多 GPU 扩展创新：以索引复制（replicated）作为主扩展方案，将 CPU 收敛到控制面；在容量或部署约束下，再引入 GPU 侧跨卡归并、NCCL 通信与拓扑感知 I/O 优化，以支撑更复杂的多 GPU 运行场景。
 \end{enumerate}
 
 
