@@ -1,16 +1,16 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" compressed="false" version="28.1.2">
   <diagram id="Fig3-1" name="Fig3-1">
-    <mxGraphModel dx="1426" dy="859" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="770" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="g1" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;待检测对象与输入建模&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=none;" parent="1" vertex="1">
+        <mxCell id="g1" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;待检测对象与输入建模&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="30" y="120" width="320" height="410" as="geometry" />
         </mxCell>
-        <mxCell id="g2" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;统一表示与两阶段检测流程&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=none;" parent="1" vertex="1">
+        <mxCell id="g2" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;统一表示与两阶段检测流程&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="370" y="120" width="540" height="410" as="geometry" />
         </mxCell>
-        <mxCell id="g3" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;结果输出与追踪&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=none;" parent="1" vertex="1">
+        <mxCell id="g3" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;结果输出与追踪&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=12;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#eeeeee;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="930" y="120" width="220" height="410" as="geometry" />
         </mxCell>
         <mxCell id="n0" value="金融行为数据集 X = {x₁, x₂, …, xₙ}" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;rotation=0;" parent="1" vertex="1">
@@ -40,7 +40,7 @@
         <mxCell id="b4" value="候选索引 ℐ&lt;br&gt;大规模样本索引 / ANN 检索结构" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#EEF5EE;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="391.5" y="440" width="240" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="VuefWbE6Ol8QzYUJ6oNC-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Times New Roman;" edge="1" parent="1" source="b5" target="b6">
+        <mxCell id="VuefWbE6Ol8QzYUJ6oNC-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Times New Roman;endArrow=block;endFill=1;strokeWidth=2;" parent="1" source="b5" target="b6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="b5" value="异常评分&lt;br&gt;sᵢ = ℱ(vᵢ, Cᵢ)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
@@ -58,10 +58,10 @@
         <mxCell id="c3" value="候选邻域 / 关键特征统计 / 日志信息" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="950" y="430" width="180" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#666666;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a1" edge="1">
+        <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#666666;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a2" edge="1">
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="150" y="312.5" />
@@ -69,7 +69,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#666666;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a3" edge="1">
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;fontSize=16;fontFamily=Times New Roman;" parent="1" source="n0" target="a3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="100" y="372.5" />
@@ -80,7 +80,7 @@
         <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;" parent="1" source="a1" target="b1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="360" y="328" />
+              <mxPoint x="360" y="300" />
               <mxPoint x="360" y="218" />
             </Array>
           </mxGeometry>
@@ -100,7 +100,12 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;" parent="1" source="b6" target="b5" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="410" />
+              <mxPoint x="770" y="410" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;" parent="1" source="b5" target="c1" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -128,20 +133,20 @@
         <mxCell id="9LRWXHA9Ipu3vtAvyVsu-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;" parent="1" source="a3" target="b1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="360" y="500" />
+              <mxPoint x="360" y="480" />
               <mxPoint x="360" y="218" />
             </Array>
             <mxPoint x="330" y="515" as="sourcePoint" />
             <mxPoint x="550" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="VuefWbE6Ol8QzYUJ6oNC-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="b1">
+        <mxCell id="VuefWbE6Ol8QzYUJ6oNC-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontSize=16;fontFamily=Times New Roman;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="b1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="360" y="410" />
+              <mxPoint x="360" y="390" />
               <mxPoint x="360" y="218" />
             </Array>
-            <mxPoint x="330" y="410" as="sourcePoint" />
+            <mxPoint x="330" y="390" as="sourcePoint" />
             <mxPoint x="403" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>

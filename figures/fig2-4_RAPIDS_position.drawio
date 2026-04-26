@@ -1,14 +1,14 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" compressed="false" version="28.1.2">
   <diagram id="Fig2-6" name="Fig2-6">
-    <mxGraphModel dx="1426" dy="859" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="770" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="b0" value="RAPIDS 数据处理路径" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=14;strokeWidth=2;dashed=1;dashPattern=8 4;fillColor=#E8EEF5;strokeColor=none;" parent="1" vertex="1">
-          <mxGeometry x="300" y="160" width="470" height="340" as="geometry" />
+        <mxCell id="b0" value="RAPIDS 数据处理路径" style="rounded=1;whiteSpace=wrap;html=1;fontSize=20;fontStyle=1;fontFamily=Times New Roman;align=center;verticalAlign=top;spacingTop=14;strokeWidth=1;dashed=1;dashPattern=8 4;fillColor=#E8EEF5;strokeColor=default;" parent="1" vertex="1">
+          <mxGeometry x="300" y="160" width="470" height="360" as="geometry" />
         </mxCell>
         <mxCell id="b1" value="原始金融数据&lt;br&gt;交易记录 / 账户属性 / 图节点与边" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
-          <mxGeometry x="70" y="231.25" width="200" height="82.5" as="geometry" />
+          <mxGeometry x="70" y="227.5" width="200" height="82.5" as="geometry" />
         </mxCell>
         <mxCell id="b2" value="字段清洗 / 类型转换&lt;br&gt;缺失值处理 / 单位统一" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F4F1EA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="320" y="231.25" width="185" height="75" as="geometry" />
@@ -20,24 +20,24 @@
           <mxGeometry x="410" y="340" width="250" height="70" as="geometry" />
         </mxCell>
         <mxCell id="b5" value="候选结果重排 / 批量合并&lt;br&gt;中间结果组织" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F4F1EA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
-          <mxGeometry x="410" y="430" width="250" height="60" as="geometry" />
+          <mxGeometry x="410" y="440" width="250" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="b6" value="统一查询向量" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+        <mxCell id="b6" value="统一查询向量" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
           <mxGeometry x="790" y="236.25" width="160" height="65" as="geometry" />
         </mxCell>
         <mxCell id="b7" value="FlashANNS / FAISS-GPU&lt;br&gt;候选召回" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#F6EAEA;" parent="1" vertex="1">
           <mxGeometry x="990" y="236.25" width="160" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="b8" value="候选结果" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+        <mxCell id="b8" value="候选结果" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="790" y="375" width="160" height="65" as="geometry" />
         </mxCell>
         <mxCell id="b9" value="PyTOD 评分&lt;br&gt;异常分数" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fillColor=#F6EAEA;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
           <mxGeometry x="990" y="375" width="160" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="b10" value="风险排序 / 日志输出" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+        <mxCell id="b10" value="风险排序 / 日志输出" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontFamily=Times New Roman;align=center;verticalAlign=middle;strokeWidth=1;fontStyle=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#000000;" parent="1" vertex="1">
           <mxGeometry x="990" y="480" width="160" height="65" as="geometry" />
         </mxCell>
-        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontFamily=Times New Roman;" parent="1" target="b2" edge="1">
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontFamily=Times New Roman;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" target="b2" edge="1" source="b1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="270" y="273" as="sourcePoint" />
             <Array as="points">
@@ -74,13 +74,13 @@
         <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeWidth=2;strokeColor=#000000;fontFamily=Times New Roman;" parent="1" source="b9" target="b10" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b2" edge="1">
+        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b2" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b3" edge="1">
+        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=1.5;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b5" edge="1">
+        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;strokeWidth=2;strokeColor=#000000;dashed=1;dashPattern=4 4;fontFamily=Times New Roman;" parent="1" source="b4" target="b5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
