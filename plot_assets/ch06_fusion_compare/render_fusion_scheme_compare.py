@@ -44,10 +44,10 @@ def setup_cjk_font() -> None:
     available = {font.name for font in font_manager.fontManager.ttflist}
     for name in candidates:
         if name in available:
-            plt.rcParams["font.family"] = name
+            plt.rcParams["font.family"] = ["Times New Roman", name]
             break
     else:
-        plt.rcParams["font.family"] = "DejaVu Sans"
+        plt.rcParams["font.family"] = ["Times New Roman", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
 
 
@@ -83,7 +83,9 @@ def render_accuracy(df: pd.DataFrame) -> None:
     for rect, value in zip(bars, df["pr_auc"]):
         ax.text(rect.get_x() + rect.get_width() / 2, value + 0.004, f"{value:.4f}", ha="center", va="bottom", fontsize=9.6)
     fig.tight_layout()
-    fig.savefig(ROOT / "fig6_4_fusion_accuracy.png", bbox_inches="tight")
+    out_path = ROOT / "fig6_4_fusion_accuracy.png"
+    fig.savefig(out_path, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
 
@@ -100,7 +102,9 @@ def render_qps(df: pd.DataFrame) -> None:
     for rect, value in zip(bars, df["qps"]):
         ax.text(rect.get_x() + rect.get_width() / 2, value + 140, f"{value:.2f}", ha="center", va="bottom", fontsize=9.6)
     fig.tight_layout()
-    fig.savefig(ROOT / "fig6_5_fusion_qps.png", bbox_inches="tight")
+    out_path = ROOT / "fig6_5_fusion_qps.png"
+    fig.savefig(out_path, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
 
@@ -135,7 +139,9 @@ def render_tradeoff(df: pd.DataFrame) -> None:
     apply_axis_style(ax)
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.16), ncol=2, frameon=False, fontsize=10.4)
     fig.tight_layout(rect=(0, 0, 1, 0.92))
-    fig.savefig(ROOT / "fig6_6_fusion_tradeoff.png", bbox_inches="tight")
+    out_path = ROOT / "fig6_6_fusion_tradeoff.png"
+    fig.savefig(out_path, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
 

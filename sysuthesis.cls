@@ -457,12 +457,8 @@
 \fi
 \newcommand\sysu@load@font@times{%
   \setmainfont{Times New Roman}%
-  \setsansfont{Arial}%
-  \ifsysu@system@mac
-    \setmonofont{Menlo}[Scale = MatchLowercase]%
-  \else
-    \setmonofont{Courier New}[Scale = MatchLowercase]%
-  \fi
+  \setsansfont{Times New Roman}%
+  \setmonofont{Times New Roman}[Scale = MatchLowercase]%
 }
 \newcommand\sysu@load@font@termes{%
   \setmainfont{texgyretermes}[

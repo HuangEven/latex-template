@@ -22,10 +22,10 @@ def setup_cjk_font() -> None:
     available = {font.name for font in font_manager.fontManager.ttflist}
     for name in candidates:
         if name in available:
-            plt.rcParams["font.family"] = name
+            plt.rcParams["font.family"] = ["Times New Roman", name]
             break
     else:
-        plt.rcParams["font.family"] = "DejaVu Sans"
+        plt.rcParams["font.family"] = ["Times New Roman", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
 
 

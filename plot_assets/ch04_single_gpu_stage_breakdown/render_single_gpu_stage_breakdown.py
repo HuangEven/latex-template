@@ -53,10 +53,10 @@ def setup_cjk_font() -> None:
     available = {font.name for font in font_manager.fontManager.ttflist}
     for name in candidates:
         if name in available:
-            plt.rcParams["font.family"] = name
+            plt.rcParams["font.family"] = ["Times New Roman", name]
             break
     else:
-        plt.rcParams["font.family"] = "DejaVu Sans"
+        plt.rcParams["font.family"] = ["Times New Roman", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
 
 
@@ -121,6 +121,7 @@ def render(csv_path: Path, out_path: Path) -> None:
 
     fig.tight_layout(rect=(0, 0, 1, 0.92))
     fig.savefig(out_path, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
 
 
