@@ -78,20 +78,20 @@
     \toprule
     数据集 & 规模口径 & 特征维度 & 异常比例 & 数据属性 & 本文用途\\
     \midrule
-    % TODO: 补充预处理后 IEEE-CIS 的实际特征维度与异常比例。
-    IEEE-CIS Fraud Detection & 约 1M 级输入口径 & 待补充 & 待补充 & 公开金融欺诈任务数据，经竞赛化与特征脱敏处理 & 真实或半真实口径下的高维表格有效性验证\\
-    % TODO: 补充预处理后 Credit Card Fraud Detection 的实际特征维度与异常比例。
-    Credit Card Fraud Detection & 约 1M 级输入口径 & 待补充 & 待补充 & 公开信用卡交易欺诈数据，特征经匿名化变换 & 经典金融欺诈基准上的对照验证\\
-    % TODO: 补充预处理后 DGraphFin 的实际节点特征维度与异常比例。
-    DGraphFin & 约 1M 级输入口径 & 待补充 & 待补充 & 公开金融图任务数据，包含节点、边关系与行为特征 & 图金融数据向量化后进入统一链路的有效性验证\\
-    % TODO: 补充当前 1M AMLSim / IBM AML 生成配置下的实际特征维度与异常比例。
-    IBM AML / AMLSim（1M） & 1M & 待补充 & 待补充 & 高保真合成金融交易数据，分布和标签由生成规则控制 & 真实口径与系统性能实验之间的桥接规模\\
-    % TODO: 补充当前 10M AMLSim / IBM AML 生成配置下的实际特征维度与异常比例。
-    IBM AML / AMLSim（10M） & 10M & 待补充 & 待补充 & 高保真合成金融交易数据，主要放大样本规模 & 单卡性能验证与多 GPU replicated 起始规模\\
-    % TODO: 补充当前 50M AMLSim / IBM AML 生成配置下的实际特征维度与异常比例。
-    IBM AML / AMLSim（50M） & 50M & 待补充 & 待补充 & 高保真合成金融交易数据，强化中大规模路径压力 & 单卡中大规模趋势与多 GPU 中间规模观察\\
-    % TODO: 补充当前 100M AMLSim / IBM AML 生成配置下的实际特征维度与异常比例。
-    IBM AML / AMLSim（100M） & 100M & 待补充 & 待补充 & 高保真合成金融交易数据，用于更强容量与 I/O 压力 & 多 GPU 归并、共享路径冲突与压力测试\\
+    % TODO(author): 请根据最终实验脚本输出补充 IEEE-CIS 的精确向量维度和异常比例。
+    IEEE-CIS Fraud Detection & 约 1M 级输入口径 & 预处理后统一至 $d$ 维 & 以实验脚本统计为准 & 公开金融欺诈任务数据，经竞赛化与特征脱敏处理 & 真实或半真实口径下的高维表格有效性验证\\
+    % TODO(author): 请根据最终实验脚本输出补充 Credit Card Fraud Detection 的精确向量维度和异常比例。
+    Credit Card Fraud Detection & 约 1M 级输入口径 & 预处理后统一至 $d$ 维 & 以实验脚本统计为准 & 公开信用卡交易欺诈数据，特征经匿名化变换 & 经典金融欺诈基准上的对照验证\\
+    % TODO(author): 请根据最终实验脚本输出补充 DGraphFin 的精确向量维度和异常比例。
+    DGraphFin & 约 1M 级输入口径 & 预处理后统一至 $d$ 维 & 以实验脚本统计为准 & 公开金融图任务数据，包含节点、边关系与行为特征 & 图金融数据向量化后进入统一链路的有效性验证\\
+    % TODO(author): 请根据最终 AMLSim / IBM AML 生成配置补充 1M 规模的精确向量维度和异常比例。
+    IBM AML / AMLSim（1M） & 1M & 预处理后统一至 $d$ 维 & 由生成规则控制 & 高保真合成金融交易数据，分布和标签由生成规则控制 & 真实口径与系统性能实验之间的桥接规模\\
+    % TODO(author): 请根据最终 AMLSim / IBM AML 生成配置补充 10M 规模的精确向量维度和异常比例。
+    IBM AML / AMLSim（10M） & 10M & 预处理后统一至 $d$ 维 & 由生成规则控制 & 高保真合成金融交易数据，主要放大样本规模 & 单卡性能验证与多 GPU replicated 起始规模\\
+    % TODO(author): 请根据最终 AMLSim / IBM AML 生成配置补充 50M 规模的精确向量维度和异常比例。
+    IBM AML / AMLSim（50M） & 50M & 预处理后统一至 $d$ 维 & 由生成规则控制 & 高保真合成金融交易数据，强化中大规模路径压力 & 单卡中大规模趋势与多 GPU 中间规模观察\\
+    % TODO(author): 请根据最终 AMLSim / IBM AML 生成配置补充 100M 规模的精确向量维度和异常比例。
+    IBM AML / AMLSim（100M） & 100M & 预处理后统一至 $d$ 维 & 由生成规则控制 & 高保真合成金融交易数据，用于更强容量与 I/O 压力 & 多 GPU 归并、共享路径冲突与压力测试\\
     \bottomrule
   \end{tabular}
   \end{adjustbox}
