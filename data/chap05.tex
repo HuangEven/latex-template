@@ -268,7 +268,7 @@
     \toprule
     结果主题 & 代表方案 & 核心指标 & 关键结果 & \makecell[c]{支撑\\图表} \\
     \midrule
-    FlashTOD 总体有效性 & 完整融合 & PR-AUC, QPS & PR-AUC 接近全量评分，QPS 显著提升 & 图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling} \\
+    FlashTOD 总体有效性 & 完整融合 & PR-AUC, QPS & PR-AUC 接近全量评分，QPS 提升 & 图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling} \\
     单卡链路优化收益 & 单卡优化 & QPS, p99 Latency, CPU Utilization & p99 延迟和 CPU 负载下降，端到端吞吐提升 & 图~\ref{fig:single-stage-breakdown}--图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} \\
     多 GPU replicated 扩展性 & 2/4 GPU replicated & QPS, CPU Utilization & QPS 随卡数提升，CPU 利用率未同步放大 & 图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} \\
     跨卡归并策略差异 & GPU merge vs.\ CPU aggregation & avg/p99 Latency & GPU 侧归并的平均延迟和 p99 延迟更低 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} \\
@@ -315,9 +315,9 @@
 
 \section{结果讨论}
 
-从综合结果看，本文提出的四条主结论之间并不是彼此独立的。FlashTOD 之所以成立，并不仅仅因为它“比基线快”，而在于它在效果和吞吐之间建立了更稳定的平衡关系：候选召回没有明显破坏异常评分主干的判别能力，同时又把后续评分范围控制在系统可承受的预算内。对金融异常检测系统来说，这一点比单纯追求某个离线指标更重要，因为它决定了系统有机会进入真实高并发场景。
+从综合结果看，本文形成的四条主结论之间并不是彼此独立的。FlashTOD 之所以成立，并不仅仅因为它“比基线快”，而在于它在效果和吞吐之间建立了更稳定的平衡关系：候选召回没有明显破坏异常评分主干的判别能力，同时又把后续评分范围控制在系统可承受的预算内。对金融异常检测系统来说，这一点比单纯追求某个离线指标更重要，因为它决定了系统有机会进入真实高并发场景。
 
-单卡优化的意义也不只是数值上的提速。第四章和本章结果共同表明，系统收益主要来自数据路径被压缩之后，候选召回与异常评分之间的边界成本显著下降，CPU$\leftrightarrow$GPU 传输次数与阶段同步等待被压到更低水平。这意味着，原先限制系统的并不是某一个算子绝对不够快，而是模块之间的折返路径过长。当这一点被解决之后，GPU 侧检索和评分才真正成为决定性能的主要阶段。
+单卡优化的意义也不只是数值上的提速。第四章和本章结果共同表明，系统收益主要来自数据路径被压缩之后，候选召回与异常评分之间的边界成本下降，CPU$\leftrightarrow$GPU 传输次数与阶段同步等待被压到更低水平。这意味着，原先限制系统的并不是某一个算子绝对不够快，而是模块之间的折返路径过长。当这一点被解决之后，GPU 侧检索和评分才真正成为决定性能的主要阶段。
 
 多 GPU 结果则进一步说明，第五章给出的结构判断是必要的，而不是形式上的方案区分。replicated 能够成为主方案，并不是因为它在所有条件下都最节省资源，而是因为它最符合吞吐优先场景下的路径组织方式：查询分发简单，单卡链路可以直接复用，CPU 不需要重新承担大规模中间结果处理。当容量约束使 replicated 不再可行时，GPU merge 比 CPU aggregation 更合理，但它仍然只是一条代价更高的兜底路径。
 
