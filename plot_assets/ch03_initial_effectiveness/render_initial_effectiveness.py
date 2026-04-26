@@ -7,7 +7,7 @@ from matplotlib import font_manager
 
 ROOT = Path(__file__).resolve().parent
 CSV_PATH = ROOT / "initial_effectiveness_metrics.csv"
-OUT_PATH = ROOT.parent.parent / "figures" / "fig3_5_initial_effectiveness_across_datasets.pdf"
+OUT_PATH = ROOT.parent.parent / "figures" / "fig3-5_initial_effectiveness_across_datasets.pdf"
 
 
 def setup_cjk_font() -> None:
