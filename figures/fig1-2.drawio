@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
   <diagram id="bottleneck-migration" name="瓶颈迁移趋势图">
-    <mxGraphModel dx="1901" dy="1145" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1455" dy="911" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -31,7 +31,7 @@
         <mxCell id="tag4" value="通信 / 调度瓶颈" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=none;strokeWidth=1;arcSize=8;fontFamily=Times New Roman;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;fillColor=#F3F3F3;" parent="1" vertex="1">
           <mxGeometry x="1258" y="55" width="210" height="46" as="geometry" />
         </mxCell>
-        <mxCell id="s1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F3F3;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="s1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F6F6F6;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="105" y="125" width="340" height="405" as="geometry" />
         </mxCell>
         <mxCell id="s1_title" value="① 小规模数据" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=28;fontStyle=1;" parent="1" vertex="1">
@@ -46,7 +46,7 @@
         <mxCell id="s1_content" value="&lt;b&gt;特征：&lt;/b&gt;样本量较小；单机内存可容纳&lt;br&gt;&lt;br&gt;&lt;b&gt;处理：&lt;/b&gt;单机 &lt;font&gt;CPU&lt;/font&gt; 检测；规则与统计方法为主&lt;br&gt;&lt;br&gt;&lt;b&gt;瓶颈：&lt;/b&gt;&lt;font&gt;CPU&lt;/font&gt; 计算开销；内存访问与算法复杂度&lt;br&gt;&lt;br&gt;&lt;b&gt;关注：&lt;/b&gt;算法效率优化；特征工程与规则筛查" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=20;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=4;" parent="1" vertex="1">
           <mxGeometry x="117" y="213" width="316" height="305" as="geometry" />
         </mxCell>
-        <mxCell id="s2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F3F3;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="s2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F6F6F6;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="472" y="125" width="340" height="405" as="geometry" />
         </mxCell>
         <mxCell id="s2_title" value="② 中等规模数据" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=28;fontStyle=1;" parent="1" vertex="1">
@@ -61,7 +61,7 @@
         <mxCell id="s2_content" value="&lt;b&gt;特征：&lt;/b&gt;样本量继续增加；单机内存接近上限&lt;br&gt;&lt;br&gt;&lt;b&gt;处理：&lt;/b&gt;单机 &lt;font&gt;GPU&lt;/font&gt; 加速；批处理与向量化计算&lt;br&gt;&lt;br&gt;&lt;b&gt;瓶颈：&lt;/b&gt;显存容量受限；&lt;font&gt;CPU↔GPU&lt;/font&gt; 数据搬运&lt;br&gt;&lt;br&gt;&lt;b&gt;关注：&lt;/b&gt;算子批处理、算子融合；减少主机与设备往返" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=20;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=4;" parent="1" vertex="1">
           <mxGeometry x="484" y="213" width="316" height="305" as="geometry" />
         </mxCell>
-        <mxCell id="s3_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F3F3;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="s3_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F6F6F6;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="839" y="125" width="340" height="405" as="geometry" />
         </mxCell>
         <mxCell id="s3_title" value="③ 大规模数据" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=28;fontStyle=1;" parent="1" vertex="1">
@@ -76,7 +76,7 @@
         <mxCell id="s3_content" value="&lt;b&gt;特征：&lt;/b&gt;数据超出显存容量；索引与原始数据难以内存常驻&lt;br&gt;&lt;br&gt;&lt;b&gt;处理：&lt;/b&gt;分层索引 / 候选过滤；外存辅助的加速检索&lt;br&gt;&lt;br&gt;&lt;b&gt;瓶颈：&lt;/b&gt;&lt;font&gt;I/O&lt;/font&gt; 带宽与访问粒度；计算与存储阶段串行化&lt;br&gt;&lt;br&gt;&lt;b&gt;关注：&lt;/b&gt;计算—&lt;font&gt;I/O&lt;/font&gt; 协同；异步流水与访问优化" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=20;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=4;" parent="1" vertex="1">
           <mxGeometry x="851" y="213" width="316" height="305" as="geometry" />
         </mxCell>
-        <mxCell id="s4_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F3F3;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
+        <mxCell id="s4_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F6F6F6;strokeColor=#111111;strokeWidth=1.2;arcSize=6;fontFamily=Times New Roman;" parent="1" vertex="1">
           <mxGeometry x="1206" y="125" width="340" height="405" as="geometry" />
         </mxCell>
         <mxCell id="s4_title" value="④ 超大规模数据" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=28;fontStyle=1;" parent="1" vertex="1">
