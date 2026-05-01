@@ -140,7 +140,7 @@
   \label{fig:qps-vs-gpu}
 \end{figure}
 
-图~\ref{fig:qps-vs-gpu} 左侧给出了 replicated 路径下 QPS 随 GPU 数量增加的变化，并加入理想线性扩展参考线。该参考线仅由 1 GPU QPS 线性外推得到，不作为实测结果。实际曲线与理想线性之间存在差距，说明 CPU 控制面调度、查询分发、设备侧资源竞争和 I/O 路径都会削弱扩展效率。右侧进一步比较拓扑感知绑定与共享路径冲突下的 p99 延迟，可以看到共享 PCIe/SSD 路径会放大尾延迟，因此拓扑感知 I/O lane 绑定并不是附属优化，而是多 GPU 场景下维持稳定扩展的重要条件。对于索引无法完整复制的容量受限场景，仍需结合图~\ref{fig:latency-quantiles} 比较 GPU merge 与 CPU aggregation：前者把局部结果尽量留在设备侧，后者需要回到主机侧排序与聚合，因此会引入更高的路径开销。
+图~\ref{fig:qps-vs-gpu} 左侧给出了 replicated 路径下 QPS 随 GPU 数量增加的变化，并加入理想线性扩展参考线。该参考线仅由 1 GPU QPS 线性外推得到，不作为实测结果。实际曲线与理想线性之间存在差距，说明 CPU 控制面调度、查询分发、设备侧资源竞争和 I/O 路径都会削弱扩展效率。右侧进一步比较拓扑感知绑定与共享路径冲突下的 p99 延迟，可以看到共享 PCIe/SSD 路径会放大尾延迟，因此拓扑感知 I/O lane 绑定并非附属优化，而是在多 GPU 场景下维持稳定扩展的重要条件。对于索引无法完整复制的容量受限场景，仍需结合图~\ref{fig:latency-quantiles} 比较 GPU merge 与 CPU aggregation：前者把局部结果尽量留在设备侧，后者需要回到主机侧排序与聚合，因此会引入更高的路径开销。
 
 \begin{figure}[!htbp]
   \centering
