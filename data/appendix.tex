@@ -12,7 +12,7 @@
 真实集路径检查与冒烟验证 & \path|freeze_last_tune_<ts>/01_*| & 对真实集输入路径、基础运行链路和候选召回---评分接口进行快速联调，对应正文中的真实集有效性验证起点。 \\
 真实集校准与配置筛选 & \path|freeze_last_tune_<ts>/02_*| & 保存校准轮次的标准输出、排序摘要和配置对比结果，用于冻结论文定稿前的候选规模与评分配置。 \\
 单卡链路对比与阶段耗时分析 & \path|bench_flash_<scale>_<scene>_gpu<id>.log|、\path|compare_<topic>_<ts>.md| & 对应第四章单卡路径优化实验，重点记录原始链路、召回加速、GPU 主导链路和完整优化方案之间的耗时与吞吐差异。 \\
-多 GPU 扩展、归并与冲突对比 & \path|bench_flash_<scale>_replica_*|、\path|*_shard_*|、\path|gpu_<topic>_gpu<id>.csv| & 对应第五章 replicated 主方案、GPU merge 兜底路径、CPU aggregation 对比基线以及共享路径冲突实验。 \\
+多 GPU 扩展、归并与冲突对比 & \path|bench_flash_<scale>_replica_*|、\path|*_shard_*|、\path|gpu_<topic>_gpu<id>.csv| & 对应第五章索引复制主方案、设备侧归并兜底路径、主机侧聚合对比基线以及共享路径冲突实验。 \\
 论文图表整理与结果汇总 & \path|latest_<topic>_paper/|、\path|chart_ready_*.csv|、\path|session_meta.txt| & 将多轮实验结果整理为论文图表输入数据，保留轮次汇总、出图口径与会话元信息。 \\
 \end{tabularx}
 \normalsize
@@ -33,7 +33,7 @@
   \item 数据与划分参数统一使用 \texttt{real-root}、\texttt{real-datasets}、\texttt{synthetic-root}、\texttt{synthetic-scales}、\texttt{input-npz}、\texttt{out-dir}、\texttt{seed} 等名称，明确区分真实集入口、合成集规模和数据切分位置。
   \item 单卡热路径参数统一使用 \texttt{device}、\texttt{batch-size}、\texttt{score-chunk-size}、\texttt{warmup}、\texttt{repeats}、\texttt{max-run-seconds}，分别控制设备绑定、批大小、评分块大小、预热次数和单轮运行上限。
   \item 候选召回与索引参数统一使用 \texttt{flash-search-k}、\texttt{flash-rerank-exact}、\texttt{flash-indices-only}、\texttt{faiss-index}、\texttt{faiss-nlist}、\texttt{faiss-nprobe}、\texttt{faiss-pq-m}、\texttt{faiss-pq-bits} 等名称，避免在不同脚本中混用语义相近的别名。
-  \item 多 GPU 相关参数统一使用 \texttt{gpu-list}、\texttt{flash-multi-gpu-route}、\texttt{flash-service-topology}、\texttt{flash-service-protocol}、\texttt{flash-multi-gpu-devices}、\texttt{flash-multi-gpu-gather-device}、\texttt{flash-shards}、\texttt{flash-service-batch-size}，明确区分 replicated 主路径、分片兜底路径和聚合位置。
+  \item 多 GPU 相关参数统一使用 \texttt{gpu-list}、\texttt{flash-multi-gpu-route}、\texttt{flash-service-topology}、\texttt{flash-service-protocol}、\texttt{flash-multi-gpu-devices}、\texttt{flash-multi-gpu-gather-device}、\texttt{flash-shards}、\texttt{flash-service-batch-size}，明确区分索引复制主路径、分片兜底路径和归并位置。
   \item 监控与分析参数统一使用 \texttt{gpu-log-path}、\texttt{gpu-log-interval-ms}、\texttt{chain-profile}、\texttt{trace-output-dir} 等名称；Shell 包装脚本中对应使用全大写环境变量，如 \texttt{BATCH\_SIZE}、\texttt{FLASH\_SEARCH\_K}，冻结配置则统一使用 \texttt{FREEZE\_*} 前缀。
 \end{itemize}
 
@@ -46,7 +46,7 @@
 
 \begin{itemize}
   \item 图中的 QPS、平均时延和 p99 时延均指对应实验场景下的端到端统计结果；若未特别说明，时延单位统一为 ms。
-  \item 单卡结果图主要用于比较数据路径优化前后的链路差异，多 GPU 结果图主要用于比较 replicated 主方案、GPU 侧归并兜底路径以及共享路径冲突条件下的扩展差异。
+  \item 单卡结果图主要用于比较数据路径优化前后的链路差异，多 GPU 结果图主要用于比较索引复制主方案、设备侧归并兜底路径以及共享路径冲突条件下的扩展差异。
   \item 真实集结果用于有效性验证，1M 及以上合成数据结果用于系统性能与扩展分析，二者不直接比较绝对吞吐数值。
   \item 正文结果图中的方案名称均对应具体验证场景或系统路径，不再使用含义不明确的编号标签。
 \end{itemize}
@@ -73,7 +73,8 @@
     支付渠道/终端类型 & 渠道编码、终端类别向量、渠道频次统计 & 类别型 & one-hot 或频次编码 & 丰富候选召回的相似度基础，提升异常区分度\\
     图节点原始属性 & 节点属性规范化向量 & 混合型 & 数值归一化、类别编码 & 形成图节点输入的基础表示\\
     图边关系与邻域信息 & 入边/出边计数、邻域金额统计、方向比例、时间分布 & 关系统计型 & 邻域聚合、时间窗统计、向量拼接 & 将图结构信息映射为可检索、可评分的节点向量\\
-    融合后统一表示 & 固定维度最终向量 ($v_i\in\mathbb{R}^d$) & 向量型 & 维度检查、类型检查、异常值截断 & 作为 FlashANNS/FAISS-GPU 候选召回输入，并直接供 PyTOD 评分使用\\
+    % TODO(author): 运行最终预处理脚本输出具体 d，并同步回填第三章表 3-2。
+    融合后统一表示 & 固定维度最终向量 ($v_i\in\mathbb{R}^d$，$d$ 由最终预处理脚本确定) & 向量型 & 维度检查、类型检查、异常值截断 & 作为 FlashANNS/FAISS-GPU 候选召回输入，并直接供 PyTOD 评分使用\\
     \bottomrule
   \end{tabular}
   \end{adjustbox}
@@ -95,12 +96,12 @@
       GPU数 & 方案 & 数据规模 & 批大小 & 候选数 & $k$ & 实验目的 \\
       \midrule
       1 & Replicated & 10M & 4096 & 128 & 50 & 单卡吞吐扩展基线 \\
-      2 & Replicated & 10M & 4096 & 128 & 50 & 2 GPU replicated 扩展基线 \\
-      4 & Replicated & 10M & 4096 & 128 & 50 & 四卡 replicated 扩展基线 \\
-      4 & Local scoring + GPU merge & 100M & 3072 & 128 & 50 & 显存受限时的 GPU 侧归并兜底方案 \\
-      4 & Local scoring + CPU aggregation & 100M & 3072 & 128 & 50 & CPU 聚合对比基线 \\
-      2 & Topology-aware binding & 100M & 4096 & 128 & 50 & I/O lane 绑定对比实验 \\
-      4 & Topology-aware binding & 100M & 4096 & 128 & 50 & I/O lane 绑定对比实验 \\
+      2 & 索引复制 & 10M & 4096 & 128 & 50 & 2 GPU 索引复制扩展基线 \\
+      4 & 索引复制 & 10M & 4096 & 128 & 50 & 四卡索引复制扩展基线 \\
+      4 & 本地评分 + 设备侧归并 & 100M & 3072 & 128 & 50 & 显存受限时的设备侧归并兜底方案 \\
+      4 & 本地评分 + 主机侧聚合 & 100M & 3072 & 128 & 50 & 主机侧聚合对比基线 \\
+      2 & 拓扑感知绑定 & 100M & 4096 & 128 & 50 & I/O 通道绑定对比实验 \\
+      4 & 拓扑感知绑定 & 100M & 4096 & 128 & 50 & I/O 通道绑定对比实验 \\
       2 & Shared-path conflict & 100M & 4096 & 128 & 50 & 共享路径冲突对比基线 \\
       4 & Shared-path conflict & 100M & 4096 & 128 & 50 & 共享路径冲突对比基线 \\
       \bottomrule
@@ -115,12 +116,12 @@
       方案 & 索引组织 & 归并路径 & I/O 绑定 & 定位 \\
       \midrule
       Replicated & Full replica & None & Topology-aware & 主扩展方案，验证随 GPU 数量增加的吞吐收益 \\
-      Local scoring + GPU merge & Sharded index & NCCL all-gather + GPU merge & Topology-aware & 显存受限时的设备侧归并兜底路径 \\
-      Local scoring + CPU aggregation & Sharded index & CPU aggregation & Topology-aware & 用于对比 CPU 回到数据平面的额外代价 \\
-      Topology-aware binding & Full replica & None & Topology-aware & 验证 I/O lane 绑定对扩展效率的影响 \\
+      本地评分 + 设备侧归并 & 分片索引 & NCCL all-gather + 设备侧归并 & 拓扑感知 & 显存受限时的设备侧归并兜底路径 \\
+      本地评分 + 主机侧聚合 & 分片索引 & 主机侧聚合 & 拓扑感知 & 用于对比 CPU 回到数据平面的额外代价 \\
+      拓扑感知绑定 & 完整副本 & 无 & 拓扑感知 & 验证 I/O 通道绑定对扩展效率的影响 \\
       Shared-path conflict & Full replica & None & Shared PCIe/SSD path & 作为共享路径冲突下的对比基线 \\
       \midrule
-      \multicolumn{5}{p{14.8cm}}{\footnotesize 注：多 GPU 实验规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织。10M 主要服务于 replicated 主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
+      \multicolumn{5}{p{14.8cm}}{\footnotesize 注：多 GPU 实验规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织。10M 主要服务于索引复制主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
