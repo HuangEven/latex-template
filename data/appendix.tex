@@ -171,7 +171,7 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
       拓扑感知绑定 & 完整副本 & 无 & 拓扑感知 & 验证 I/O 通道绑定对扩展效率的影响 \\
       Shared-path conflict & Full replica & None & Shared PCIe/SSD path & 作为共享路径冲突下的对比基线 \\
       \midrule
-      \multicolumn{5}{p{14.8cm}}{\footnotesize 注：多 GPU 实验规模口径统一按“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”组织。10M 主要服务于索引复制主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
+      \multicolumn{5}{p{14.8cm}}{\footnotesize 注：多 GPU 实验沿正文定义的扩展规模链路组织，即由真实或半真实数据和 1M 桥接规模逐步延伸到 100M 样本压力场景。10M 主要服务于索引复制主方案扩展曲线，100M 主要服务于兜底归并与路径冲突对比。} \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
@@ -186,9 +186,9 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
 \begin{tabularx}{\textwidth}{P{0.34\textwidth}Y}
 变量或配置项 & 含义 \\
 FAISS-GPU & FAISS 的 GPU 检索实现；本文中主要用于前期 ANN 接口与候选召回链路验证，包括设备侧输入输出路径、候选 ID/距离返回格式以及 PyTOD 评分衔接。 \\
-FlashANNS & 完整 FlashTOD 路径中的主要 ANNS 后端，在本文中承担候选召回前端，用于大规模外存驻留或超显存索引条件下的高吞吐候选生成。 \\
+FlashANNS & 完整 FlashTOD 路径中的主要候选召回前端，用于大规模外存驻留或超显存索引条件下的高吞吐候选生成。 \\
 初步融合方案 & FAISS-GPU ANN API 与 PyTOD 的简单串接，用于验证候选召回---候选评分链路可行性。 \\
-完整融合方案 & 以 FlashANNS 为主要 ANNS 后端、以 PyTOD 为异常评分主干，并结合 GPU 主导数据路径和设备侧候选组织后的完整 FlashTOD 实现。 \\
+完整融合方案 & 以 FlashANNS 为主要候选召回前端、以 PyTOD 为异常评分主干，并结合 GPU 主导数据路径和设备侧候选组织后的完整 FlashTOD 实现。 \\
 \texttt{batch\_size} & 单次提交到候选召回或精排路径中的批处理大小。 \\
 \texttt{rerank\_budget} & 进入高精度精排阶段的候选数量预算。 \\
 \texttt{nlist} & 索引聚类桶数量或粗排分区规模参数。 \\

@@ -102,7 +102,7 @@
   \label{fig:control-plane}
 \end{figure}
 
-图中 FAISS-GPU 表示前期候选召回接口验证路径；多 GPU 完整路径下的本地候选生成以后续接入的 FlashANNS 检索后端为主。
+图中 FAISS-GPU 表示前期候选召回接口验证路径；多 GPU 完整路径下的本地候选生成以后续接入的 FlashANNS 候选召回前端为主。
 
 \section{跨卡归并场景下的 GPU 侧归并与 NCCL 通信}
 
@@ -127,7 +127,7 @@
 
 \section{多 GPU 扩展实验与结果分析}
 
-多 GPU 实验沿“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”逐级组织，并围绕索引复制、设备侧归并、主机侧聚合与共享路径冲突（shared-path conflict）四类路径展开；对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 汇总展示索引复制路径的扩展曲线与共享路径下的 p99 延迟变化，图~\ref{fig:latency-quantiles} 展示不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O 通道配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
+多 GPU 实验沿第三章定义的扩展规模链路逐级组织，并在单卡口径基础上延伸到 100M 样本压力场景；实验围绕索引复制、设备侧归并、主机侧聚合与共享路径冲突（shared-path conflict）四类路径展开，对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 汇总展示索引复制路径的扩展曲线与共享路径下的 p99 延迟变化，图~\ref{fig:latency-quantiles} 展示不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O 通道配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
 
 从结果上看，索引复制方案在 1/2/4 GPU 条件下保持了较为稳定的 QPS 增长和相对平稳的延迟变化，说明在索引可复制的前提下，查询级并行和本地闭环执行更符合本文的吞吐优先目标。与之对应，本地评分 + 设备侧归并和本地评分 + 主机侧聚合的对比主要用于回答兜底路径如何选的问题：两者都建立在索引分片的前提下，但在本文实验口径下，设备侧归并的平均延迟、p99 延迟和 CPU 利用率低于主机侧聚合，说明一旦必须跨卡归并，把局部结果留在设备侧处理更有利于控制路径开销。
 
