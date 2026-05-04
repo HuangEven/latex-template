@@ -38,24 +38,12 @@
 
 从处理流程上看，本文关注的系统链路如图~\ref{fig:fin-ad-standard-flow} 所示，可概括为：对原始金融交易记录、账户行为统计和上下文特征进行规范化与向量化表示；基于向量化表示执行高吞吐候选召回，以缩小后续异常评分所需处理的样本范围；在候选集合上执行张量化异常评分，输出异常分数或排序结果；最后结合日志、统计指标与告警规则完成结果输出与追踪。后续各章围绕这条``向量化表示---候选召回---异常评分---结果输出与追踪''链路在大规模条件下如何稳定落地的问题，展开讨论和阐述。
 
-在这一处理链路上，本文选择由 PyTOD 与 FlashANNS 协同构成的异常检测系统作为具体研究对象，并将其命名为 FlashTOD，其中 Flash 取自候选召回前端 FlashANNS，TOD 对应 PyTOD 所沿用的 TOD 路线。PyTOD 将异常检测过程抽象为可复用的张量算子，适合作为异常评分模块；FlashANNS 则通过异步 I/O---计算流水线提供高吞吐候选召回能力，适合作为候选召回前端，如图~\ref{fig:pytod-flashanns-concept} 所示。二者的角色分工相对清晰，但真正落到工程实现时，阶段边界上的开销并不会因为模块职责明确而自动消失。若查询特征先在 CPU 上构造，再传输至 GPU 检索，而候选结果又回到 CPU 重新组织后再送回 GPU 评分，那么瓶颈会很快转移到 CPU$\leftrightarrow$GPU 数据搬运与阶段同步上；进一步地，在多 GPU 场景中，若将多个 GPU 的局部结果重新集中到 CPU 归并，CPU 还可能再次成为系统瓶颈。
-
-
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig1-3_financial_anomaly_standard_flow.pdf}
   \caption{金融大规模异常检测系统标准处理流程图（本文根据金融异常检测流程整理绘制）}
   \label{fig:fin-ad-standard-flow}
 \end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.95\linewidth]{figures/fig1-4_pytod_flashanns_concept.pdf}
-  \caption{FlashTOD 系统概念图（本文绘制）}
-  \label{fig:pytod-flashanns-concept}
-\end{figure}
-
-图~\ref{fig:pytod-flashanns-concept} 在本章中用于说明 FlashTOD 的基本概念和两阶段关系，系统整体架构、层次划分与执行边界将在第三章进一步展开。需要说明的是，图中 FAISS-GPU 表示前期 ANN 候选召回接口和设备侧检索路径的初步验证组件；完整 FlashTOD 路径中的主要 ANN 候选召回后端为 FlashANNS。
 
 \FloatBarrier
 
