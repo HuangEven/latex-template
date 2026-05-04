@@ -125,10 +125,6 @@
   \label{fig:topology}
 \end{figure}
 
-\section{多 GPU 运行时支撑}
-
-多 GPU 场景下，系统还需要运行时支撑机制保证运行稳定性与实验可重复性，包括多进程/多 GPU 运行时组织、统一监控指标、异常恢复与请求重试、以及资源隔离和日志管理。本节为索引复制主方案与设备侧归并兜底路径提供统一的运行时支撑，使后续实验能够在可比口径下观测吞吐、延迟、CPU/GPU 利用率以及 I/O 路径占用。
-
 \section{多 GPU 扩展实验与结果分析}
 
 多 GPU 实验沿“真实集 $\rightarrow$ 1M 合成数据 $\rightarrow$ 10M 合成数据 $\rightarrow$ 50M 合成数据 $\rightarrow$ 100M 合成数据”逐级组织，并围绕索引复制、设备侧归并、主机侧聚合与共享路径冲突（shared-path conflict）四类路径展开；对应配置列入附录B补充表~\ref{tab:multi-gpu-exp-setup}。图~\ref{fig:qps-vs-gpu} 汇总展示索引复制路径的扩展曲线与共享路径下的 p99 延迟变化，图~\ref{fig:latency-quantiles} 展示不同归并路径下的延迟变化，图~\ref{fig:io-lane-impact} 用于比较 I/O 通道配置对扩展性的影响，表~\ref{tab:multi-gpu-summary} 对总体结果进行了汇总。
