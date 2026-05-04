@@ -17,6 +17,31 @@
 \end{tabularx}
 \normalsize
 
+\section{核心实验日志与复现材料归档}
+
+表~\ref{tab:core-log-archive} 给出正文核心实验与归档材料之间的对应关系。该表只说明复现材料的组织口径，不引入新的实验数值；若后续补充重复运行统计，应在相同目录结构下继续追加原始日志、汇总 CSV 和绘图输入文件。
+
+\begin{table}[htbp]
+  \caption{核心实验日志与复现材料归档说明}
+  \label{tab:core-log-archive}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{2.5pt}
+  \renewcommand{\arraystretch}{1.16}
+  \begin{adjustbox}{max width=\linewidth}
+  \begin{tabular}{P{2.2cm}P{3.4cm}P{3.7cm}P{5.0cm}}
+    \toprule
+    实验类别 & 代表性日志或数据前缀 & 对应正文位置 & 归档说明 \\
+    \midrule
+    有效性验证 & \path|freeze_last_tune_<ts>/|、\path|baseline_effect_*.csv| & 第三章基础实验、第六章基线效果对比 & 保留真实或半真实数据、1M 桥接规模下的候选召回、候选评分和绘图输入。 \\
+    单卡递进式消融 & \path|bench_flash_<scale>_<scene>_gpu<id>.log|、\path|single_gpu_progressive_*.csv| & 第四章单卡实验、第六章综合对比 & 保留原始分段链路、候选召回加速、GPU 主导链路和完整优化方案的运行记录。 \\
+    多 GPU 扩展 & \path|bench_flash_<scale>_replica_*|、\path|multigpu_scaling_*.csv| & 第五章多 GPU 扩展、第六章扩展趋势 & 保留 replicated、GPU merge、CPU aggregation 和 shared-path conflict 相关运行记录。 \\
+    绘图与结果汇总 & \path|plot_assets/|、\path|figures/exp/|、\path|data/*.csv| & 第四章至第六章结果图 & 保留论文图表使用的数据源、出图脚本和导出 PDF/SVG。 \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
+
 \section{统一文件命名风格}
 
 \begin{itemize}
@@ -36,6 +61,31 @@
   \item 多 GPU 相关参数统一使用 \texttt{gpu-list}、\texttt{flash-multi-gpu-route}、\texttt{flash-service-topology}、\texttt{flash-service-protocol}、\texttt{flash-multi-gpu-devices}、\texttt{flash-multi-gpu-gather-device}、\texttt{flash-shards}、\texttt{flash-service-batch-size}，明确区分索引复制主路径、分片兜底路径和归并位置。
   \item 监控与分析参数统一使用 \texttt{gpu-log-path}、\texttt{gpu-log-interval-ms}、\texttt{chain-profile}、\texttt{trace-output-dir} 等名称；Shell 包装脚本中对应使用全大写环境变量，如 \texttt{BATCH\_SIZE}、\texttt{FLASH\_SEARCH\_K}，冻结配置则统一使用 \texttt{FREEZE\_*} 前缀。
 \end{itemize}
+
+\section{RAPIDS 相关组件使用位置说明}
+
+RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支撑，不单独作为异常检测算法或候选召回算法，也不将整体性能收益单独归因于 RAPIDS。表~\ref{tab:rapids-component-usage} 对相关组件在本文系统中的使用位置作统一说明。
+
+\begin{table}[htbp]
+  \caption{RAPIDS 相关组件使用位置说明}
+  \label{tab:rapids-component-usage}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{2.4pt}
+  \renewcommand{\arraystretch}{1.16}
+  \begin{adjustbox}{max width=\linewidth}
+  \begin{tabular}{P{1.8cm}P{3.0cm}P{3.4cm}P{4.0cm}P{2.3cm}}
+    \toprule
+    组件 & 使用位置 & 对应脚本/阶段口径 & 作用 & 是否单独归因性能 \\
+    \midrule
+    cuDF & 数据预处理与候选前后表格组织 & 预处理脚本 / query\_prep 阶段 & GPU DataFrame 形式的字段筛选、类型转换、窗口统计和批量结果组织 & 否 \\
+    CuPy & 候选数组与中间张量表达 & 候选组织 / pack\_candidates 阶段 & 用于设备侧数组计算、候选 ID/距离缓冲和张量接口衔接 & 否 \\
+    RMM & 内存池与页锁定主机内存资源 & 资源初始化 / 运行时配置阶段 & 管理临时内存、pinned host 资源和内存分配抖动 & 否 \\
+    cuML & 环境组件与后续可扩展接口 & 软件环境快照 / 非核心热路径 & 作为 RAPIDS 生态组成记录，本文不将其作为核心评分或召回路径依赖 & 否 \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}
 
 
 \chapter{图表补充说明}

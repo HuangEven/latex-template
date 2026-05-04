@@ -24,41 +24,43 @@
 
 最后一项原则只在主方案不能直接成立时才发挥作用，即当必须跨卡归并时，归并逻辑尽量下沉到 GPU 侧，并通过 NCCL 等设备间通信机制完成。NCCL 文档指出其通信操作会异步入队到 CUDA stream 上执行，但也警告在同一 \texttt{ncclGroupStart/End()} 中混用多个 stream 会形成全局同步点\citep{nccl_stream_semantics}。这意味着 GPU 侧归并虽然优于 CPU 聚合，却仍然带来额外通信组织成本，因此它在本文中是明确的兜底路径，并不作为第二主线考虑。
 
-表~\ref{tab:primary-vs-fallback} 对索引复制主方案、分片索引与设备侧归并兜底方案以及主机侧聚合对比路径的适用条件进行了归纳。
+表~\ref{tab:primary-vs-fallback} 对 FlashTOD 多 GPU 部署中的索引复制主方案、设备侧归并兜底路径以及主机侧聚合对比路径的适用边界进行了归纳。
 
 \begin{table}[htbp]
-  \caption{多 GPU 扩展方案适用条件}
+  \caption{FlashTOD 多 GPU 部署适用边界}
   \label{tab:primary-vs-fallback}
   \centering
   \footnotesize
   \setlength{\tabcolsep}{2.6pt}
   \renewcommand{\arraystretch}{1.18}
   \begin{adjustbox}{max width=\linewidth}
-    \begin{tabular}{P{2.4cm}P{3.1cm}P{3.7cm}P{3.0cm}P{2.4cm}}
+    \begin{tabular}{P{2.4cm}P{3.1cm}P{3.2cm}P{3.0cm}P{2.8cm}}
       \toprule
-      方案 & 组织方式 & 适用场景 & 主要收益 & 定位/代价 \\
+      条件 & replicated 主方案 & 设备侧归并 & 主机侧聚合 & 主要风险 \\
       \midrule
-      \makecell[l]{索引复制\\（replicated）} &
+      索引可完整复制，吞吐优先 &
       每卡保留完整索引，按查询或微批分发 &
-      单卡可容纳完整索引副本，且目标以吞吐和低尾延迟为主 &
-      路径简单，CPU 主要保留控制面职责，跨卡归并少 &
-      主方案；代价是显存占用高 \\
+      通常不需要启用，仅保留为容量受限兜底 &
+      仅用于调试或小规模对照 &
+      显存占用高，索引规模继续增大后可能失效 \\
       \midrule
-      \makecell[l]{分片索引 +\\设备侧归并} &
-      索引按卡分片，局部结果在 GPU 侧归并 &
-      完整索引无法复制到单卡，需要覆盖更大索引容量 &
-      支持更大规模，避免大规模候选集合回流 CPU &
-      兜底方案；代价是通信与归并逻辑更复杂 \\
+      单卡无法容纳完整索引，需要容量扩展 &
+      不再直接适用 &
+      索引按卡分片，局部结果在 GPU 侧组织和归并 &
+      可作为实现简单的对照路径 &
+      跨卡通信、同步点和归并复杂度上升 \\
       \midrule
-      \makecell[l]{主机侧\\聚合} &
+      原型验证、调试或离线分析 &
+      可用于简化路径验证 &
+      可与主机侧聚合形成对照 &
       各 GPU 输出局部结果后回传 CPU 排序合并 &
-      原型验证、调试、小规模实验或离线分析 &
-      实现直接，中间结果易观察，便于构造对比基线 &
-      对比基线；代价是 CPU 重回数据平面 \\
+      CPU 重新进入数据平面，D2H/H2D 与排序开销放大 \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
 \end{table}
+
+该表用于说明不同多 GPU 路径的适用条件，而不是把三类方案视为并列的最终选择。本文当前结论限定在单机多 GPU、固定候选预算和固定硬件拓扑条件下：replicated 路径是吞吐优先主方案，设备侧归并是容量受限时的兜底路径，主机侧聚合主要用于形成可解释的对照基线。
 
 \section{数据并行与索引复制的多 GPU 执行架构}
 
@@ -77,7 +79,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
-  \caption{数据并行与索引复制多 GPU 架构}
+  \caption{数据并行与索引复制多 GPU 架构（本文绘制）}
   \label{fig:replicated-arch}
 \end{figure}
 
@@ -96,7 +98,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-2_cpu_control_plane_microbatch.pdf}
-  \caption{CPU 控制面调度与微批示意}
+  \caption{CPU 控制面调度与微批示意（本文绘制）}
   \label{fig:control-plane}
 \end{figure}
 
@@ -119,7 +121,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig5-3_topology_aware_io_lane.pdf}
-  \caption{拓扑感知 I/O 通道示意}
+  \caption{拓扑感知 I/O 通道示意（本文绘制）}
   \label{fig:topology}
 \end{figure}
 
@@ -138,7 +140,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/exp/multigpu_scaling_bottleneck_analysis.pdf}
-  \caption{多 GPU 扩展趋势与共享路径瓶颈分析}
+  \caption{多 GPU 扩展趋势与共享路径瓶颈分析（实验数据绘制）}
   \label{fig:qps-vs-gpu}
 \end{figure}
 
@@ -147,14 +149,14 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.84\linewidth]{plot_assets/ch05_latency_merge_compare/fig5_16_latency_merge_compare.pdf}
-  \caption{平均延迟与 p99 延迟变化}
+  \caption{平均延迟与 p99 延迟变化（实验数据绘制）}
   \label{fig:latency-quantiles}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch05_io_lane_impact/fig5_18_io_lane_impact.pdf}
-  \caption{I/O 通道配置对扩展性的影响}
+  \caption{I/O 通道配置对扩展性的影响（实验数据绘制）}
   \label{fig:io-lane-impact}
 \end{figure}
 

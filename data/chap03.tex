@@ -17,7 +17,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig4-1_single_gpu_system_architecture.pdf}
-  \caption{单卡异常检测系统总体架构图}
+  \caption{单卡异常检测系统总体架构图（本文绘制）}
   \label{fig:single-gpu-arch}
 \end{figure}
 
@@ -42,7 +42,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig4-2_original_vs_gpu_dominant_chain.pdf}
-  \caption{原始链路与 GPU 主导链路对比图}
+  \caption{原始链路与 GPU 主导链路对比图（本文绘制）}
   \label{fig:baseline-bottlenecks}
 \end{figure}
 
@@ -129,7 +129,7 @@ GPU 主导执行并不意味着 CPU 在单卡系统中完全消失。原始输�
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig4-3_flashanns_async_io_compute_pipeline.pdf}
-  \caption{FlashANNS 异步 I/O---计算流水线与本文执行链路融合}
+  \caption{FlashANNS 异步 I/O---计算流水线与本文执行链路融合（本文根据文献\citep{xiao2025flashanns}和系统实现整理）}
   \label{fig:io-compute-integration}
 \end{figure}
 
@@ -168,21 +168,21 @@ GPU 主导执行并不意味着 CPU 在单卡系统中完全消失。原始输�
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_14_single_gpu_stage_breakdown_1m.pdf}
-  \caption{1M 数据规模下单卡各阶段耗时分解}
+  \caption{1M 数据规模下单卡各阶段耗时分解（实验数据绘制）}
   \label{fig:single-stage-breakdown}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_15_single_gpu_stage_breakdown_10m.pdf}
-  \caption{10M 数据规模下单卡各阶段耗时分解}
+  \caption{10M 数据规模下单卡各阶段耗时分解（实验数据绘制）}
   \label{fig:single-stage-breakdown-large}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/exp/single_gpu_progressive_ablation.pdf}
-  \caption{单卡执行链路递进式消融结果（该图为递进式消融，非完全独立的单因素消融）}
+  \caption{单卡执行链路递进式消融结果（实验数据绘制；该图为递进式消融，非完全独立的单因素消融）}
   \label{fig:single-gpu-overview}
 \end{figure}
 
