@@ -6,7 +6,10 @@
 
 \section{实验阶段与材料对应关系}
 
+\begingroup
 \small
+\setlength{\tabcolsep}{3pt}
+\noindent
 \begin{tabularx}{\textwidth}{P{0.22\textwidth}P{0.29\textwidth}Y}
 论文验证阶段 & 代表性脚本或日志前缀 & 主要用途 \\
 真实集路径检查与冒烟验证 & \path|freeze_last_tune_<ts>/01_*| & 对真实集输入路径、基础运行链路和候选召回---评分接口进行快速联调，对应正文中的真实集有效性验证起点。 \\
@@ -15,7 +18,7 @@
 多 GPU 扩展、归并与冲突对比 & \path|bench_flash_<scale>_replica_*|、\path|*_shard_*|、\path|gpu_<topic>_gpu<id>.csv| & 对应第五章索引复制主方案、设备侧归并兜底路径、主机侧聚合对比基线以及共享路径冲突实验。 \\
 论文图表整理与结果汇总 & \path|latest_<topic>_paper/|、\path|chart_ready_*.csv|、\path|session_meta.txt| & 将多轮实验结果整理为论文图表输入数据，保留轮次汇总、出图口径与会话元信息。 \\
 \end{tabularx}
-\normalsize
+\endgroup
 
 \section{核心实验日志与复现材料归档}
 
@@ -101,9 +104,10 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
   \item 正文结果图中的方案名称均对应具体验证场景或系统路径，不再使用含义不明确的编号标签。
 \end{itemize}
 
+\Needspace{0.78\textheight}
 \section{特征构造字段与派生特征补充说明}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
   \caption{特征构造明细}
   \label{tab:feature-engineering}
   \centering
@@ -130,15 +134,16 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
   \end{adjustbox}
 \end{table}
 
+\Needspace{0.95\textheight}
 \section{多 GPU 实验配置补充表}
 
-\begin{table}[htbp]
+\begin{table}[!htbp]
   \caption{多 GPU 实验配置补充表}
   \label{tab:multi-gpu-exp-setup}
   \centering
   \small
   \setlength{\tabcolsep}{3pt}
-  \renewcommand{\arraystretch}{1.18}
+  \renewcommand{\arraystretch}{1.10}
   \textbf{（a）固定参数与实验口径}
   \begin{adjustbox}{max width=\linewidth}
     \begin{tabular}{C{0.9cm}P{3.1cm}C{1.2cm}C{1.2cm}C{1.2cm}C{0.8cm}P{4.3cm}}
@@ -183,6 +188,7 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
 
 \renewcommand{\arraystretch}{1.2}
 \small
+\noindent
 \begin{tabularx}{\textwidth}{P{0.34\textwidth}Y}
 变量或配置项 & 含义 \\
 FAISS-GPU & FAISS 的 GPU 检索实现；本文中主要用于前期 ANN 接口与候选召回链路验证，包括设备侧输入输出路径、候选 ID/距离返回格式以及 PyTOD 评分衔接。 \\

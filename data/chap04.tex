@@ -69,8 +69,9 @@
 在执行流程上，数据并行与索引复制架构可以形式化表示为：给定总查询集合 $Q=\{q_1,q_2,\ldots,q_m\}$，调度器将其划分为若干子批次 $\{B_1,B_2,\ldots,B_g\}$，并将这些子批次分配给 $g$ 张 GPU。每张 GPU $G_j$ 本地维护一份完整索引 $\mathcal{I}_j=\mathcal{I}$，对其收到的批次 $B_j$ 独立执行
 \begin{equation}
   C_j = \mathcal{R}(B_j,\mathcal{I}_j), \qquad S_j = \mathcal{F}(B_j,C_j),
+  \label{eq:multi-gpu-local-loop}
 \end{equation}
-其中 $\mathcal{R}$ 表示候选召回，$\mathcal{F}$ 表示异常评分。由于每张 GPU 都能本地完成完整闭环，因此系统不需要在查询处理中途引入设备间依赖。
+式~\eqref{eq:multi-gpu-local-loop} 中，$\mathcal{R}$ 表示候选召回，$\mathcal{F}$ 表示异常评分。由于每张 GPU 都能本地完成完整闭环，因此系统不需要在查询处理中途引入设备间依赖。
 
 从系统工程角度看，索引复制虽然会增加显存占用，但换来了更低的执行复杂度和更清晰的数据路径。其优势主要体现在三个方面：查询之间天然独立，便于按请求或微批次做吞吐扩展；每张 GPU 都能沿用第四章已经优化好的本地执行链路，不需要为多卡场景重新拆解候选召回与评分接口；系统只需在极小规模结果层面做收口，而不需要在处理过程中持续维护跨卡依赖。综合以上原因考虑，索引复制在本文中始终被定义为主方案，而不是若干方案中的普通选项。
 
@@ -164,19 +165,19 @@
   \setlength{\tabcolsep}{1.8pt}
   \renewcommand{\arraystretch}{1.18}
   \begin{adjustbox}{max width=\linewidth}
-    \begin{tabular}{P{0.75cm}P{2.45cm}P{0.95cm}P{1.35cm}P{1.55cm}P{1.55cm}P{1.45cm}P{1.45cm}}
+    \begin{tabular}{C{0.75cm}P{2.35cm}C{0.95cm}C{1.35cm}C{1.60cm}C{1.60cm}C{1.45cm}C{1.45cm}}
       \toprule
-      GPU数 & 方案 & 数据规模 & QPS & \makecell[c]{avg\\latency\\(ms)} & \makecell[c]{p99\\latency\\(ms)} & \makecell[c]{CPU\\利用率(\%)} & \makecell[c]{GPU\\利用率(\%)} \\
+      GPU数 & 方案 & 数据规模 & QPS & avg\newline latency\newline (ms) & p99\newline latency\newline (ms) & CPU\newline 利用率(\%) & GPU\newline 利用率(\%) \\
       \midrule
       1 & Replicated & 10M & 4550.00 & 22.80 & 34.80 & 47.00 & 63.50 \\
       2 & Replicated & 10M & 7780.00 & 21.00 & 31.90 & 42.00 & 68.80 \\
       4 & Replicated & 10M & 13620.00 & 19.80 & 30.20 & 37.80 & 73.50 \\
-      4 & \makecell[l]{本地评分 +\\设备侧归并} & 100M & 11380.00 & 21.50 & 33.80 & 41.50 & 69.80 \\
-      4 & \makecell[l]{本地评分 +\\主机侧聚合} & 100M & 9580.00 & 24.60 & 39.00 & 48.50 & 62.50 \\
-      2 & \makecell[l]{Topology-aware\\binding} & 100M & 7520.00 & 23.40 & 37.20 & 43.80 & 67.50 \\
-      4 & \makecell[l]{Topology-aware\\binding} & 100M & 12650.00 & 22.10 & 45.10 & 39.80 & 72.20 \\
-      2 & \makecell[l]{Shared-path\\conflict} & 100M & 6830.00 & 25.10 & 41.40 & 45.80 & 61.80 \\
-      4 & \makecell[l]{Shared-path\\conflict} & 100M & 10420.00 & 28.90 & 56.60 & 44.50 & 56.50 \\
+      4 & 本地评分 +\newline 设备侧归并 & 100M & 11380.00 & 21.50 & 33.80 & 41.50 & 69.80 \\
+      4 & 本地评分 +\newline 主机侧聚合 & 100M & 9580.00 & 24.60 & 39.00 & 48.50 & 62.50 \\
+      2 & Topology-aware\newline binding & 100M & 7520.00 & 23.40 & 37.20 & 43.80 & 67.50 \\
+      4 & Topology-aware\newline binding & 100M & 12650.00 & 22.10 & 45.10 & 39.80 & 72.20 \\
+      2 & Shared-path\newline conflict & 100M & 6830.00 & 25.10 & 41.40 & 45.80 & 61.80 \\
+      4 & Shared-path\newline conflict & 100M & 10420.00 & 28.90 & 56.60 & 44.50 & 56.50 \\
       \midrule
       \multicolumn{8}{P{12.2cm}}{\footnotesize 注：结果展示遵循与附录B中补充表~\ref{tab:multi-gpu-exp-setup} 相同的多 GPU 统一规模口径。受版面与结果表达重点限制，表中列出的是 10M 索引复制扩展结果和 100M 压力场景结果，用于回答主方案、兜底路径与共享路径冲突三类设计问题。} \\
       \bottomrule

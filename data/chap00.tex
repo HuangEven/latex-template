@@ -8,18 +8,18 @@
 
 如图~\ref{fig:fin-ad-business-scene} 所示，在金融业务场景中，异常检测通常服务于实时交易风控、支付反欺诈、账户行为审计、洗钱交易排查与交易路径审查等任务。这类任务同时受到两方面约束。其一，输入数据规模大、维度高且更新频繁，交易行为、账户状态、地理位置、设备指纹、操作轨迹与时间统计特征往往需要共同参与异常判定；其二，系统必须在有限时间内输出可执行的异常评分或告警结果，延迟过高会削弱业务决策时效，吞吐不足则容易在高峰期形成检测堆积\citep{aggarwal2017outlier}。也就是说，金融异常检测不仅要求检测结果可用，还要求系统在高并发条件下持续可运行。在高吞吐数据处理场景中，系统瓶颈往往并不只来自单个算子的计算代价，还会进一步体现在数据驻留位置、查询执行模型以及 CPU--GPU 协同组织方式上\citep{pei2021gpudatabase,zhang2023gpuolap}。
 
-\begin{figure}[!htbp]
+\begin{figure}[!tb]
   \centering
-\includegraphics[width=\textwidth]{figures/fig1-1_financial_anomaly_business_scene.pdf}
+  \includegraphics[width=0.95\linewidth]{figures/fig1-1_financial_anomaly_business_scene.pdf}
   \caption{金融异常检测业务场景总览图（本文绘制）}
   \label{fig:fin-ad-business-scene}
 \end{figure}
 
 传统基于中央处理器（Central Processing Unit，CPU）的异常检测系统在小规模数据环境下能够完成较为稳定的训练与推理，但当样本规模持续增大时，距离计算、排序、候选组织与统计聚合等操作带来的时间与空间开销会迅速放大\citep{aggarwal2017outlier}。如图~\ref{fig:scale-bottleneck-migration} 所示，瓶颈会随数据规模变化发生迁移：在早期，问题主要表现为算子计算慢；而在单算子加速之后，CPU 与图形处理器（Graphics Processing Unit，GPU）之间的数据传输、检索与评分之间的中间结果组织，以及多 GPU 条件下的任务调度与结果聚合，会逐渐成为新的限制因素。这意味着，仅对某个检测器或某类算子做局部加速，并不足以支撑金融场景下的大规模异常检测。
 
-\begin{figure}[!htbp]
+\begin{figure}[!tb]
   \centering
-  \includegraphics[width=0.94\linewidth]{figures/fig1-2.pdf}
+  \includegraphics[width=0.90\linewidth]{figures/fig1-2.pdf}
   \caption{数据规模增长与系统瓶颈迁移示意图（本文绘制）}
   \label{fig:scale-bottleneck-migration}
 \end{figure}

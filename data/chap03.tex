@@ -62,29 +62,29 @@
       查询准备、候选输出与评分结果边界 &
       放大 H2D/D2H 次数，增加同步等待与尾延迟 &
       GPU 主导执行链路，边界处结合页锁定内存做必要交换 &
-      \makecell[l]{RAPIDS/cuDF\\PyTOD\\RMM 页锁定\\内存} &
-      \makecell[l]{降低跨设备往返频次，\\压缩尾延迟并提高\\端到端吞吐} \\
+      RAPIDS/cuDF\newline PyTOD\newline RMM 页锁定内存 &
+      降低跨设备往返频次，压缩尾延迟并提高端到端吞吐 \\
       \midrule
       候选重组开销 &
       候选召回到异常评分的接口边界 &
-      主机侧 pack\_candidates、序列化和重建成本高 &
+      主机侧 pack\_\allowbreak candidates、序列化和重建成本高 &
       采用设备常驻候选缓冲（device-resident candidate buffer）和统一张量交接接口 &
-      \makecell[l]{候选召回前端\\PyTOD\\FAISS-GPU\\初步接口验证} &
-      \makecell[l]{缩短候选打包阶段，\\避免 CPU 重新成为\\数据平面瓶颈} \\
+      候选召回前端\newline PyTOD\newline FAISS-GPU 初步接口验证 &
+      缩短候选打包阶段，避免 CPU 重新成为数据平面瓶颈 \\
       \midrule
       I/O 串行等待 &
       SSD 读页、ANN 图扩展与局部距离计算之间 &
       GPU 空转等待数据，召回吞吐受限 &
       异步 I/O 重叠、双缓冲和流级并行推进 &
-      \makecell[l]{外存 ANNS 前端\\NVMe SSD\\CUDA streams} &
-      \makecell[l]{隐藏部分读页等待，\\提高候选召回有效吞吐\\与 GPU 忙碌度} \\
+      外存 ANNS 前端\newline NVMe SSD\newline CUDA streams &
+      隐藏部分读页等待，提高候选召回有效吞吐与 GPU 忙碌度 \\
       \midrule
       资源分配抖动 &
       临时缓冲区、scratch memory 与主机交换缓冲 &
       频繁分配释放导致延迟抖动和显存碎片 &
       内存池复用、scratch 预分配与微批双缓冲 &
-      \makecell[l]{FAISS\\\texttt{GpuResources}\\RMM memory\\pool\\CUDA streams} &
-      \makecell[l]{稳定阶段延迟，降低\\分配开销（allocation\\overhead），改善资源利用率} \\
+      FAISS\newline \texttt{GpuResources}\newline RMM memory pool\newline CUDA streams &
+      稳定阶段延迟，降低分配开销（allocation overhead），改善资源利用率 \\
       \bottomrule
     \end{tabular}
   \end{adjustbox}
