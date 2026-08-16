@@ -182,40 +182,38 @@
 
 其中，受试者工作特征曲线下面积（Receiver Operating Characteristic Area Under Curve，ROC-AUC）、PR-AUC 与 Recall@$k$ 用于评价候选召回与张量化评分组合是否仍保持合理的检测能力；Recall@$k$ 与 Top-$k$ overlap 用于观察候选召回是否改变了最终排序口径；QPS、平均延迟与 p95/p99 延迟直接对应系统在单卡和多卡场景中的端到端收益；GPU 利用率、CPU 占用率、显存使用率、I/O 带宽利用率以及 CPU$\leftrightarrow$GPU 传输开销占比，则用于解释这些收益来自哪里。
 
-比较原则同样围绕这一逻辑展开。首先，同一类实验尽量共享相同数据集、向量表示和硬件配置，以避免数据口径与平台差异掩盖系统设计差异。其次，在比较不同召回配置时，控制候选集合规模或召回质量处于同一数量级，以保证检测效果与吞吐变化具有可解释性。再次，在多 GPU 实验中固定软件环境与相近查询到达方式，使索引复制、设备侧归并、主机侧聚合和共享路径冲突基线之间的差异尽量来自扩展策略本身，避免外部扰动影响。
+比较时不将所有方案统称为“现有方法”或“基线系统”。同一类实验共享数据源、向量表示、硬件和软件环境；候选召回比较保持候选预算与评分主干可比；多 GPU 路径则固定查询到达方式，以便将差异定位到复制、归并或共享 I/O 策略。不同数据规模的结果仅用于各自实验问题，不拼接为伪装的同条件横向比较。
 
-为了回应不同层次的实验问题，本文将对比方案组织为从效果上界、模块基线到完整系统方案的递进关系，如表~\ref{tab:baseline-settings} 所示。PyTOD 全量评分主要用于提供小规模条件下的检测效果上界和全量评分基线；仅召回方案用于判断候选召回本身是否足以完成异常检测；初步融合方案用于刻画 FAISS-GPU ANN API 与 PyTOD 简单串接时的系统表现；完整融合方案 FlashTOD 则对应以 FlashANNS 为主要候选召回前端，并经过数据路径组织和后端优化后的完整实现。多 GPU 场景下，主机侧聚合与设备侧归并分别作为两类跨卡归并对照，用于分析跨卡结果组织带来的额外代价。
+表~\ref{tab:baseline-settings}按四种性质组织比较对象。PyTOD 全量评分是已有评分方法参考；FAISS-GPU + PyTOD 是本文为控制“简单增加 ANN 前端”这一变量而构造的工程组合基线，不是已有文献提出的独立异常检测方法；FlashTOD 是本文完整方案；仅召回、CPU aggregation、GPU merge、replicated 和 shared-path conflict 均是内部执行路径对照。
 
 \begin{table}[htbp]
-  \caption{对比方案与基线设置}
+  \caption{对比方案、工程基线与内部执行路径设置}
   \label{tab:baseline-settings}
   \centering
-  \footnotesize
-  \setlength{\tabcolsep}{2.0pt}
-  \renewcommand{\arraystretch}{1.18}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.4cm}P{2.3cm}P{2.3cm}P{3.6cm}P{4.5cm}}
+  \scriptsize
+  \setlength{\tabcolsep}{1.0pt}
+  \renewcommand{\arraystretch}{1.16}
+  \begin{tabularx}{\linewidth}{@{}P{1.90cm}P{1.90cm}P{1.55cm}P{1.55cm}C{0.55cm}C{0.75cm}P{1.35cm}C{0.75cm}Y@{}}
     \toprule
-    方案 & 候选召回 & PyTOD 评分 & 数据路径 & 对比目的\\
+    方案 & 性质 & 候选召回 & 异常评分 & GPU & 外存 ANNS & GPU 主导路径 & 多 GPU & 比较目的\\
     \midrule
-    PyTOD 全量评分 & 不使用 & 全量样本评分 & 以 PyTOD 原始评分链路为主 & 作为小规模条件下的检测效果上界和全量评分基线\\
-    仅召回方案 & FAISS-GPU ANN API / 初步 ANN 检索 & 不进入完整评分模块 & 只观察候选集合与排序结果 & 验证仅依靠召回是否不足以替代异常评分\\
-    初步融合方案 & FAISS-GPU ANN API & 候选集上评分 & 成熟 API 简单串接，候选组织和阶段边界未充分优化 & 验证 ANN 检索接口 + PyTOD 评分链路可行性\\
-    完整融合方案 FlashTOD & FlashANNS 候选召回前端 & 候选集上评分 & FlashANNS 前端 + GPU 主导链路 + 设备侧候选组织 & 验证本文完整系统设计的端到端收益\\
-    主机侧聚合 & 多 GPU 本地 FlashANNS 召回 & 多 GPU 本地评分 & 跨卡结果回到 CPU 侧排序与聚合 & 作为主机侧归并路径的对照\\
-    设备侧归并 & 多 GPU 本地 FlashANNS 召回 & 多 GPU 本地评分 & 结果尽量留在 GPU 侧并借助通信库归并 & 评估设备侧归并相对主机侧聚合的收益和代价\\
+    PyTOD 全量评分 & 已有评分方法参考 & 不使用 & PyTOD full scoring & 是 & 否 & 评分内部 & 否 & 观察不使用候选压缩时的效果与开销\\
+    仅召回方案 & 内部功能对照 & FAISS-GPU & 无完整评分 & 是 & 否 & 部分 & 否 & 检验候选召回是否能替代异常评分\\
+    FAISS-GPU + PyTOD 初步融合 & 本文构造的工程组合基线 & FAISS-GPU & 候选集 PyTOD & 是 & 否 & 否 & 否 & 观察简单 ANN + 评分串接的表现\\
+    FlashTOD & 本文完整方案 & FlashANNS & 候选集 PyTOD & 是 & 是 & 是 & 是 & 验证候选、评分与数据路径协同的端到端收益\\
+    CPU aggregation & 多 GPU 内部路径对照 & 本地 FlashANNS & 本地 PyTOD & 是 & 是 & 本地链路 & 是 & 检验主机归并的搬运和同步代价\\
+    GPU merge & 多 GPU 内部路径对照 & 本地 FlashANNS & 本地 PyTOD & 是 & 是 & 是 & 是 & 比较设备侧归并的收益与通信代价\\
+    replicated & 多 GPU 内部路径对照 & 本地 FlashANNS & 本地 PyTOD & 是 & 是 & 是 & 是 & 观察索引可复制时的吞吐扩展\\
+    shared-path conflict & 多 GPU 内部压力对照 & 本地 FlashANNS & 本地 PyTOD & 是 & 是 & 受共享路径限制 & 是 & 观察 PCIe/SSD 竞争对 p99 和吞吐的影响\\
     \bottomrule
-  \end{tabular}
-  \end{adjustbox}
+  \end{tabularx}
 \end{table}
 
-其中，初步融合方案对应 FAISS-GPU ANN API 与 PyTOD 的简单串接，用于验证候选召回与候选集评分链路的功能可行性；完整融合方案 FlashTOD 则对应以 FlashANNS 为主要候选召回前端，并结合 GPU 主导数据路径和设备侧候选组织后的完整实现。
-
-需要说明的是，表~\ref{tab:baseline-settings} 中的基线主要用于刻画 FlashTOD 内部不同执行路径之间的差异，包括全量评分、仅召回、简单串接、完整链路以及不同多 GPU 归并路径。本文尚未在相同硬件、相同候选预算和相同 PyTOD 评分主干下系统覆盖 HNSW、IVF/IVF-PQ、DiskANN、PyOD CPU 实现等外部 ANNS 前端或系统级基线，因此后续结果不解释为对所有 ANNS 前端或异常检测框架的全面优势比较。
+端到端方案比较使用本文已有的 1M 桥接口径，在同一 PyTOD 评分主干下观察 PR-AUC 和 QPS。单 GPU 递进路径继续使用第四章已归档的 QPS、p99 延迟、PCIe 往返次数和 GPU 利用率；多 GPU 路径只在各自的 10M 或 100M 现有压测口径内比较。这三类数据承担的问题不同，因此正文不对未记录的延迟、利用率或召回指标作推算。
 
 在统计口径上，当前实验结果基于固定硬件平台、固定索引集、固定查询集、固定候选预算和固定批大小下的稳定运行配置。由于送审前实验时间有限，本文尚未对所有配置给出完整误差棒、标准差和显著性检验，因此正文图表主要展示代表性结果和趋势性比较，相关结论也限定在本文设定的数据规模、硬件平台和实现路径内。后续若进一步完善实验，应在附录或实验日志中补充各配置的重复运行记录、标准差范围和必要的统计检验；在此之前，本文不将当前差异解释为统计显著结论。
 
-本章后续补充或重绘的图优先使用现有图表、绘图脚本和 LaTeX 表格中已经报告过的实现数据；对于仅作为理论参照的曲线，正文会明确说明其不属于实测结果。若后续引入保守预期数据或占位数据，应在送审前尽量以重复实验日志替换。
+本章图表中的数值均来自论文现有实验记录和绘图数据。理论线性扩展线仅作参考，已在相应图注中与实测结果区分；本轮没有新增实验、占位数据或外部 ANNS 替换结果。
 
 图~\ref{fig:metric-taxonomy} 给出了指标体系结构。
 
@@ -273,11 +271,11 @@
 
 本节围绕四个需要被验证的问题展开：FlashTOD 是否总体有效；单卡优化和多 GPU 扩展分别带来了什么收益；多 GPU 主方案与兜底路径的边界如何理解；规模继续增大后系统是否仍保持可用。各小节先给出比较对象和待回答的问题，再引出对应图表。
 
-\subsection{FlashTOD 与基线系统的总体对比}
+\subsection{FlashTOD 与端到端比较方案}
 
-第一组结果用于评估 FlashTOD 的系统比较价值。比较对象包括 PyTOD 全量评分、仅召回方案、初步融合方案以及完整融合方案。若完整融合在 PR-AUC 或 Recall@$k$ 上与全量评分保持接近，同时在 QPS 上表现更好，就可以说明候选召回压缩评分范围与候选集上张量化评分这一结构在本文实验口径下具有实际意义。
+第一组结果使用 PyTOD 全量评分作为已有评分方法参考，并设置仅召回内部对照、FAISS-GPU + PyTOD 工程组合基线和 FlashTOD 完整方案。这组比较不把四者说成四种已有异常检测方法，而是分别观察全量评分、单独召回、简单 ANN + 评分串接以及完整系统协同的效果和吞吐。
 
-\subsection{单GPU 优化与多 GPU 扩展性能对比}
+\subsection{单 GPU 优化与多 GPU 扩展性能对比}
 
 第二组结果用于分析单卡优化与多 GPU 扩展各自改变的系统环节。比较对象包括原始分段链路、完整单卡优化、2 GPU 索引复制扩展以及 4 GPU 索引复制扩展。这里希望区分两类收益来源：单卡优化主要压缩候选召回到异常评分之间的数据路径和尾延迟，多 GPU 扩展则在此前基础上继续抬高系统吞吐上限，并缓解 CPU 压力。
 
@@ -289,45 +287,59 @@
 
 第四组结果用于分析规模继续增大后系统能否保持前述判断。比较对象覆盖 1M、10M、50M、100M 四个规模层级，观察 QPS、第 99 百分位延迟（p99 延迟）和 PR-AUC 如何随规模变化。需要说明的是，PyTOD 全量评分可以作为 1M 量级下的效果上界参考，但并不适合作为 10M 以上规模的统一对照，因此这一组跨规模结果采用初步融合方案和完整融合方案作为可扩展口径下的比较对象。这里更关注的是，在外存驻留路径和多 GPU 扩展逐渐进入关键位置后，系统性能与检测效果是否同时出现可解释的退化：吞吐是否按预期下降，p99 延迟是否继续抬升，PR-AUC 和候选覆盖类指标是否在 10M 之后出现更明显回落，以及 I/O 路径是否开始主导上限。
 
-为便于综合展示，表~\ref{tab:core-summary} 汇总了核心结果，图~\ref{fig:fusion-vs-baselines} 从检测效果和吞吐率两个维度同时比较 FlashTOD 与基线方案，图~\ref{fig:single-gpu-before-after} 与图~\ref{fig:multi-gpu-scaling} 分别补充展示吞吐能力和效果--性能折中关系，图~\ref{fig:scale-comparison} 汇总单卡优化与多 GPU 扩展的收益差异，而图~\ref{fig:scale-trend} 则展示跨规模趋势。
+表~\ref{tab:core-summary}集中列出端到端方案的现有 PR-AUC 和 QPS，表~\ref{tab:single-gpu-benefit-source}整理第四章已有单 GPU 递进式消融数据。前者回答候选压缩带来什么效果--效率取舍，后者用于定位 FlashTOD 性能收益的来源。图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling}保留原有的可视化表达，图~\ref{fig:scale-comparison}和图~\ref{fig:scale-trend}继续展示多 GPU 与跨规模趋势。
 
 \begin{table}[htbp]
-  \caption{核心结果汇总}
+  \caption{端到端方案的检测效果与吞吐比较}
   \label{tab:core-summary}
   \centering
-  \footnotesize
-  \setlength{\tabcolsep}{2.4pt}
+  \small
+  \setlength{\tabcolsep}{3.0pt}
   \renewcommand{\arraystretch}{1.18}
-  \begin{adjustbox}{max width=\linewidth}
-  \begin{tabular}{P{2.4cm}P{2.1cm}P{2.6cm}P{4.8cm}P{2.0cm}}
+  \begin{tabularx}{\linewidth}{@{}P{3.0cm}P{3.2cm}C{1.45cm}C{1.45cm}Y@{}}
     \toprule
-    结果主题 & 代表方案 & 核心指标 & 关键结果 & \makecell[c]{支撑\\图表} \\
+    方案 & 方案性质 & PR-AUC & QPS & 主要作用 \\
     \midrule
-    FlashTOD 总体有效性 & 完整融合 & PR-AUC, QPS & PR-AUC 接近全量评分，QPS 提升 & 图~\ref{fig:fusion-vs-baselines}--图~\ref{fig:multi-gpu-scaling} \\
-    单卡链路优化效果 & 单卡优化 & QPS, p99 Latency, CPU Utilization & p99 延迟和 CPU 负载下降，端到端吞吐提升 & 图~\ref{fig:single-stage-breakdown}--图~\ref{fig:single-gpu-overview}，图~\ref{fig:scale-comparison} \\
-    多 GPU 索引复制扩展性 & 2/4 GPU 索引复制 & QPS, CPU Utilization & QPS 随卡数提升，CPU 利用率未同步放大 & 图~\ref{fig:qps-vs-gpu}，图~\ref{fig:scale-comparison} \\
-    跨卡归并策略差异 & 设备侧归并 vs.\ 主机侧聚合 & avg/p99 Latency & 设备侧归并的平均延迟和 p99 延迟更低 & 图~\ref{fig:latency-quantiles}，表~\ref{tab:primary-vs-fallback} \\
-    跨规模可行性 & 完整融合 & QPS, p99 Latency, PR-AUC & 规模增大后性能退化可解释，完整融合仍优于初步融合 & 图~\ref{fig:scale-trend} \\
+    PyTOD 全量评分 & 已有评分方法参考 & 0.932 & 2700 & 观察全量评分的检测效果与计算开销 \\
+    仅召回方案 & 内部功能对照 & 0.844 & 4580 & 说明只保留候选召回不能替代完整异常评分 \\
+    FAISS-GPU + PyTOD & 本文构造的工程组合基线 & 0.883 & 3490 & 观察简单 ANN 候选前端与 PyTOD 串接的表现 \\
+    FlashTOD & 本文完整方案 & 0.906 & 4280 & 检验候选召回、异常评分和数据路径协同 \\
     \bottomrule
-  \end{tabular}
-  \end{adjustbox}
+  \end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{FlashTOD 单 GPU 性能收益的路径来源}
+  \label{tab:single-gpu-benefit-source}
+  \centering
+  \small
+  \setlength{\tabcolsep}{4.0pt}
+  \renewcommand{\arraystretch}{1.18}
+  \begin{tabularx}{\linewidth}{@{}P{3.1cm}C{2.0cm}C{2.8cm}C{2.8cm}Y@{}}
+    \toprule
+    执行路径 & QPS & p99 延迟（ms） & PCIe 往返次数/查询 & GPU 利用率 \\
+    \midrule
+    原始分段链路 & 3180 & 67.0 & 6.2 & 48.5\% \\
+    仅召回加速 & 3470 & 61.5 & 5.8 & 51.2\% \\
+    GPU 主导路径 & 3950 & 53.8 & 4.9 & 57.8\% \\
+    完整优化 & 4550 & 45.5 & 4.2 & 63.5\% \\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/exp/baseline_effect_qps_comparison.pdf}
-  \caption{不同基线方案下检测效果与吞吐率对比（实验数据绘制）}
+  \caption{端到端比较方案的检测效果与吞吐率（实验数据绘制）}
   \label{fig:fusion-vs-baselines}
 \end{figure}
 
-图~\ref{fig:fusion-vs-baselines} 用于同时观察不同系统配置在检测效果和吞吐率上的差异。PyTOD 全量评分提供小规模条件下的效果参考，但其全量评分成本较高，并不适合作为大规模吞吐实验的统一对照；仅召回方案虽然吞吐较高，但 PR-AUC 低于带有异常评分的方案，说明候选召回本身不能替代评分模块；初步融合方案介于仅召回和完整方案之间，而完整融合方案 FlashTOD 在 PR-AUC 与 QPS 之间取得更均衡的表现，体现了候选召回、张量化评分和数据路径组织共同作用后的系统收益。
-
-其中，初步融合方案对应 FAISS-GPU ANN API 与 PyTOD 的简单串接，用于验证候选召回与候选集评分链路的功能可行性；完整融合方案 FlashTOD 则对应以 FlashANNS 为主要候选召回前端、并结合 GPU 主导数据路径和设备侧候选组织后的完整实现。
+图~\ref{fig:fusion-vs-baselines}与表~\ref{tab:core-summary}使用相同的现有数据。仅召回方案吞吐最高，但 PR-AUC 为 0.844，这个内部对照只能说明召回阶段的速度上限，不能当作完整异常检测系统。FAISS-GPU + PyTOD 初步融合用于控制简单候选前端这一变量；FlashTOD 则在 FlashANNS 候选召回之外，继续组织设备侧候选和 GPU 主导数据路径。具体差异在第~\ref{sec:result-discussion}节结合路径消融结果分析。
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{plot_assets/ch06_fusion_compare/fig6_5_fusion_qps.pdf}
-  \caption{FlashTOD 与基线系统吞吐对比（实验数据绘制）}
+  \caption{端到端比较方案的吞吐率（实验数据绘制）}
   \label{fig:single-gpu-before-after}
 \end{figure}
 
@@ -353,8 +365,15 @@
 \end{figure}
 
 \section{结果讨论}
+\label{sec:result-discussion}
 
-从综合结果看，本文形成的四条主结论之间并不是彼此独立的。FlashTOD 之所以成立，并不仅仅因为它在吞吐上高于基线，而在于它在效果和吞吐之间建立了更稳定的平衡关系：候选召回没有明显破坏异常评分模块的判别能力，同时又把后续评分范围控制在系统可承受的预算内。对金融异常检测系统来说，这一点比单纯追求某个离线指标更重要，因为它决定了系统有机会进入真实高并发场景。
+与 PyTOD 全量评分相比，FlashTOD 改变的不是评分函数本身，而是进入高代价评分阶段的样本范围。现有结果中，PyTOD 全量评分的 PR-AUC 为 0.932、QPS 为 2700；FlashTOD 的 PR-AUC 为 0.906、QPS 为 4280。后者的吞吐率约提高 58.5\%，但 PR-AUC 下降了 0.026。因此，FlashTOD 并没有在检测效果上超过 PyTOD 全量评分。这组结果表明的是效果--效率折中：候选召回用有限的效果损失换取了更高的端到端吞吐。
+
+FAISS-GPU + PyTOD 初步融合的 PR-AUC 为 0.883、QPS 为 3490，FlashTOD 对应为 0.906 和 4280。这一比较不能用来证明 FlashANNS 在所有条件下都优于 FAISS，因为它们面向的索引和系统问题不同。该工程组合基线只回答一个更具体的问题：把成熟 GPU ANN 接口放到 PyTOD 前面，是否已经足够。结果显示，简单串接仍未形成完整 FlashTOD 的效果与性能。
+
+差异出现在阶段边界。候选 ID 和局部 distance 如果返回 CPU 重新打包，评分前会额外经历 D2H、CPU candidate repacking 和 H2D。后续还包含候选张量构造、GPU 中间张量驻留、阶段同步以及外存 I/O 与计算的重叠。ANN 检索本身变快，这些开销不会自动消失。FlashTOD 对设备侧候选组织和执行路径继续优化，所以该结果应解释为系统协同的收益，而不是单一 ANNS 算法的胜负。
+
+候选召回不是全部答案。表~\ref{tab:single-gpu-benefit-source}显示，从原始分段链路到仅召回加速，QPS 由 3180 增加到 3470，p99 延迟只由 67.0~ms 降至 61.5~ms。当候选到评分的交接改为 GPU 主导路径后，QPS 进一步达到 3950，p99 降至 53.8~ms。完整优化最终将 PCIe 往返次数从每查询 6.2 降到 4.2，GPU 利用率从 48.5\% 提高到 63.5\%，p99 降至 45.5~ms，QPS 达到 4550。这是一条递进链路：候选召回解决评分范围问题，GPU 主导路径解决阶段边界问题，两者对应不同的瓶颈。
 
 为了更清楚地解释不同优化项的收益来源，可以将端到端时间分解为
 \begin{equation}
@@ -363,58 +382,23 @@
   T_{\mathrm{score}} + T_{\mathrm{merge}} + T_{\mathrm{io}} .
   \label{eq:end-to-end-time-breakdown}
 \end{equation}
-式~\eqref{eq:end-to-end-time-breakdown} 中，$T_{\mathrm{prep}}$ 表示查询准备时间，$T_{\mathrm{retrieve}}$ 表示候选召回时间，$T_{\mathrm{pack}}$ 表示候选组织与张量化时间，$T_{\mathrm{score}}$ 表示 PyTOD 评分时间，$T_{\mathrm{merge}}$ 表示多 GPU 归并时间，$T_{\mathrm{io}}$ 表示外存访问与主机---设备传输开销。按这一分解看，单卡优化主要降低 $T_{\mathrm{pack}}$ 和 $T_{\mathrm{io}}$，异步 I/O 流水线主要压缩 $T_{\mathrm{retrieve}}$ 中的等待成分；多 GPU 索引复制则通过查询级并行降低单位查询分摊的检索和评分成本，而设备侧归并或主机侧聚合会额外引入 $T_{\mathrm{merge}}$。
+式~\eqref{eq:end-to-end-time-breakdown}中，$T_{\mathrm{prep}}$表示查询准备时间，$T_{\mathrm{retrieve}}$表示候选召回时间，$T_{\mathrm{pack}}$表示候选组织与张量化时间，$T_{\mathrm{score}}$表示 PyTOD 评分时间，$T_{\mathrm{merge}}$表示多 GPU 归并时间，$T_{\mathrm{io}}$表示外存访问与主机---设备传输。候选预算主要改变 $T_{\mathrm{score}}$的输入规模，设备侧候选组织直接压缩 $T_{\mathrm{pack}}$，异步 I/O 与计算重叠减少 $T_{\mathrm{retrieve}}$ 中的等待，而多 GPU 归并会额外引入 $T_{\mathrm{merge}}$。这个分解与表~\ref{tab:single-gpu-benefit-source}中 PCIe 往返、GPU 利用率和尾延迟的同向变化一致。
 
-单卡优化的意义也不只是数值上的提速。第四章和本章结果共同表明，系统收益主要来自数据路径被压缩之后，候选召回与异常评分之间的边界成本下降，CPU$\leftrightarrow$GPU 传输次数与阶段同步等待被压到更低水平。这意味着，原先限制系统的并非某一个算子绝对不够快，而是模块之间的折返路径过长。当这一点被解决之后，GPU 侧检索和评分才真正成为决定性能的主要阶段。
+多 GPU 结果回答的是另一类问题。索引可复制时，replicated 路径能直接复用单卡闭环，CPU 只需调度请求和汇总小规模结果。容量约束迫使系统分片时，GPU merge 在本文 100M 实验中的平均延迟和 p99 低于 CPU aggregation，但它仍需通信和流协调。多卡共享 PCIe/SSD 路径还会增加 I/O 排队，因此卡数增加并不等于线性扩展。
 
-多 GPU 结果则进一步说明，第五章给出的结构判断是必要的，而不是形式上的方案区分。索引复制能够成为主方案，并不是因为它在所有条件下都最节省资源，而是因为它最符合吞吐优先场景下的路径组织方式：查询分发简单，单卡链路可以直接复用，CPU 不需要重新承担大规模中间结果处理。当容量约束使索引复制不再可行时，在本文 100M 规模多 GPU 归并实验中，设备侧归并在平均延迟和 p99 延迟上低于主机侧聚合；但它仍会引入额外跨卡通信和设备侧归并开销，因此只应被视为容量受限场景下代价更高的兜底路径。
-
-同时，多 GPU QPS 随 GPU 数量增加而提升，并不意味着系统获得了理想线性加速。原因在于 CPU 控制面仍需承担请求分发和最终小规模结果汇总，多 GPU 并发访问共享 PCIe/SSD 路径时会放大 I/O 竞争，设备侧归并或主机侧聚合也会分别带来跨卡通信和主机侧排序开销。因此，本文更稳妥地将相关结果解释为具有吞吐扩展能力，而不是把索引复制或归并方案描述为理想线性扩展。
-
-最后，I/O 路径对扩展上限的影响在综合实验中表现得比单卡阶段更直接。随着规模继续增大，系统瓶颈会逐步从计算资源扩展到共享存储路径与拓扑组织上。这一点也解释了为何本章在扩展收益之外，还必须单独比较拓扑感知绑定与共享路径冲突两组结果。
+这些结果有四个明确边界。FlashTOD 的 PR-AUC 0.906 低于 PyTOD 全量评分的 0.932，效率收益并非没有代价。FAISS-GPU + PyTOD 是本文构造的工程组合基线，不是已有文献中的独立 ANN + TOD 异常检测系统。当前数据不支持将 FlashTOD 说成全面优于 HNSW、IVF/IVF-PQ 或 DiskANN。部分配置尚未覆盖完整重复运行和统计显著性检验，所以章内数值支撑的是当前实验口径下的趋势和工程取舍，不是无条件的普遍性结论。
 
 \section{局限性分析}
 
-尽管本文在 FlashTOD、单卡数据路径优化与多 GPU 扩展方面给出了较完整的实验链路，但结论仍需放在明确边界内理解。
+超大规模实验主要依赖 IBM AML / AMLSim 等高保真合成数据。这类数据可用于施加吞吐、存储路径和多 GPU 扩展压力，却不能完全替代真实金融机构的在线负载、噪声结构和概念漂移。关于 10M、50M 和 100M 规模的结论因而限定为当前平台上的工程趋势。
 
-首先，超大规模实验主要依赖 IBM AML / AMLSim 等高保真合成数据。这类数据能够较好支撑系统吞吐、路径压力和扩展性验证，但仍不能完全替代真实金融机构中的在线负载和数据噪声结构。因此，本章关于 10M、50M 和 100M 规模的结论，主要用于工程可行性分析，而不是对所有真实业务场景的直接外推。
+PyTOD 全量评分的时间和中间结果存储开销限制了它在大规模压测中的覆盖范围。本文在 1M 桥接口径保留全量评分参考，10M 以上主要观察工程组合方案、FlashTOD 与多 GPU 内部路径。这能回答系统扩展问题，但不等同于所有规模下的全量评分横向实验。
 
-其次，PyTOD 全量评分在大规模数据上的计算和中间结果存储成本较高，因此本文只能在较小规模或桥接口径下将其作为效果上界和全量评分基线。对于 10M 以上规模，正文更多采用初步融合方案、完整融合方案以及多 GPU 归并路径进行比较，这能够回答系统扩展问题，但不能完全替代所有大规模全量评分基线。
+现有对比已覆盖技术能力边界、PyTOD 全量评分参考、FAISS-GPU + PyTOD 工程组合基线以及 FlashTOD 内部路径消融。比较范围仍然有限：本文没有在相同候选预算和 PyTOD 评分后端下穷尽 HNSW、IVF/IVF-PQ 与 DiskANN 等可替换前端，也未新增 PyOD CPU 实验。所以，结论不包含对所有 ANNS 方法或异常检测系统的全面优势声称。
 
-再次，索引复制（replicated）架构的优势建立在索引仍可复制的条件上。一旦索引规模继续增大，或候选预算和中间张量占用进一步上升，系统就必须转向分片（sharded）路径，并接受更高的通信与归并复杂度。这意味着本文对多 GPU 主方案的判断带有明确的适用前提，而不是无条件成立。
+统计口径同样需要保留。当前数值主要来自固定硬件、查询集、候选预算和批处理参数下的已有稳定运行记录。部分配置尚未提供完整重复轮次、标准差、误差棒和显著性检验，因此章内差异用于趋势性比较和工程可行性分析，不解释为统计显著结论。
 
-此外，外存驻留路径与拓扑感知 I/O 优化对部署条件依赖较强，其收益与 GPU--SSD--PCIe--NUMA 拓扑、驱动与 GDS 支持高度相关。同一套方法在不同硬件节点上的收益幅度可能存在明显波动，因此本章关于 I/O 路径的结论更强调方向正确，而不意味着具体数值在所有平台上都可等比例复现。
-
-同时，本文正文图表尚未系统覆盖所有配置下的重复运行误差范围和显著性检验。现有结果能够支撑趋势性比较和工程可行性分析，但若进一步面向生产级部署评估，还需要补充更多随机种子、更多查询到达模式和更完整的统计重复实验。
-
-\textbf{统计稳定性与重复运行限制。}当前实验结果主要来自固定硬件、固定查询集、固定候选预算和固定批处理参数下的稳定运行记录。受实验周期限制，正文尚未对每一种规模、每一类归并路径和每一个候选预算组合提供完整重复轮次、均值、标准差、误差棒或显著性检验。因此，本文对实验结果的解释聚焦于趋势性差异和工程可行性，不将当前图表中的数值差异直接解释为统计显著结论。
-
-\textbf{外部基线覆盖范围限制。}本文基线主要围绕 FlashTOD 内部路径展开，用于比较全量评分、仅召回、FAISS-GPU 初步串接、FlashANNS 完整链路以及不同多 GPU 归并策略之间的差异。尚未在相同数据、相同候选预算和相同评分主干下系统纳入 HNSW、IVF/IVF-PQ、DiskANN、PyOD CPU 实现等外部方案，因此本文不声称对全部 ANNS 前端或异常检测系统形成全面优势。后续工作可按表~\ref{tab:external-baseline-plan} 所示口径补充外部基线。
-
-\begin{table}[htbp]
-  \caption{后续外部基线补充计划}
-  \label{tab:external-baseline-plan}
-  \centering
-  \footnotesize
-  \setlength{\tabcolsep}{2.5pt}
-  \renewcommand{\arraystretch}{1.16}
-  \begin{adjustbox}{max width=\linewidth}
-    \begin{tabular}{P{2.4cm}P{3.5cm}P{4.1cm}P{4.3cm}}
-      \toprule
-      后续基线 & 主要比较对象 & 需要固定的实验口径 & 预期回答的问题 \\
-      \midrule
-      HNSW & FlashANNS 候选召回前端 & 数据规模、候选预算、Recall@$k$、PyTOD 评分主干 & 内存图索引在相同评分链路下的检索与候选生成代价 \\
-      IVF/IVF-PQ & FlashANNS 候选召回前端 & 聚类参数、候选预算、召回质量、批大小 & 量化或聚类索引与外存 ANNS 路径的效果--性能折中 \\
-      DiskANN & FlashANNS 外存前端路径 & SSD 路径、I/O 并发、候选预算、查询集 & 外存 ANNS 前端在相同数据路径约束下的吞吐与尾延迟差异 \\
-      PyOD CPU & PyTOD 评分模块 & 数据划分、评分函数、样本规模、候选集合 & CPU 传统实现与 GPU 张量化评分主干的可部署性边界 \\
-      \bottomrule
-    \end{tabular}
-  \end{adjustbox}
-\end{table}
-
-最后，本文的实验范围仍然限制在单机多 GPU 场景，多机分布式环境中的跨机通信、分布式索引管理和更复杂的调度问题尚未进入验证范围。这一限制并不影响本文对单机大规模异常检测系统的结论，但确实限定了结论的外推边界。
-
-由此，本文结论应理解为单机多 GPU 条件下的工程验证：索引复制主方案仍受显存与索引规模约束，外存驻留和拓扑感知 I/O 的收益依赖具体硬件路径与 GDS 支持，超大规模真实金融负载验证仍有限。多机分布式场景中的跨机通信、分布式索引和集群调度尚未纳入本文范围，需要在后续工作中继续验证。
+多 GPU 主方案也有适用前提。replicated 依赖索引可复制；索引超出单卡容量后必须转向 sharded 路径，并承担通信与归并代价。外存和拓扑感知 I/O 收益还取决于 GPU--SSD--PCIe--NUMA 拓扑、驱动与 GDS 支持。本文只验证单机多 GPU，多机通信、分布式索引与集群调度尚未进入实验范围。
 
 \section{本章小结}
 
