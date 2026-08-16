@@ -140,28 +140,7 @@ FlashTOD 不是新的异常检测理论模型。本文保留 PyTOD 的评分能�
 
 \begin{figure}[!htbp]
   \centering
-  \begin{tikzpicture}[
-    font=\small,
-    node distance=3.6mm,
-    flow/.style={draw=black!55, rounded corners=2pt, align=center, text width=13.0cm, minimum height=0.82cm, inner xsep=6pt, inner ysep=4pt, fill=blue!4},
-    problem/.style={flow, fill=orange!9},
-    verify/.style={flow, fill=green!7},
-    link/.style={-Latex, line width=0.55pt, draw=black!65, shorten >=2pt, shorten <=2pt}
-  ]
-    \node[flow] (need) {实际金融异常检测需求：在有限时间内兼顾检测效果、吞吐、尾延迟与扩展能力};
-    \node[problem, below=of need] (issues) {四个核心系统问题：评分复杂度；外存候选召回；CPU--GPU 阶段边界；多 GPU 归并与共享 I/O};
-    \node[flow, below=of issues] (c3) {第三章：FlashTOD 系统构建\quad（主要对应问题1、问题2）};
-    \node[flow, below=of c3] (c4) {第四章：单 GPU 数据路径优化\quad（主要对应问题2、问题3）};
-    \node[flow, below=of c4] (c5) {第五章：多 GPU 扩展与归并\quad（主要对应问题4）};
-    \node[verify, below=of c5] (c6) {第六章：统一实验验证\quad（效果、阶段耗时、QPS、p99 与资源利用率）};
-    \node[flow, below=of c6] (c7) {第七章：总结研究结论，重申适用条件与未覆盖边界};
-    \draw[link] (need) -- (issues);
-    \draw[link] (issues) -- (c3);
-    \draw[link] (c3) -- (c4);
-    \draw[link] (c4) -- (c5);
-    \draw[link] (c5) -- (c6);
-    \draw[link] (c6) -- (c7);
-  \end{tikzpicture}
+  \includegraphics[width=\linewidth]{figures/fig1-4.pdf}
   \caption{全文研究内容与章节逻辑关系图（本文绘制）}
   \label{fig:chapter-logic}
 \end{figure}
