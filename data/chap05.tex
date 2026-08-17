@@ -182,6 +182,8 @@
 
 其中，受试者工作特征曲线下面积（Receiver Operating Characteristic Area Under Curve，ROC-AUC）、PR-AUC 与 Recall@$k$ 用于评价候选召回与张量化评分组合是否仍保持合理的检测能力；Recall@$k$ 与 Top-$k$ overlap 用于观察候选召回是否改变了最终排序口径；QPS、平均延迟与 p95/p99 延迟直接对应系统在单卡和多卡场景中的端到端收益；GPU 利用率、CPU 占用率、显存使用率、I/O 带宽利用率以及 CPU$\leftrightarrow$GPU 传输开销占比，则用于解释这些收益来自哪里。
 
+金融异常样本通常远少于正常样本。此时 ROC 曲线中的假阳性率会被大量真负例稀释，单独使用 ROC-AUC 可能弱化对少数类识别质量的观察；Precision-Recall 曲线更直接地反映精确率与召回率之间的关系\citep{davis2006prroc,saito2015prauc}。因此，本文把 PR-AUC 作为主要效果指标之一，并与 Recall@$k$、Top-$k$ overlap 共同报告。这并不意味着 PR-AUC 在所有数据分布下都绝对优于 ROC-AUC，而是与本文类别不平衡和风险样本排序的评价目标更匹配。
+
 比较时不将所有方案统称为“现有方法”或“基线系统”。同一类实验共享数据源、向量表示、硬件和软件环境；候选召回比较保持候选预算与评分主干可比；多 GPU 路径则固定查询到达方式，以便将差异定位到复制、归并或共享 I/O 策略。不同数据规模的结果仅用于各自实验问题，不拼接为伪装的同条件横向比较。
 
 表~\ref{tab:baseline-settings}按四种性质组织比较对象。PyTOD 全量评分是已有评分方法参考；FAISS-GPU + PyTOD 是本文为控制“简单增加 ANN 前端”这一变量而构造的工程组合基线，不是已有文献提出的独立异常检测方法；FlashTOD 是本文完整方案；仅召回、CPU aggregation、GPU merge、replicated 和 shared-path conflict 均是内部执行路径对照。

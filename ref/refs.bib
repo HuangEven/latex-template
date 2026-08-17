@@ -1,6 +1,6 @@
 @article{zhao2022tod,
   author  = {Zhao, Yue and Chen, Gaohong and Jia, Zhen},
-  title   = {TOD: GPU-accelerated Outlier Detection via Tensor Operations},
+  title   = {{TOD}: {GPU}-accelerated Outlier Detection via Tensor Operations},
   journal = {Proceedings of the VLDB Endowment},
   year    = {2022}
 }
@@ -136,21 +136,22 @@
 
 @article{johnson2019faiss,
   author  = {Johnson, Jeff and Douze, Matthijs and J{\'e}gou, Herv{\'e}},
-  title   = {Billion-scale Similarity Search with GPUs},
+  title   = {Billion-scale Similarity Search with {GPUs}},
   journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
   year    = {2019}
 }
 
 @inproceedings{subramanya2019diskann,
-  author    = {Subramanya, Suhas Jayaram and Devvrit and Kadekodi, Rohan and Krishnaswamy, Ravishankar and Simhadri, Harsha Vardhan},
-  title     = {DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node},
-  booktitle = {Advances in Neural Information Processing Systems 33 (NeurIPS 2019)},
+  author    = {Subramanya, Suhas Jayaram and Devvrit, Fnu and Simhadri, Harsha Vardhan and Krishnawamy, Ravishankar and Kadekodi, Rohan},
+  title     = {{DiskANN}: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {32},
   year      = {2019}
 }
 
 @misc{xiao2025flashanns,
   author = {Xiao, Y. and Sun, M. and Song, Z. and Tian, B. and Zhang, J. and Sun, J. and Wang, Z.},
-  title  = {Breaking the Storage-Compute Bottleneck in Billion-Scale ANNS: A GPU-Driven Asynchronous I/O Framework},
+  title  = {Breaking the Storage-Compute Bottleneck in Billion-Scale {ANNS}: A {GPU}-Driven Asynchronous {I/O} Framework},
   year   = {2025},
   note   = {FlashANNS-related work}
 }
@@ -159,6 +160,10 @@
   author  = {Malkov, Yury A. and Yashunin, Dmitry A.},
   title   = {Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs},
   journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume  = {42},
+  number  = {4},
+  pages   = {824--836},
+  doi     = {10.1109/TPAMI.2018.2889473},
   year    = {2020}
 }
 
@@ -193,7 +198,7 @@
 
 @inproceedings{breunig2000lof,
   author    = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, J{\"o}rg},
-  title     = {LOF: Identifying Density-Based Local Outliers},
+  title     = {{LOF}: Identifying Density-Based Local Outliers},
   booktitle = {Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data},
   year      = {2000}
 }
@@ -207,7 +212,7 @@
 
 @inproceedings{angiulli2013gpuoutlier,
   author    = {Angiulli, Fabrizio and Basta, Stefano and Lodi, Stefano and Sartori, Claudio},
-  title     = {Fast Outlier Detection Using a GPU},
+  title     = {Fast Outlier Detection Using a {GPU}},
   booktitle = {2013 International Conference on High Performance Computing \& Simulation (HPCS)},
   pages     = {143--150},
   year      = {2013},
@@ -216,7 +221,7 @@
 
 @article{azmandian2014gpufeature,
   author  = {Azmandian, Fatemeh and Yilmazer, Ayse and Dy, Jennifer G. and Aslam, Javed A. and Kaeli, David R.},
-  title   = {Harnessing the Power of GPUs to Speed Up Feature Selection for Outlier Detection},
+  title   = {Harnessing the Power of {GPUs} to Speed Up Feature Selection for Outlier Detection},
   journal = {Journal of Computer Science and Technology},
   volume  = {29},
   number  = {3},
@@ -227,7 +232,7 @@
 
 @misc{faiss_gpu_wiki,
   author = {{FAISS Contributors}},
-  title  = {Faiss on the GPU},
+  title  = {Faiss on the {GPU}},
   year   = {2024},
   note   = {FAISS Wiki},
   url    = {https://github.com/facebookresearch/faiss/wiki/Faiss-on-the-GPU}
@@ -235,14 +240,14 @@
 
 @misc{rapids_cudf_pandas,
   author = {{RAPIDS Developers}},
-  title  = {cuDF Documentation: How it Works / cudf.pandas},
+  title  = {{cuDF} Documentation: How it Works / cudf.pandas},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/cudf/stable/cudf_pandas/how-it-works/}
 }
 
 @article{paul2021dbgpus,
   author  = {Paul, Johns and Lu, Shengliang and He, Bingsheng},
-  title   = {Database Systems on GPUs},
+  title   = {Database Systems on {GPUs}},
   journal = {Foundations and Trends in Databases},
   volume  = {11},
   number  = {1},
@@ -253,49 +258,49 @@
 
 @misc{rapids_rmm_pinned,
   author = {{RAPIDS Developers}},
-  title  = {RMM Documentation: PinnedHostMemoryResource},
+  title  = {{RMM} Documentation: {PinnedHostMemoryResource}},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/rmm/stable/}
 }
 
 @misc{cuvs_multi_gpu_nn,
   author = {{NVIDIA}},
-  title  = {cuVS Documentation: Multi-GPU Nearest Neighbors},
+  title  = {{cuVS} Documentation: Multi-{GPU} Nearest Neighbors},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/cuvs/stable/python_api/neighbors_multi_gpu/}
 }
 
 @misc{cuvs_multi_gpu_ivf_host,
   author = {{NVIDIA}},
-  title  = {cuVS Documentation: Multi-GPU IVF-PQ / IVF-Flat (Host Memory Requirement)},
+  title  = {{cuVS} Documentation: Multi-{GPU} {IVF-PQ} / {IVF-Flat} (Host Memory Requirement)},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/cuvs/stable/}
 }
 
 @misc{nccl_stream_semantics,
   author = {{NVIDIA}},
-  title  = {NCCL Documentation: CUDA Stream Semantics},
+  title  = {{NCCL} Documentation: {CUDA} Stream Semantics},
   year   = {2024},
   url    = {https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/streams.html}
 }
 
 @misc{gds_overview,
   author = {{NVIDIA}},
-  title  = {GPUDirect Storage Documentation: Overview Guide},
+  title  = {{GPUDirect Storage} Documentation: Overview Guide},
   year   = {2024},
   url    = {https://docs.nvidia.com/gpudirect-storage/overview-guide/}
 }
 
 @misc{gds_design_guide,
   author = {{NVIDIA}},
-  title  = {GPUDirect Storage Documentation: Design Guide},
+  title  = {{GPUDirect Storage} Documentation: Design Guide},
   year   = {2024},
   url    = {https://docs.nvidia.com/gpudirect-storage/design-guide/}
 }
 
 @misc{dgraphfin_paper,
   author       = {Liu, Ziqi and Xiao, Zecheng and Li, Lijun and He, Yao and Song, Yang and Zhou, Jie and Tang, Jie},
-  title        = {DGraph: A Large-Scale Financial Dataset for Graph Anomaly Detection},
+  title        = {{DGraph}: A Large-Scale Financial Dataset for Graph Anomaly Detection},
   year         = {2022},
   howpublished = {arXiv preprint},
   eprint       = {2207.03579},
@@ -307,35 +312,35 @@
 
 @misc{dgraphfin_site,
   author = {{DGraph Team}},
-  title  = {DGraphFin Dataset (official website)},
+  title  = {{DGraphFin} Dataset (official website)},
   year   = {2022},
   url    = {https://dgraph.xinye.com/dataset}
 }
 
 @misc{dgraphfin_baseline,
   author = {{DGraph Team}},
-  title  = {DGraphFin\_baseline (GitHub Repository)},
+  title  = {{DGraphFin}\_baseline ({GitHub} Repository)},
   year   = {2022},
   url    = {https://github.com/DGraphXinye/DGraphFin_baseline}
 }
 
 @misc{ibm_aml_data,
   author = {{IBM Research}},
-  title  = {IBM AML-Data: Synthetic Data for Anti-Money Laundering Research},
+  title  = {{IBM AML-Data}: Synthetic Data for Anti-Money Laundering Research},
   year   = {2022},
   url    = {https://github.com/IBM/AML-Data}
 }
 
 @misc{ibm_amlsim,
   author = {{IBM Research}},
-  title  = {AMLSim: A Synthetic Financial Transaction Generator for Anti-Money Laundering Research},
+  title  = {{AMLSim}: A Synthetic Financial Transaction Generator for Anti-Money Laundering Research},
   year   = {2021},
   url    = {https://github.com/IBM/AMLSim}
 }
 
 @misc{ieee_cis_fraud,
   author = {{IEEE-CIS}},
-  title  = {Fraud Detection (IEEE-CIS) Dataset},
+  title  = {Fraud Detection ({IEEE-CIS}) Dataset},
   year   = {2019},
   note   = {Kaggle competition dataset},
   url    = {https://www.kaggle.com/c/ieee-fraud-detection}
@@ -360,14 +365,182 @@
 
 @misc{cuvs_dist_mode,
   author = {{NVIDIA}},
-  title  = {cuVS Documentation: Distribution Mode / Search Mode / Merge Mode (Multi-GPU ANN)},
+  title  = {{cuVS} Documentation: Distribution Mode / Search Mode / Merge Mode (Multi-{GPU} {ANN})},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/cuvs/stable/}
 }
 
 @misc{cuvs_dynamic_batching,
   author = {{NVIDIA}},
-  title  = {cuVS Documentation: Dynamic Batching},
+  title  = {{cuVS} Documentation: Dynamic Batching},
   year   = {2026},
   url    = {https://docs.rapids.ai/api/cuvs/stable/}
+}
+
+@inproceedings{kriegel2008abod,
+  author    = {Kriegel, Hans-Peter and Schubert, Matthias and Zimek, Arthur},
+  title     = {Angle-Based Outlier Detection in High-dimensional Data},
+  booktitle = {Proceedings of the 14th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
+  pages     = {444--452},
+  year      = {2008},
+  doi       = {10.1145/1401890.1401946}
+}
+
+@inproceedings{li2020copod,
+  author    = {Li, Zheng and Zhao, Yue and Botta, Nicola and Ionescu, Cezar and Hu, Xiyang},
+  title     = {{COPOD}: Copula-Based Outlier Detection},
+  booktitle = {2020 IEEE International Conference on Data Mining (ICDM)},
+  pages     = {1118--1123},
+  year      = {2020},
+  doi       = {10.1109/ICDM50108.2020.00135}
+}
+
+@article{li2023ecod,
+  author  = {Li, Zheng and Zhao, Yue and Hu, Xiyang and Botta, Nicola and Ionescu, Cezar and Chen, George H.},
+  title   = {{ECOD}: Unsupervised Outlier Detection Using Empirical Cumulative Distribution Functions},
+  journal = {IEEE Transactions on Knowledge and Data Engineering},
+  volume  = {35},
+  number  = {12},
+  pages   = {12181--12193},
+  year    = {2023},
+  doi     = {10.1109/TKDE.2022.3159580}
+}
+
+@inproceedings{liu2008isolationforest,
+  author    = {Liu, Fei Tony and Ting, Kai Ming and Zhou, Zhi-Hua},
+  title     = {Isolation Forest},
+  booktitle = {2008 Eighth IEEE International Conference on Data Mining},
+  pages     = {413--422},
+  year      = {2008},
+  doi       = {10.1109/ICDM.2008.17}
+}
+
+@article{fu2019nsg,
+  author  = {Fu, Cong and Xiang, Chao and Wang, Changxu and Cai, Deng},
+  title   = {Fast Approximate Nearest Neighbor Search With The Navigating Spreading-out Graph},
+  journal = {Proceedings of the VLDB Endowment},
+  volume  = {12},
+  number  = {5},
+  pages   = {461--474},
+  year    = {2019},
+  doi     = {10.14778/3303753.3303754}
+}
+
+@inproceedings{chen2021spann,
+  author    = {Chen, Qi and Zhao, Bing and Wang, Haidong and Li, Mingqin and Liu, Chuanjie and Li, Zengzhong and Yang, Mao and Wang, Jingdong},
+  title     = {{SPANN}: Highly-efficient Billion-scale Approximate Nearest Neighborhood Search},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {34},
+  pages     = {5199--5212},
+  year      = {2021}
+}
+
+@article{jegou2011pq,
+  author  = {J{\'e}gou, Herv{\'e} and Douze, Matthijs and Schmid, Cordelia},
+  title   = {Product Quantization for Nearest Neighbor Search},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume  = {33},
+  number  = {1},
+  pages   = {117--128},
+  year    = {2011},
+  doi     = {10.1109/TPAMI.2010.57}
+}
+
+@article{aumuller2020annbenchmarks,
+  author  = {Aum{\"u}ller, Martin and Bernhardsson, Erik and Faithfull, Alexander},
+  title   = {{ANN-Benchmarks}: A Benchmarking Tool for Approximate Nearest Neighbor Algorithms},
+  journal = {Information Systems},
+  volume  = {87},
+  pages   = {101374},
+  year    = {2020},
+  doi     = {10.1016/j.is.2019.02.006}
+}
+
+@inproceedings{silberstein2013gpufs,
+  author    = {Silberstein, Mark and Ford, Bryan and Keidar, Idit and Witchel, Emmett},
+  title     = {{GPUfs}: Integrating a File System with {GPUs}},
+  booktitle = {Proceedings of the 18th International Conference on Architectural Support for Programming Languages and Operating Systems},
+  pages     = {485--498},
+  year      = {2013},
+  doi       = {10.1145/2451116.2451169}
+}
+
+@inproceedings{qureshi2023bam,
+  author    = {Qureshi, Zaid and Mailthody, Vikram Sharma and Gelado, Isaac and Min, Seung Won and Masood, Amna and Park, Jeongmin and Xiong, Jinjun and Newburn, Chris J. and Vainbrand, Dmitri and Chung, I-Hsin and Garland, Michael and Dally, William and Hwu, Wen-mei},
+  title     = {{GPU}-Initiated On-Demand High-Throughput Storage Access in the {BaM} System Architecture},
+  booktitle = {Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+  volume    = {2},
+  pages     = {325--339},
+  year      = {2023},
+  doi       = {10.1145/3575693.3575748}
+}
+
+@article{saito2015prauc,
+  author  = {Saito, Takaya and Rehmsmeier, Marc},
+  title   = {The Precision-Recall Plot Is More Informative than the {ROC} Plot When Evaluating Binary Classifiers on Imbalanced Datasets},
+  journal = {PLOS ONE},
+  volume  = {10},
+  number  = {3},
+  pages   = {e0118432},
+  year    = {2015},
+  doi     = {10.1371/journal.pone.0118432}
+}
+
+@inproceedings{davis2006prroc,
+  author    = {Davis, Jesse and Goadrich, Mark},
+  title     = {The Relationship Between Precision-Recall and {ROC} Curves},
+  booktitle = {Proceedings of the 23rd International Conference on Machine Learning},
+  pages     = {233--240},
+  year      = {2006},
+  doi       = {10.1145/1143844.1143874}
+}
+
+@misc{weber2018scalableaml,
+  author        = {Weber, Mark and Chen, Jie and Suzumura, Toyotaro and Pareja, Aldo and Ma, Tengfei and Kanezashi, Hiroki and Kaler, Tim and Leiserson, Charles E. and Schardl, Tao B.},
+  title         = {Scalable Graph Learning for Anti-Money Laundering: A First Look},
+  year          = {2018},
+  howpublished  = {arXiv preprint},
+  eprint        = {1812.00076},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/1812.00076}
+}
+
+@misc{weber2019bitcoinaml,
+  author        = {Weber, Mark and Domeniconi, Giacomo and Chen, Jie and Weidele, Daniel Karl I. and Bellei, Claudio and Robinson, Tom and Leiserson, Charles E.},
+  title         = {Anti-Money Laundering in Bitcoin: Experimenting with Graph Convolutional Networks for Financial Forensics},
+  year          = {2019},
+  howpublished  = {arXiv preprint},
+  eprint        = {1908.02591},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/1908.02591}
+}
+
+@inproceedings{dou2020caregnn,
+  author    = {Dou, Yingtong and Liu, Zhiwei and Sun, Li and Deng, Yutong and Peng, Hao and Yu, Philip S.},
+  title     = {Enhancing Graph Neural Network-based Fraud Detectors against Camouflaged Fraudsters},
+  booktitle = {Proceedings of the 29th ACM International Conference on Information and Knowledge Management},
+  pages     = {315--324},
+  year      = {2020},
+  doi       = {10.1145/3340531.3411903}
+}
+
+@inproceedings{deng2021gdn,
+  author    = {Deng, Ailin and Hooi, Bryan},
+  title     = {Graph Neural Network-Based Anomaly Detection in Multivariate Time Series},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {35},
+  number    = {5},
+  pages     = {4027--4035},
+  year      = {2021},
+  doi       = {10.1609/aaai.v35i5.16523}
+}
+
+@misc{nvidia2026gpudirectrdma,
+  author  = {{NVIDIA}},
+  title   = {{GPUDirect RDMA} Documentation: Overview},
+  year    = {2026},
+  url     = {https://docs.nvidia.com/cuda/gpudirect-rdma/},
+  urldate = {2026-08-17}
 }
