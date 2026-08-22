@@ -103,7 +103,7 @@
     \draw[link] ($(gpu4.south)!0.5!(gpu7.south)$) -- ($(gpu4.south)!0.5!(gpu7.south)$ |- ssd.north) -- (ssd.north);
   \end{tikzpicture}%
   }
-  \caption{实验平台拓扑示意图（本文根据实验平台配置绘制）}
+  \caption{实验平台拓扑示意图}
   \label{fig:exp-topology}
 \end{figure}
 
@@ -169,7 +169,7 @@
     \node[child, right=12mm of m100] (m100_a) {多 GPU 扩展与压力测试实验};
     \draw[link] (m100.east) -- (m100_a.west);
   \end{tikzpicture}
-  \caption{数据规模层级与实验类型关系图（本文绘制）}
+  \caption{数据规模层级与实验类型关系图}
   \label{fig:scale-vs-exp}
 \end{figure}
 
@@ -263,7 +263,7 @@
       };
   \end{tikzpicture}%
   }
-  \caption{指标体系结构图（本文绘制）}
+  \caption{指标体系结构图}
   \label{fig:metric-taxonomy}
 \end{figure}
 
@@ -332,7 +332,7 @@
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/exp/baseline_effect_qps_comparison.pdf}
-  \caption{端到端比较方案的检测效果与吞吐率（实验数据绘制）}
+  \caption{端到端比较方案的检测效果与吞吐率}
   \label{fig:fusion-vs-baselines}
 \end{figure}
 
@@ -340,29 +340,29 @@
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.8\linewidth]{plot_assets/ch06_fusion_compare/fig6_5_fusion_qps.pdf}
-  \caption{端到端比较方案的吞吐率（实验数据绘制）}
+  \includegraphics[width=0.9\linewidth]{plot_assets/ch06_fusion_compare/fig6_5_fusion_qps.pdf}
+  \caption{端到端比较方案的吞吐率}
   \label{fig:single-gpu-before-after}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.82\linewidth]{plot_assets/ch06_fusion_compare/fig6_6_fusion_tradeoff.pdf}
-  \caption{FlashTOD 效果与性能折中（实验数据绘制）}
+  \includegraphics[width=0.9\linewidth]{plot_assets/ch06_fusion_compare/fig6_6_fusion_tradeoff.pdf}
+  \caption{FlashTOD 效果与性能折中}
   \label{fig:multi-gpu-scaling}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch06_single_multi_summary/fig6_7_single_multi_summary.pdf}
-  \caption{单卡优化与多 GPU 扩展收益对比（实验数据绘制）}
+  \caption{单卡优化与多 GPU 扩展收益对比}
   \label{fig:scale-comparison}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch06_scale_trends/fig6_8_scale_trends.pdf}
-  \caption{不同规模下系统表现趋势（实验数据绘制）}
+  \caption{不同规模下系统表现趋势}
   \label{fig:scale-trend}
 \end{figure}
 
