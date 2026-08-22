@@ -1423,12 +1423,22 @@
   author = {
     default = {姓名},
   },
+  % 封面用导师信息
   supervisor = {
     default = {导师姓名},
   },
   supervisor-title = {
     default = {教授},
     name = supervisor@title,
+  },
+  % 扉页用导师信息（可与封面分离）
+  titlepage-supervisor = {
+    default = {},
+    name = titlepage@supervisor,
+  },
+  titlepage-supervisor-title = {
+    default = {},
+    name = titlepage@supervisor@title,
   },
   jointsupervisor = {
     default = {},
@@ -1793,7 +1803,11 @@
         \hfill 专业:\  & \sysu@underline[6cm]{\sysu@discipline} \\
         \hfill 学位申请人:\  & \sysu@underline[6cm]{\sysu@author} \\
         \ifx\sysu@jointsupervisor\@empty
-            \hfill 指导教师:\  & \sysu@underline[6cm]{\sysu@supervisor\ \sysu@supervisor@title} \\
+            \ifx\sysu@titlepage@supervisor\@empty
+                \hfill 指导教师:\  & \sysu@underline[6cm]{\sysu@supervisor\ \sysu@supervisor@title} \\
+            \else
+                \hfill 指导教师:\  & \sysu@underline[6cm]{\sysu@titlepage@supervisor\ \sysu@titlepage@supervisor@title} \\
+            \fi
         \else
             \hfill 指导教师:\  & \sysu@underline[6cm]{\small\sysu@supervisor\ \sysu@supervisor@title; \sysu@jointsupervisor\ \sysu@jointsupervisor@title} \\
         \fi
