@@ -79,7 +79,7 @@ ANNS 已形成多条技术路线。HNSW 以分层小世界图缩短搜索路径�
 
 本文不改写 FlashANNS 的索引或搜索算法。后续工作的切入点是接口组织：使前端输出尽可能保持为设备侧候选缓冲，并与评分张量的布局、批次和生命周期对齐。第四章的数据路径优化由此获得明确问题来源。
 
-\section{GPU 数据处理、FAISS-GPU 与接口支撑}
+\section{单卡数据处理、FAISS-GPU 与接口支撑}
 
 RAPIDS 服务于 GPU 侧数据处理。cuDF 用于字段筛选、类型转换、特征拼接和窗口统计，RMM 为设备内存池及必要的页锁定主机缓冲提供资源管理支持\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。在 FlashTOD 中，这些能力主要用于向量输入准备和候选中间结果组织，不承担异常评分。能否保持全 GPU 执行仍取决于具体操作：兼容模式未覆盖的操作、Python 对象转换或显式主机接口都可能触发 CPU fallback，继而产生额外搬运。第四章需要据实际执行路径检查这些边界。
 
@@ -102,7 +102,7 @@ FAISS-GPU 提供成熟的 GPU ANN API 和资源管理方式，适合验证查询
 三者的边界可以简要概括。RAPIDS 负责数据处理和内存后端，FAISS-GPU 负责前期 ANN 接口及 device/host pointer 路径验证，FlashANNS 负责完整 FlashTOD 中的大规模外存候选召回。完整系统的外存主路径采用 FlashANNS，表格数据处理仍由 RAPIDS 支撑。后续章节直接引用这些角色划分。
 
 \Needspace{0.35\textheight}
-\section{多 GPU 调度与在线推理启示}
+\section{多卡调度与在线推理启示}
 
 多 GPU 设计要先在 replicated 与 sharded 之间取舍。replicated 在每张 GPU 上保留完整索引，把不同查询分发给不同设备。查询可以沿用单卡闭环，跨卡通信少，适合索引可复制且吞吐优先的条件；代价是每张卡都要承担索引副本和评分缓冲的显存占用。sharded 将索引分布到多张 GPU，容量扩展更强，但单个查询可能需要访问多个分片并归并局部结果。基于各自适用条件，第五章把 replicated 作为主方案，把 sharded 相关归并放在容量受限时讨论\citep{cuvs_multi_gpu_nn,cuvs_dist_mode}。
 
