@@ -126,13 +126,15 @@ FlashTOD 定位于系统协同与执行路径研究，沿用 PyTOD 的评分能�
 
 \section{本文主要工作与技术贡献}
 
-本文完成的工作沿三条主线组织。
+本文完成的工作按一条核心链路和两类性能实现机制组织。
 
 \begin{enumerate}
-  \item FlashTOD 协同框架。在金融大规模异常检测的统一向量输入上，本文将 FlashANNS 候选检索能力和 PyTOD 张量化评分组织为两阶段执行链路，并明确查询向量、候选 ID、distance、local rank、reference/index mapping 与评分张量之间的接口。贡献落在对PyTOD和FlashANNS研究，进行系统组织、适配、实现与验证。
-  \item 单 GPU 数据路径优化。本文针对“GPU 检索---CPU 重组---GPU 评分”的折返路径，设计 GPU 主导执行链路，使候选结果和评分中间张量尽量保持在GPU侧，并结合异步 stream、双缓冲、页锁定内存及 RAPIDS 数据后端降低必要边界开销，进一步优化数据路径。值得注意的是，FAISS-GPU 用于前期 device/host pointer 路径和候选接口验证，不作为最终外存召回主路径。
-  \item 单机多 GPU 扩展。本文在索引可复制时采用 replicated 查询级并行，以 CPU 控制面完成请求调度；容量受限时讨论设备侧归并和 NCCL 通信，并用 topology-aware I/O 约束共享 PCIe、NUMA 与 SSD 路径。多GPU扩展是工程实践的一个典型思路，该部分贡献落在对这些机制在 FlashTOD 中的部署组织和实验验证。
+  \item 本文提出并实现 FlashTOD 两阶段异常检测链路，这是全文的核心系统创新。FlashANNS 先从全量样本中返回规模受候选预算约束的候选集合，PyTOD 再完成候选集上的张量化精细评分，评分对象由全量规模 $n$ 收缩到 $|C_i|$。两类组件的输入输出语义并不相同：系统根据 candidate ID、distance、local rank 和 reference/index mapping 恢复原始样本与候选集合的对应关系，并构造 PyTOD 所需的候选张量、距离张量和评分中间张量。这一设备侧数据契约改变了高代价评分的执行范围，也规定了中间结果在两个阶段之间的表示与传递方式。
+  \item 围绕 FlashTOD 链路实现单 GPU 数据通路优化。初始路径中的 GPU 检索、CPU 候选重组和 GPU 评分会形成 D2H/H2D 折返，并伴随格式转换、内存申请和阶段同步。本文让查询表示、候选缓冲和评分中间张量尽量驻留设备侧，结合异步 I/O---计算重叠、缓冲区复用和批次执行压缩热路径开销。FAISS-GPU 用于前期 device/host pointer 与候选接口验证，完整外存召回路径仍以 FlashANNS 为前端。
+  \item 围绕 FlashTOD 链路实现单机多 GPU 并行扩展。索引可复制时，replicated 路径把查询分配到不同 GPU，每张设备独立完成候选召回与评分闭环；CPU 负责请求分发、负载均衡和小规模结果汇总。容量或部署条件限制完整复制时，系统再采用设备侧归并、NCCL 通信和 topology-aware I/O 控制。这里的请求分配属于调度，数据划分与本地计算属于并行执行，归并和拓扑约束则分别落在跨设备结果处理与数据通路。相关结论限定在本文的单机硬件和拓扑环境。
 \end{enumerate}
+
+上述工作改进的是大规模异常检测的系统执行方式，没有改变 PyTOD 所采用的异常评分模型。
 
 \section{论文组织结构}
 
