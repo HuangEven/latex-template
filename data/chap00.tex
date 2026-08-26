@@ -57,11 +57,11 @@
 
 \paragraph{候选召回阶段的存储访问与吞吐瓶颈问题}
 
-索引能够驻留显存时，召回开销主要来自近邻搜索与候选维护；索引超过显存容量后，SSD 读页进入关键路径。此时搜索性能由 ANN 算法、I/O 访问粒度、在途请求数量以及 Fetch、Compute 和候选 Update 的重叠程度共同决定。候选预算同样受到两端约束：预算过小可能降低异常覆盖和 Recall@$k$，过大则增加 PyTOD 的距离、\texttt{topk} 与聚合成本。问题2研究候选质量和外存访问代价的共同控制\citep{song2026vectoranns,xiao2025flashanns}。
+索引能够驻留显存时，召回开销主要来自近邻搜索与候选维护；索引超过显存容量后，SSD 读页进入关键路径。此时搜索性能由 ANN 算法、I/O 访问粒度、在途请求数量以及数据获取、距离计算和候选更新的重叠程度共同决定。候选预算同样受到两端约束：预算过小可能降低异常覆盖和 Recall@$k$，过大则增加 PyTOD 的距离、\texttt{topk} 与聚合成本。问题2研究候选质量和外存访问代价的共同控制\citep{song2026vectoranns,xiao2025flashanns}。
 
 \paragraph{CPU--GPU 数据传输与阶段同步问题}
 
-候选召回返回 candidate ID、distance、local rank 以及 reference/index mapping。若这些字段回到 CPU 后由主机侧 \texttt{pack\_candidates} 重新组织，执行路径会变为“GPU 检索 $\rightarrow$ D2H $\rightarrow$ CPU 候选重组 $\rightarrow$ H2D $\rightarrow$ GPU 评分”。问题出现在阶段边界。一次检索即使足够快，两轮数据搬运、对象转换和同步仍会抬高端到端时延。问题3因此聚焦设备侧候选表达和连续执行，具体定位 CPU--GPU 通信开销出现的位置\citep{pei2021gpudatabase,zhang2023gpuolap}。
+候选召回返回候选ID（candidate ID）、距离（distance）、局部排序（local rank） 以及 索引关系映射（reference/index mapping）。若这些字段回到 CPU 后由主机侧 候选重组（\texttt{pack\_candidates} ）重新组织，执行路径会变为“GPU 检索 $\rightarrow$ D2H $\rightarrow$ CPU 候选重组 $\rightarrow$ H2D $\rightarrow$ GPU 评分”。问题出现在阶段边界。一次检索即使足够快，两轮数据搬运、对象转换和同步仍会抬高端到端时延。问题3因此聚焦设备侧候选表达和连续执行，具体定位 CPU--GPU 通信开销出现的位置\citep{pei2021gpudatabase,zhang2023gpuolap}。
 
 \paragraph{多 GPU 扩展中的结果聚合与共享 I/O 瓶颈问题}
 
@@ -130,8 +130,8 @@ FlashTOD 定位于系统协同与执行路径研究，沿用 PyTOD 的评分能�
 
 \begin{enumerate}
   \item FlashTOD 协同框架。在金融大规模异常检测的统一向量输入上，本文将 FlashANNS 候选检索能力和 PyTOD 张量化评分组织为两阶段执行链路，并明确查询向量、候选 ID、距离、局部排序、索引映射与评分张量之间的接口。贡献落在对PyTOD和FlashANNS研究，进行系统组织、适配、实现与验证。
-  \item 单 GPU 数据路径优化。本文针对“GPU 检索---CPU 重组---GPU 评分”的折返路径，设计 GPU 主导执行链路，使候选结果和评分中间张量尽量保持在GPU侧，并结合异步流水线、双缓冲、页锁定内存及 RAPIDS 数据后端降低必要边界开销，进一步优化数据路径。值得注意的是，FAISS-GPU 用于前期 device/host pointer 路径和候选接口验证，不作为最终外存召回主路径。
-  \item 单机多 GPU 扩展。本文在索引可复制时采用 replicated 查询级并行，以 CPU 控制面完成请求调度；容量受限时讨论设备侧归并和 NCCL 通信，并用 topology-aware I/O 约束共享 PCIe、NUMA 与 SSD 路径。多GPU扩展是工程实践的一个典型思路，该部分贡献落在对这些机制在 FlashTOD 中的部署组织和实验验证。
+  \item 单 GPU 数据路径优化。本文针对“GPU 检索---CPU 重组---GPU 评分”的折返路径，设计 GPU 主导执行链路，使候选结果和评分中间张量尽量保持在GPU侧，并结合异步流水线、双缓冲、页锁定内存及 RAPIDS 数据后端降低必要边界开销，进一步优化数据路径。值得注意的是，FAISS-GPU 用于前期 设备/主机指针（device/host pointer） 路径和候选接口验证，不作为最终外存召回主路径。
+  \item 单机多 GPU 扩展。本文在索引可复制时采用索引复制查询级并行，以 CPU 控制面完成请求调度；容量受限时讨论设备侧归并和 NCCL 通信，并用 拓扑感知 I/O 约束共享 PCIe、NUMA 与 SSD 路径。多GPU扩展是工程实践的一个典型思路，该部分贡献落在对这些机制在 FlashTOD 中的部署组织和实验验证。
 \end{enumerate}
 
 \section{论文组织结构}
