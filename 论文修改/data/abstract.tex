@@ -1,0 +1,28 @@
+% !TEX root = ../main.tex
+
+\sysusetup{
+  keywords  = {异常检测, 候选召回, FlashANNS, GPU 并行计算, 金融风控},
+  keywords* = {Outlier Detection, Candidate Retrieval, FlashANNS, GPU Parallel Computing, Financial Risk Control},
+}
+
+\begin{abstract}
+金融大规模异常检测不仅要从极低异常比例的数据中识别高风险对象，还要满足近实时场景对吞吐和时延的要求。随着样本量由百万级向千万级、亿级扩展，系统瓶颈逐渐集中到四个环节：全量异常评分开销高，候选召回在外存访问条件下面临吞吐约束，CPU与GPU之间的数据交换会放大阶段边界成本，多GPU并行还受到结果归并、共享I/O路径和硬件拓扑的影响。基于这一判断，本文将研究重点放在大规模金融异常检测的系统组织与执行效率上，目标是在尽量保持检测效果的同时降低端到端开销，并提高单机多GPU条件下的扩展能力。
+
+针对上述问题，本文设计并实现PyTOD–FlashANNS协同异常检测系统FlashTOD。系统采用“候选召回—异常评分”的两阶段处理方式：FlashANNS先从大规模样本中生成规模受控的候选集合，PyTOD再在候选范围内执行张量化异常评分，并输出异常分数和Top-k风险对象。通过候选预算限制后续评分范围，FlashTOD将全量高代价评分转化为候选集上的精细评分，使检测效果与系统开销之间形成可调节的折中。本文并不提出新的异常检测理论模型，而是重点解决候选召回与异常评分在同一执行链路中的接口衔接和数据组织问题。
+
+单GPU场景下，本文围绕候选召回到异常评分之间的热路径进行数据路径优化。针对查询准备、候选重组和评分输入过程中频繁的CPU–GPU往返与阶段同步，构建GPU主导的执行链路，使查询向量、候选ID、局部距离和评分中间张量尽量在设备侧连续传递，并通过异步I/O与计算重叠、缓冲区复用等方式减少等待。多GPU场景则采用数据并行与索引复制的replicated架构，使每张GPU独立完成本地候选召回和异常评分，CPU主要负责请求调度和小规模结果汇总；对于需要跨卡协同的场景，进一步结合设备侧归并、通信和拓扑感知I/O控制，缓解共享路径竞争对吞吐和尾延迟的影响。
+
+实验采用约1M规模的真实或半真实金融数据验证有效性，并使用10M、50M和100M高保真合成数据测试吞吐、延迟与扩展趋势。在本文设定的数据规模、硬件平台和候选预算条件下，完整融合方案的PR-AUC为0.906，接近PyTOD全量评分的0.932；QPS由2700提升至4280，增幅约58.5\%。单卡完整优化方案将QPS从3180提高到4550，同时把p99延迟由67.0 ms降至45.5 ms。replicated路径下，1、2、4 GPU的QPS分别为4550、7780和13620，4 GPU吞吐约为单GPU的2.99倍。
+
+实验结果说明，FlashTOD在保持较好检测效果的同时，能够有效压缩单GPU执行链路中的数据传输与同步开销，并在多GPU条件下获得可验证的吞吐扩展收益。相关结论应限定在本文给定的数据规模、候选预算和硬件平台范围内；更复杂的真实生产负载以及多机分布式场景，仍需进一步验证。
+\end{abstract}
+
+\begin{abstract*}
+Large-scale outlier detection for financial risk control must identify a small fraction of high-risk objects from extremely imbalanced data, while meeting near-real-time throughput and tail-latency requirements. As the sample size grows from millions to tens or hundreds of millions, the bottleneck gradually concentrates on four stages: full-scan anomaly scoring is expensive, candidate retrieval becomes throughput-limited under out-of-core access, CPU--GPU data exchange amplifies stage-boundary overhead, and multi-GPU parallelism is constrained by result merging, shared I/O paths, and hardware topology. Motivated by these observations, this thesis focuses on system organization and execution efficiency for large-scale financial outlier detection, aiming to reduce end-to-end cost with minimal effectiveness loss and to improve scalability on a single machine with multiple GPUs.
+
+To address the above challenges, this thesis designs and implements \emph{FlashTOD}, a collaborative outlier detection system integrating PyTOD and FlashANNS. FlashTOD adopts a two-stage pipeline of ``candidate retrieval--anomaly scoring'': FlashANNS first produces a size-bounded candidate set from large-scale samples, and PyTOD then performs tensorized anomaly scoring within this candidate set and outputs anomaly scores and Top-$k$ risky objects. By constraining the scoring scope via a candidate budget, FlashTOD converts expensive full-scan scoring into refined scoring over candidates, providing a tunable trade-off between effectiveness and system cost. Rather than proposing a new theoretical model, the key contribution lies in interface alignment and data organization along a unified execution chain.
+
+On a single GPU, we optimize the hot path between candidate retrieval and anomaly scoring. To reduce frequent CPU--GPU round trips and stage synchronization during query preparation, candidate regrouping, and scoring input construction, we build a GPU-led execution chain in which query vectors, candidate IDs, local distances, and intermediate scoring tensors are passed on-device as continuously as possible. We further overlap asynchronous I/O with computation and reuse buffers to reduce waiting. On multiple GPUs, FlashTOD adopts a replicated (data-parallel, index-replicated) architecture so that each GPU independently completes local retrieval and scoring, while the CPU mainly performs request scheduling and lightweight result aggregation. For workloads requiring cross-device cooperation, we additionally combine device-side merging, communication, and topology-aware I/O control to mitigate throughput and tail-latency degradation caused by shared-path contention.
+
+Experiments use real or semi-real financial data at around 1M scale for effectiveness evaluation, and high-fidelity synthetic data at 10M, 50M, and 100M scales for throughput, latency, and scalability stress tests. Under the evaluated data scales, hardware platform, and candidate budgets, the full fusion scheme achieves a PR-AUC of 0.906, close to the 0.932 of the PyTOD full-scoring baseline. QPS increases from 2700 to 4280 (\,+58.5\%). The full single-GPU optimization increases QPS from 3180 to 4550 and reduces p99 latency from 67.0 ms to 45.5 ms. Along the replicated path, the QPS values on 1, 2, and 4 GPUs are 4550, 7780, and 13620, with 4 GPUs reaching about 2.99$\times$ the 1-GPU throughput. These results indicate that FlashTOD preserves competitive effectiveness while compressing data-movement/synchronization overhead on a single GPU and achieving measurable throughput scaling on multiple GPUs, with conclusions bounded by the evaluated conditions.
+\end{abstract*}

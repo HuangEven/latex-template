@@ -1,0 +1,4 @@
+scheme,scheme_desc,avg_latency_ms,p99_latency_ms
+Replicated path,Replicated primary path,19.80,30.20
+CPU aggregation,CPU-side aggregation fallback,24.60,39.00
+GPU merge,GPU-side merge fallback,21.50,33.80

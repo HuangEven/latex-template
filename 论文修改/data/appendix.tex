@@ -2,7 +2,7 @@
 
 \chapter{实验脚本与日志归档说明}
 
-本附录结合现有实验脚本与历史运行记录，对论文中各验证阶段所对应的脚本入口、日志归档方式和参数组织口径作统一说明，并将正文中需要复核的单卡、多 GPU、真实集有效性和论文出图阶段整理为可复用的归档规范。
+本附录结合现有实验脚本与历史运行记录，对论文中各验证阶段所对应的脚本入口、日志归档方式和参数组织口径作统一说明。目的不是列出全部内部文件，而是将正文中需要复核的单卡、多 GPU、真实集有效性和论文出图阶段，整理为可复用的一套归档规范。
 
 \section{实验阶段与材料对应关系}
 
@@ -38,7 +38,7 @@
     \midrule
     有效性验证 & \path|freeze_last_tune_<ts>/|、\path|baseline_effect_*.csv| & 第三章基础实验、第六章基线效果对比 & 保留真实或半真实数据、1M 桥接规模下的候选召回、候选评分和绘图输入。 \\
     单卡递进式消融 & \path|bench_flash_<scale>_<scene>_gpu<id>.log|、\path|single_gpu_progressive_*.csv| & 第四章单卡实验、第六章综合对比 & 保留原始分段链路、候选召回加速、GPU 主导链路和完整优化方案的运行记录。 \\
-    多 GPU 扩展 & \path|bench_flash_<scale>_replica_*|、\path|multigpu_scaling_*.csv| & 第五章多 GPU 扩展、第六章扩展趋势 & 保留索引复制、GPU侧归并、CPU侧聚合和共享路径冲突相关运行记录。 \\
+    多 GPU 扩展 & \path|bench_flash_<scale>_replica_*|、\path|multigpu_scaling_*.csv| & 第五章多 GPU 扩展、第六章扩展趋势 & 保留 replicated、GPU merge、CPU aggregation 和 shared-path conflict 相关运行记录。 \\
     绘图与结果汇总 & \path|plot_assets/|、\path|figures/exp/|、\path|data/*.csv| & 第四章至第六章结果图 & 保留论文图表使用的数据源、出图脚本和导出 PDF/SVG。 \\
     \bottomrule
   \end{tabular}
@@ -101,7 +101,7 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
   \item 图中的 QPS、平均时延和 p99 时延均指对应实验场景下的端到端统计结果；若未特别说明，时延单位统一为 ms。
   \item 单卡结果图主要用于比较数据路径优化前后的链路差异，多 GPU 结果图主要用于比较索引复制主方案、设备侧归并兜底路径以及共享路径冲突条件下的扩展差异。
   \item 真实集结果用于有效性验证，1M 及以上合成数据结果用于系统性能与扩展分析，二者不直接比较绝对吞吐数值。
-  \item 正文结果图中的方案名称均对应具体验证场景或系统路径，统一使用含义明确的文字标签。
+  \item 正文结果图中的方案名称均对应具体验证场景或系统路径，不再使用含义不明确的编号标签。
 \end{itemize}
 
 \Needspace{0.78\textheight}

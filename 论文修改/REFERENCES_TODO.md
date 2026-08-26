@@ -1,0 +1,95 @@
+# 参考文献待人工核实
+
+以下仅记录当前 `.bib` 中缺失、且可能影响正式文献著录完整性的字段；网页、软件文档和数据集页面不机械要求卷号、期号或页码。未根据题名或经验补写任何元数据。
+
+- zhao2022tod:
+  - 缺失字段: volume、number、pages、DOI
+  - 当前已有信息: article；Proceedings of the VLDB Endowment；2022
+  - 建议人工核实: 依据论文正式出版页补齐卷、期、页码或文章号及 DOI。
+- song2024financialriskstgnn:
+  - 缺失字段: DOI
+  - 当前已有信息: 软件学报，35(8)，3897--3922，2024
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- pei2021gpudatabase:
+  - 缺失字段: DOI
+  - 当前已有信息: 软件学报，32(3)，859--885，2021
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- zhang2023gpuolap:
+  - 缺失字段: DOI
+  - 当前已有信息: 软件学报，34(11)，5205--5229，2023
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- song2026vectoranns:
+  - 缺失字段: DOI
+  - 当前已有信息: 软件学报，37(3)，971--1005，2026
+  - 建议人工核实: 核实最终出版版本的 DOI；如无则保留为空。
+- li2024multigpunuma:
+  - 缺失字段: DOI
+  - 当前已有信息: 电子学报，52(5)，1783--1800，2024
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- chen2021graphanomaly:
+  - 缺失字段: DOI
+  - 当前已有信息: 计算机研究与发展，58(7)，1436--1455，2021
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- li2023gnnfraud:
+  - 缺失字段: DOI
+  - 当前已有信息: 电子学报，51(11)，3053--3060，2023
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- yu2024rwkgnn:
+  - 缺失字段: DOI
+  - 当前已有信息: 电子学报，52(10)，3382--3391，2024
+  - 建议人工核实: 核实该文是否已分配 DOI；如无则保留为空。
+- johnson2019faiss:
+  - 缺失字段: volume、number、pages、DOI
+  - 当前已有信息: article；IEEE Transactions on Pattern Analysis and Machine Intelligence；2019
+  - 建议人工核实: 依据正式期刊版本补齐卷、期、页码及 DOI。
+- subramanya2019diskann:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；Advances in Neural Information Processing Systems 33 (NeurIPS 2019)；2019
+  - 建议人工核实: 依据正式会议论文集核实页码或文章号及 DOI（如有）。
+- xiao2025flashanns:
+  - 缺失字段: journal/booktitle、volume、number、pages、DOI、URL
+  - 当前已有信息: misc；2025；note 为 FlashANNS-related work
+  - 建议人工核实: 确认正式发表载体或预印本页面，再按真实记录补齐；当前信息不足以自动判断 entry type。
+- malkov2020hnsw:
+  - 缺失字段: volume、number、pages、DOI
+  - 当前已有信息: article；IEEE Transactions on Pattern Analysis and Machine Intelligence；2020
+  - 建议人工核实: 依据正式期刊版本补齐卷、期、页码及 DOI。
+- crankshaw2017clipper:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；14th USENIX NSDI；2017
+  - 建议人工核实: 依据正式会议论文集补齐页码；DOI 如无则保留为空。
+- gu2020clockwork:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；14th USENIX OSDI；2020
+  - 建议人工核实: 依据正式会议论文集补齐页码；DOI 如无则保留为空。
+- blumofe1999scheduling:
+  - 缺失字段: volume、number、pages、DOI
+  - 当前已有信息: article；Journal of the ACM；1999
+  - 建议人工核实: 依据正式期刊版本补齐卷、期、页码及 DOI。
+- moritz2018ray:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；13th USENIX OSDI；2018
+  - 建议人工核实: 依据正式会议论文集补齐页码；DOI 如无则保留为空。
+- breunig2000lof:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；2000 ACM SIGMOD；2000
+  - 建议人工核实: 依据正式会议论文集补齐页码及 DOI（如有）。
+- angiulli2002fast:
+  - 缺失字段: pages、DOI
+  - 当前已有信息: inproceedings；6th PKDD；2002
+  - 建议人工核实: 依据正式会议论文集补齐页码及 DOI（如有）。
+- dalpozzolo2015creditcard:
+  - 缺失字段: pages
+  - 当前已有信息: inproceedings；2015 IEEE SSCI；DOI 10.1109/SSCI.2015.33
+  - 建议人工核实: 依据正式会议论文集补齐页码。
+
+## 第一、二章相关工作建议补充
+
+- PyOD / 传统 CPU 异常检测工程框架:
+  - 缺失字段: 代表性框架论文或正式软件引用
+  - 当前已有信息: 现有 `.bib` 仅包含异常检测综述、具体算法和 TOD/PyTOD 文献，未包含可直接支撑 PyOD 框架能力边界的条目
+  - 建议人工核实: 如需在第二章能力边界表中单列 PyOD，请补充其正式论文或项目推荐引用；当前表格仅写“传统 CPU 异常检测实现”。
+- IVF / IVF-PQ:
+  - 缺失字段: 基础方法或代表性学术论文引用
+  - 当前已有信息: 仅有 `cuvs_multi_gpu_ivf_host` 工程文档条目，可说明主机内存接口约束，不足以承担方法研究现状综述
+  - 建议人工核实: 如需与 HNSW、DiskANN 并列比较，请补充 IVF/IVF-PQ 的可靠学术来源；本轮未将其写入能力比较主表。

@@ -1,0 +1,17 @@
+figure_id,scheme,metric,value,unit,data_source,note
+fig_single_gpu_progressive_ablation,Original baseline,QPS,3180.00,QPS,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Original baseline,p99 latency,67.00,ms,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Original baseline,PCIe transfer count,6.20,count/query,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Original baseline,GPU utilization,48.50,%,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Recall-accelerated,QPS,3470.00,QPS,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Recall-accelerated,p99 latency,61.50,ms,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Recall-accelerated,PCIe transfer count,5.80,count/query,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Recall-accelerated,GPU utilization,51.20,%,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,GPU handoff,QPS,3950.00,QPS,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,GPU handoff,p99 latency,53.80,ms,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,GPU handoff,PCIe transfer count,4.90,count/query,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,GPU handoff,GPU utilization,57.80,%,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Full optimization,QPS,4550.00,QPS,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Full optimization,p99 latency,45.50,ms,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Full optimization,PCIe transfer count,4.20,count/query,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
+fig_single_gpu_progressive_ablation,Full optimization,GPU utilization,63.50,%,existing_reported,来自现有图4-6使用的 single_gpu_overview_metrics.csv
