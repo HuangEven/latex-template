@@ -40,15 +40,13 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 在数据路径层，FlashTOD 尽量让查询表示、候选缓冲和评分中间张量保持 GPU 常驻，只在原始输入、必要日志和最终结果等边界通过页锁定内存（pinned memory）与主机交互，以压缩 CPU--GPU 数据往返和阶段同步开销。在多 GPU 扩展层，系统优先采用索引复制（replicated）架构，使每张 GPU 独立完成本地候选召回与异常评分闭环；当索引容量或部署条件限制完整复制时，再进入设备侧归并（GPU merge）或主机侧聚合（CPU aggregation）等兜底路径。最终输出层则面向风险排序、异常分数、前 $k$ 个高风险对象（Top-$k$）、日志记录与反馈接口，为后续实验评估和工程监控提供统一结果。
 
-\begin{figure}[!htbp]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/fig3-2_pytod_flashanns_concept_topdown.pdf}
   \caption{FlashTOD 系统概念图}
   \label{fig:pytod-flashanns-concept}% 原有标签
   \label{fig:fig3-2}% 兼容“fig3-2”的引用写法
 \end{figure}
-
-\FloatBarrier
 
 \section{实验数据集选取与构建}
 
@@ -282,7 +280,7 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig3-6_initial_effectiveness_across_datasets.pdf}
+  \includegraphics[width=0.92\linewidth]{figures/fig3-6_initial_effectiveness_across_datasets.pdf}
   \caption{不同数据集上的候选召回---候选评分初步有效性验证结果}
   \label{fig:prelim-effectiveness}
 \end{figure}
@@ -293,4 +291,7 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 本章围绕 FlashTOD 的功能结构，完成了任务建模、数据集选取、预处理与特征构造、异常评分模块设计、候选召回模块设计以及执行流程构建。通过对金融异常检测任务的统一抽象，本文将表格型金融数据与图金融数据共同映射为统一向量接口，并建立了``候选召回---异常评分''的两阶段处理框架。在实验准备上，本章进一步明确了全文统一的数据规模口径，使真实有效性验证、桥接实验、单卡性能分析和多 GPU 压力测试能够沿同一规模链路展开，从而为后续章节中的单卡优化和多 GPU 验证提供一致的数据基础。
 
-本章解决了系统对象如何建立、模块接口如何对齐、基础实验如何起步的问题，但数据路径成本仍待处理。PyTOD 与 FlashANNS 已被放置在一条候选召回---异常评分执行链路中统一考察；当前链路主要满足功能可行和接口联通，尚未从系统层面压缩 CPU$\leftrightarrow$GPU 数据往返与阶段同步开销。因此，第四章将进一步进入单卡优化，重点讨论 GPU 主导执行链路、异步 I/O---计算流水线以及数据路径压缩问题。
+\begingroup
+\looseness=-1
+本章解决了系统对象如何建立、模块接口如何对齐、基础实验如何起步的问题，但数据路径成本仍待处理。PyTOD 与 FlashANNS 已被放置在一条候选召回---异常评分执行链路中统一考察；当前链路主要满足功能可行和接口联通，尚未从系统层面压缩 CPU$\leftrightarrow$GPU 数据往返与阶段同步开销。因此，第四章将进一步进入单卡优化，重点讨论 GPU 主导执行链路、异步 I/O---计算流水线以及数据路径压缩问题。\par
+\endgroup
