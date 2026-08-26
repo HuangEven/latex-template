@@ -1,0 +1,5 @@
+scheme,scheme_desc,qps,p99_ms,pci_transfer_count,gpu_util
+Original baseline,Original pipeline baseline,3180.00,67.00,6.20,48.50
+Recall-accelerated,Recall acceleration only,3470.00,61.50,5.80,51.20
+GPU handoff,GPU-resident recall-to-score handoff,3950.00,53.80,4.90,57.80
+Full optimization,Full single-GPU optimization,4550.00,45.50,4.20,63.50

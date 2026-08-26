@@ -1,0 +1,10 @@
+gpu_count,scheme,data_scale,index_layout,batch_size,candidate_k,k,merge_path,io_binding,notes
+1,Replicated,10M,Full replica,4096,128,50,None,Topology-aware,Single-GPU baseline for throughput scaling
+2,Replicated,10M,Full replica,4096,128,50,None,Topology-aware,Two-GPU replicated scaling baseline
+4,Replicated,10M,Full replica,4096,128,50,None,Topology-aware,Four-GPU replicated scaling baseline
+4,Local scoring + GPU merge,100M,Sharded index,3072,128,50,NCCL all-gather + GPU merge,Topology-aware,Fallback path when full replication is infeasible
+4,Local scoring + CPU aggregation,100M,Sharded index,3072,128,50,CPU aggregation,Topology-aware,Comparison baseline for cross-device merge
+2,Topology-aware binding,100M,Full replica,4096,128,50,None,Topology-aware,Used to evaluate I/O lane affinity impact
+4,Topology-aware binding,100M,Full replica,4096,128,50,None,Topology-aware,Used to evaluate I/O lane affinity impact
+2,Shared-path conflict,100M,Full replica,4096,128,50,None,Shared PCIe/SSD path,Conflict-path baseline under shared I/O lanes
+4,Shared-path conflict,100M,Full replica,4096,128,50,None,Shared PCIe/SSD path,Conflict-path baseline under shared I/O lanes
