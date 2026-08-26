@@ -14,7 +14,7 @@ HBOS、COPOD 和 ECOD 等统计型方法通常不需要维护完整近邻结构�
 
 集成方法通过多个检测器或子空间模型提高稳健性，却会叠加推理成本与结果组织复杂度。Isolation Forest 通过随机切分形成多棵隔离树，较短的平均路径对应更容易被孤立的样本，是不依赖全量近邻矩阵的代表性集成方法\citep{liu2008isolationforest}。深度模型能够表达非线性、时序和图关系模式，但训练、部署和在线解释成本更高。以比特币反洗钱图数据研究和 CARE-GNN 为例，关系建模可以利用交易网络及异质邻居信息，同时也受到标签不平衡、噪声联系和数据构建方式影响\citep{weber2019bitcoinaml,dou2020caregnn,chen2021graphanomaly,li2023gnnfraud,yu2024rwkgnn}。这些方法适合不同任务，不能仅因模型复杂就认定更适合高吞吐部署。
 
-本文不沿“最先进异常检测模型竞争”的路线展开。研究对象是系统协同：选择能够张量化的异常评分，把它放在规模受控的候选集合上运行，并观察效果与系统开销之间的折中。该边界保留了评分方法的可替换性，也避免将 FlashTOD 的系统收益解释为某个新检测模型的贡献。
+本文研究对象是系统协同：选择能够张量化的异常评分，把它放在规模受控的候选集合上运行，并观察效果与系统开销之间的折中。该边界保留了评分方法的可替换性，也避免将 FlashTOD 的系统收益解释为某个新检测模型的贡献。
 
 \begin{table}[htbp]
   \caption{各类异常检测方法复杂度与系统适配性比较}
@@ -36,7 +36,7 @@ HBOS、COPOD 和 ECOD 等统计型方法通常不需要维护完整近邻结构�
   \end{tabularx}
 \end{table}
 
-\section{TOD/PyTOD 的 GPU 张量化执行基础}
+\section{异常评分的 GPU 张量化执行基础}
 
 TOD 解决的是异常评分如何统一映射到 GPU。它把算法拆为基础张量算子（Basic Tensor Operations，BTO）和由基础算子组成的功能算子（Functional Operations，FO），再用这些算子表达具体检测器\citep{zhao2022tod}。以 $k$NN 类评分为例，一条典型算子链可以写成 \texttt{cdist} $\rightarrow$ \texttt{topk} $\rightarrow$ local aggregation $\rightarrow$ anomaly score。距离、近邻筛选和聚合共享统一张量表示后，不再需要为每个检测器单独维护一套 GPU 实现。
 
@@ -60,7 +60,7 @@ PyTOD 将上述张量化思想提供为可复用的软件接口。本文使用�
 
 它的能力边界也很清楚。PyTOD 不负责从亿级或外存索引中产生候选，不管理 SSD---GPU 访问路径，也不定义候选 ID、distance、local rank 和索引映射如何跨模块传递。在线请求调度与多 GPU 共享 I/O 同样不属于评分框架本身。FlashTOD 因此把 PyTOD 放在候选召回之后：利用其 GPU 评分能力，但不要求它承担前端检索和端到端系统调度。
 
-\section{FlashANNS 近似最近邻候选召回前端}
+\section{近似最近邻候选召回前端基础}
 
 FlashANNS 是近似最近邻搜索（Approximate Nearest Neighbor Search，ANNS）系统，其功能限于在高维向量索引中返回近邻候选，不输出异常分数。本文把这项能力放在两阶段链路前端：FlashANNS 生成局部候选集合，PyTOD 再根据距离、密度或邻域统计产生异常评分\citep{xiao2025flashanns}。
 
@@ -79,7 +79,7 @@ ANNS 已形成多条技术路线。HNSW 以分层小世界图缩短搜索路径�
 
 本文不改写 FlashANNS 的索引或搜索算法。后续工作的切入点是接口组织：使前端输出尽可能保持为设备侧候选缓冲，并与评分张量的布局、批次和生命周期对齐。第四章的数据路径优化由此获得明确问题来源。
 
-\section{单卡数据处理、FAISS-GPU 与接口支撑}
+\section{单卡数据处理与接口支撑}
 
 RAPIDS 服务于 GPU 侧数据处理。cuDF 用于字段筛选、类型转换、特征拼接和窗口统计，RMM 为设备内存池及必要的页锁定主机缓冲提供资源管理支持\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。在 FlashTOD 中，这些能力主要用于向量输入准备和候选中间结果组织，不承担异常评分。能否保持全 GPU 执行仍取决于具体操作：兼容模式未覆盖的操作、Python 对象转换或显式主机接口都可能触发 CPU fallback，继而产生额外搬运。第四章需要据实际执行路径检查这些边界。
 
@@ -95,7 +95,7 @@ FAISS-GPU 提供成熟的 GPU ANN API 和资源管理方式，适合验证查询
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/fig2-5_rapids_faiss_paths.pdf}
-  \caption{FAISS-GPU 的 CPU/GPU 互操作路径（根据 FAISS-GPU 文档与本文系统接口整理）}
+  \caption{FAISS-GPU 的 CPU/GPU 互操作路径}
   \label{fig:faiss-interop}
 \end{figure}
 
