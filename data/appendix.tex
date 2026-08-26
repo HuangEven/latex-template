@@ -38,7 +38,7 @@
     \midrule
     有效性验证 & \path|freeze_last_tune_<ts>/|、\path|baseline_effect_*.csv| & 第三章基础实验、第六章基线效果对比 & 保留真实或半真实数据、1M 桥接规模下的候选召回、候选评分和绘图输入。 \\
     单卡递进式消融 & \path|bench_flash_<scale>_<scene>_gpu<id>.log|、\path|single_gpu_progressive_*.csv| & 第四章单卡实验、第六章综合对比 & 保留原始分段链路、候选召回加速、GPU 主导链路和完整优化方案的运行记录。 \\
-    多 GPU 扩展 & \path|bench_flash_<scale>_replica_*|、\path|multigpu_scaling_*.csv| & 第五章多 GPU 扩展、第六章扩展趋势 & 保留 replicated、GPU merge、CPU aggregation 和 shared-path conflict 相关运行记录。 \\
+    多 GPU 扩展 & \path|bench_flash_<scale>_replica_*|、\path|multigpu_scaling_*.csv| & 第五章多 GPU 扩展、第六章扩展趋势 & 保留索引复制、GPU侧归并、CPU侧聚合和共享路径冲突相关运行记录。 \\
     绘图与结果汇总 & \path|plot_assets/|、\path|figures/exp/|、\path|data/*.csv| & 第四章至第六章结果图 & 保留论文图表使用的数据源、出图脚本和导出 PDF/SVG。 \\
     \bottomrule
   \end{tabular}
