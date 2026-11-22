@@ -12,7 +12,7 @@ $k$NN、LOF 和 ABOD 等方法依赖距离或邻域结构。$k$NN 需要计算�
 
 HBOS、COPOD 和 ECOD 等统计型方法通常不需要维护完整近邻结构，单次评分较轻，适合快速基线或辅助筛查。COPOD 以经验关联结构 （copula） 估计多维尾部概率，ECOD 则直接从各维经验累积分布的尾部构造异常分数\citep{li2020copod,li2023ecod}。它们的代价同样明确：边缘分布、直方图或分位统计难以覆盖所有关系型和局部结构异常，对特征预处理与分布表达也更敏感。密度型方法处在两者之间，局部解释较直观，但近邻构造和邻域聚合仍然昂贵。表~\ref{tab:ad-complexity}用于集中展示这些取舍。
 
-集成方法通过多个检测器或子空间模型提高稳健性，却会叠加推理成本与结果组织复杂度。随机森林（Isolation Forest） 通过随机切分形成多棵隔离树，较短的平均路径对应更容易被孤立的样本，是不依赖全量近邻矩阵的代表性集成方法\citep{liu2008isolationforest}。深度模型能够表达非线性、时序和图关系模式，但训练、部署和在线解释成本更高。以比特币反洗钱图数据研究和 CARE-GNN 为例，关系建模可以利用交易网络及异质邻居信息，同时也受到标签不平衡、噪声联系和数据构建方式影响\citep{weber2019bitcoinaml,dou2020caregnn,chen2021graphanomaly,li2023gnnfraud,yu2024rwkgnn}。这些方法适合不同任务，不能仅因模型复杂就认定更适合高吞吐部署。
+集成方法通过多个检测器或子空间模型提高稳健性，却会叠加推理成本与结果组织复杂度。随机森林（Isolation Forest） 通过随机切分形成多棵隔离树，较短的平均路径对应更容易被孤立的样本，是不依赖全量近邻矩阵的代表性集成方法\citep{liu2008isolationforest}。深度模型能够表达非线性、时序和图关系模式，但训练、部署和在线解释成本更高。以比特币反洗钱图数据研究和 CARE-GNN 图神经网络为例，关系建模可以利用交易网络及异质邻居信息，同时也受到标签不平衡、噪声联系和数据构建方式影响\citep{weber2019bitcoinaml,dou2020caregnn,chen2021graphanomaly,li2023gnnfraud,yu2024rwkgnn}。这些方法适合不同任务，不能仅因模型复杂就认定更适合高吞吐部署。
 
 本文研究对象是系统协同：选择能够张量化的异常评分，把它放在规模受控的候选集合上运行，并观察效果与系统开销之间的折中。该边界保留了评分方法的可替换性，也避免将 FlashTOD 的系统收益解释为某个新检测模型的贡献。
 
@@ -36,7 +36,7 @@ HBOS、COPOD 和 ECOD 等统计型方法通常不需要维护完整近邻结构�
   \end{tabularx}
 \end{table}
 
-\section{异常评分的 GPU 张量化执行基础}
+\section{异常评分的张量化执行基础}
 
 TOD 解决的是异常评分如何统一映射到 GPU。它把算法拆为基础张量算子（Basic Tensor Operations，BTO）和由基础算子组成的功能算子（Functional Operations，FO），再用这些算子表达具体检测器\citep{zhao2022tod}。以 $k$NN 类评分为例，一条典型算子链可以写成，距离计算算子$\rightarrow$ topk算子 $\rightarrow$ 聚合算子 $\rightarrow$ 异常评分算子（ \texttt{cdist} $\rightarrow$ \texttt{topk} $\rightarrow$ local aggregation $\rightarrow$ anomaly score）。距离、近邻筛选和聚合共享统一张量表示后，不再需要为每个检测器单独维护一套 GPU 实现。
 
