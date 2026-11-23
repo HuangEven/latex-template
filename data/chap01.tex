@@ -40,7 +40,11 @@ HBOS、COPOD 和 ECOD 等统计型方法通常不需要维护完整近邻结构�
 
 TOD 解决的是异常评分如何统一映射到 GPU。它把算法拆为基础张量算子（Basic Tensor Operations，BTO）和由基础算子组成的功能算子（Functional Operations，FO），再用这些算子表达具体检测器\citep{zhao2022tod}。以 $k$NN 类评分为例，一条典型算子链可以写成，距离计算算子$\rightarrow$ topk算子 $\rightarrow$ 聚合算子 $\rightarrow$ 异常评分算子（ \texttt{cdist} $\rightarrow$ \texttt{topk} $\rightarrow$ local aggregation $\rightarrow$ anomaly score）。距离、近邻筛选和聚合共享统一张量表示后，不再需要为每个检测器单独维护一套 GPU 实现。
 
+BTO 关心距离、排序和统计这些可重用计算，FO 则把多个 BTO 组合成具有检测含义的评分过程。这种分层会直接影响执行时的中间张量：\texttt{cdist} 生成距离块，\texttt{topk} 保留候选邻域，后续 FO 只消费这些较小的局部结果。因此，算子链的分块方式和中间张量寿命会同时影响显存占用与批处理吞吐。
+
 图~\ref{fig:tod-overview}展示 TOD 的分层结构，图~\ref{fig:algo-to-ops}给出典型算法到算子的映射。自动批处理把超出显存预算的评分任务拆为可执行批次；可证明量化在其约束内压缩部分算子开销；多 GPU 支持允许批处理任务分配到多个设备。这些机制提高的是评分阶段的可执行性。它们并不改变 $k$NN、LOF 等方法对距离和邻域的基本依赖，也不能取消候选预算与检测效果之间的取舍\citep{zhao2022tod}。
+
+对大规模输入，自动批处理的实际作用是把无法一次容纳的距离和邻域计算拆到多个显存可承受的批次中，而评分逻辑保持不变。可证明量化适用于具备相应误差边界的算子，不能当作任意评分算子的通用压缩手段。这两项机制缓解了评分阶段的显存压力，但外存索引访问和候选生成仍然需要独立的前端。
 
 \begin{figure}[!htbp]
   \centering
@@ -68,6 +72,8 @@ ANNS 已形成多条技术路线。HNSW 以分层小世界图缩短搜索路径�
 
 当索引无法完全驻留显存时，搜索过程需要在 SSD 访问与 GPU 计算之间协调。FlashANNS 采用 松散依赖的异步IO（dependency-relaxed asynchronous I/O），将数据获取（ Fetch）、距离计算（ Compute） 和候选更新（ Update） 交叠推进，并利用 warp 级并发组织细粒度搜索任务。图~\ref{fig:flashanns-io-pipeline}展示了这条流水线。该机制允许部分已就绪计算提前推进，无需等待全部读页完成，从而减少 GPU 的串行等待\citep{xiao2025flashanns,song2026vectoranns}。
 
+三个阶段处理的对象不同。Fetch 提交图节点或向量块的外存请求，Compute 对已到达的数据计算距离，Update 将更有希望的结果写回候选队列。松散依赖表示搜索可以沿已就绪的候选继续推进，某个未完成读页不会立即阻塞整个查询批次。warp 级任务组织则用于并行处理距离计算和候选维护，其收益仍受 SSD 带宽、访问局部性和搜索预算影响。
+
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig2-3_editable_cn_optimized.pdf}
@@ -81,9 +87,13 @@ ANNS 已形成多条技术路线。HNSW 以分层小世界图缩短搜索路径�
 
 \section{单卡数据处理与接口支撑}
 
-RAPIDS 服务于 GPU 侧数据处理。cuDF 用于字段筛选、类型转换、特征拼接和窗口统计，RMM 为设备内存池及必要的页锁定主机缓冲提供资源管理支持\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。在 FlashTOD 中，这些能力主要用于向量输入准备和候选中间结果组织，不承担异常评分。能否保持全 GPU 执行仍取决于具体操作：兼容模式未覆盖的操作、Python 对象转换或显式主机接口都可能触发 CPU 回退（fallback），继而产生额外搬运。第四章需要据实际执行路径检查这些边界。
+RAPIDS 服务于 GPU 侧数据处理。cuDF 以列式 GPU DataFrame 组织表格数据，用于字段筛选、类型转换、特征拼接和窗口统计；RMM 提供设备内存池，也可为必要的主机---设备交互分配页锁定缓冲\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。内存池让尺寸稳定的批次缓冲可以复用，避免候选组织阶段频繁申请和释放设备内存。
 
-FAISS-GPU 提供成熟的 GPU ANN API 和资源管理方式，适合验证查询输入与候选输出接口\citep{johnson2019faiss,faiss_gpu_wiki}。同一 GPU 上的 设备指针（device pointer ）可以直接进入索引，避免额外 H2D；主机指针（host pointer ）或跨设备输入则会触发相应数据搬运。其候选 ID、距离 返回格式以及 \texttt{StandardGpuResources} 函数的 预分配临时显存（scratch memory ）管理，使本文能够在前期确认“检索输出如何进入 PyTOD”这一接口，而不必先依赖完整外存链路。
+在 FlashTOD 中，这些能力主要用于向量输入准备和候选中间结果组织，不承担异常评分。能否保持全 GPU 执行仍取决于具体操作：兼容模式未覆盖的操作、Python 对象转换或显式主机接口都可能触发 CPU 回退（fallback），继而产生额外搬运。第四章需要据实际执行路径检查这些边界。
+
+FAISS-GPU 提供成熟的 GPU ANN API 和资源管理方式，适合验证查询输入与候选输出接口\citep{johnson2019faiss,faiss_gpu_wiki}。同一 GPU 上的设备指针（device pointer）可以直接进入索引，避免额外 H2D；主机指针（host pointer）或跨设备输入则会触发相应数据搬运。
+
+\texttt{StandardGpuResources} 维护 GPU 索引使用的计算流和临时工作区。预分配的临时显存（scratch memory）可以被多次查询复用，减少热路径中频繁 \texttt{cudaMalloc}/\texttt{cudaFree} 引起的同步和执行抖动\citep{faiss_gpu_wiki}。FAISS-GPU 返回的候选 ID 与距离格式比较稳定，本文因此用它确认“检索输出如何进入 PyTOD”这一接口，再将同样的候选数据契约接入完整外存链路。
 
 \begin{figure}[!htbp]
   \centering
