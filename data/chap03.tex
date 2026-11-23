@@ -223,6 +223,15 @@ RAPIDS 在本文中用于稳定热路径的数据和内存后端，后端重构�
   \end{tabular}
 \end{table}
 
+图~\ref{fig:single-stage-differences}将同一组差额按阶段配对展示，便于比较 1M 与 10M 下的时间分布。图中每项均由同规模的原始分段链路减去完整优化链路得到；多项改动同时生效，不能把单项差额解释为某一种优化机制的独立收益。
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_stage_differences.pdf}
+  \caption{原始分段链路与完整优化链路的单卡阶段耗时差额}
+  \label{fig:single-stage-differences}
+\end{figure}
+
 在两种规模下，候选组织节约的时间都多于评分阶段节约的时间。这是单卡实现优先改变编号、距离和特征传递方式的理由：评分函数未变，准备其输入所需的时间仍有压缩余地。到 10M 完整配置，候选组织与检索的耗时已很接近。若要从两者中确定下一处瓶颈，需要把同一批次发起读取、数据就绪和计算结束的时刻对齐；只看表里的差额，分不清检索在等数据，还是评分在等候选。
 
 \section{本章小结}
