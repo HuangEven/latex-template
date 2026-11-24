@@ -48,7 +48,7 @@
 \section{统一文件命名风格}
 
 \begin{itemize}
-  \item 会话目录统一采用“任务名 + 时间戳”形式，例如 \path|freeze_last_tune_<YYYYmmdd_HHMMSS>|，用于标识一轮冻结前复核或专题实验。
+  \item 会话目录名由任务名与时间戳组成，例如 \path|freeze_last_tune_<YYYYmmdd_HHMMSS>|，用于标识一轮冻结前复核或专题实验。
   \item 单次运行日志统一采用 \path|bench_<route>_<scale>_<scene>_gpu<id>.log|，其中 \texttt{route} 表示单卡或多卡执行路径，\texttt{scale} 表示数据规模，\texttt{scene} 表示验证场景或配置标签。
   \item 对比结果统一采用 \path|compare_<topic>_<timestamp>.md| 与 \path|compare_<topic>_<timestamp>.csv| 成对保存，其中 Markdown 文件用于保留人工可读结论，CSV 文件用于后续绘图与表格汇总。
   \item 过程检查类文件统一采用 \path|0N_<step>.prompt.txt|、\path|0N_<step>.stdout.log| 和 \path|checklist.log| 的组合形式，用于保留命令入口、标准输出和阶段性检查记录。
@@ -93,7 +93,7 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
 
 \chapter{图表补充说明}
 
-本附录对正文图表中反复出现的变量命名、单位和比较口径作统一补充，便于阅读时快速核对不同章节之间的含义是否一致。
+本附录对正文图表中反复出现的变量命名、单位和比较口径作统一补充，列明各章采用的指标定义与适用范围。
 
 \section{图表口径说明}
 
@@ -172,7 +172,7 @@ RAPIDS 相关组件在本文中作为 GPU 数据处理与内存资源管理支�
       \midrule
       Replicated & Full replica & None & Topology-aware & 主扩展方案，验证随 GPU 数量增加的吞吐收益 \\
       本地评分 + 设备侧归并 & 分片索引 & NCCL all-gather + 设备侧归并 & 拓扑感知 & 显存受限时的设备侧归并兜底路径 \\
-      本地评分 + 主机侧聚合 & 分片索引 & 主机侧聚合 & 拓扑感知 & 用于对比 CPU 回到数据平面的额外代价 \\
+      本地评分 + 主机侧聚合 & 分片索引 & 主机侧聚合 & 拓扑感知 & 用于对比主机侧结果聚合的额外开销 \\
       拓扑感知绑定 & 完整副本 & 无 & 拓扑感知 & 验证 I/O 通道绑定对扩展效率的影响 \\
       Shared-path conflict & Full replica & None & Shared PCIe/SSD path & 作为共享路径冲突下的对比基线 \\
       \midrule

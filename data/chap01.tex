@@ -2,17 +2,17 @@
 
 \chapter{相关研究工作与关键技术基础}
 
-本章沿 FlashTOD 的执行链路梳理相关工作，讨论的重点落在判断已有方法解决了哪一段问题、能够提供什么能力，以及这些能力接入候选召回---异常评分链路后还留下哪些系统边界。
+本章按 FlashTOD 的执行顺序比较相关工作，区分已有组件在召回、评分和跨设备通信中的作用，并分析这些组件接入两阶段链路后的接口与资源约束。
 
 \section{异常检测方法研究现状}
 
-异常检测方法通常包括距离型、密度型、统计型、集成型和深度学习型路线\citep{chandola2009survey,markou2003novelty,aggarwal2017outlier}。对于金融数据来说，单笔交易偏离、账户时间窗行为变化和多实体关系异常的表现形式不同，处理方法的选择不能只看离线精度。评分计算复杂度、近邻依赖、GPU 批处理适配性、可解释性和在线维护代价都是影响系统能否进入近实时链路需要考虑的地方\citep{phua2010fraudsurvey,akoglu2015graph,song2024financialriskstgnn}。
+异常检测方法通常包括距离型、密度型、统计型、集成型和深度学习型路线\citep{chandola2009survey,markou2003novelty,aggarwal2017outlier}。在金融数据中，单笔交易偏离、账户时间窗行为变化和多实体关系异常的表现形式不同，方法选择不能仅依据离线精度。近实时部署还受评分复杂度、近邻依赖程度、GPU 批处理适配性、告警解释和在线维护成本的约束\citep{phua2010fraudsurvey,akoglu2015graph,song2024financialriskstgnn}。
 
 对一个待评分样本，$k$NN 要先找出距离最近的样本；LOF 还要比较它与近邻的局部密度；ABOD 考察从该样本指向其他样本的向量之间夹角的方差\citep{breunig2000lof,angiulli2002fast,kriegel2008abod}。这几种方法都可以借周围样本解释离群程度。以 $k$NN 为例，距离计算和邻域筛选可以用 \texttt{cdist}、\texttt{topk} 批量执行，局部聚合也适合放在 GPU 上\citep{zhao2022tod}。要付出的代价往往出现在聚合之前：输入向量还装得进显存，完整的距离矩阵或成对差分张量却可能装不下。先召回候选，就能限制进入评分阶段的中间数据量。
 
-如果只需根据变量在各自分布中的位置筛查样本，HBOS、COPOD 和 ECOD 提供了比构造近邻图更轻的评分途径。HBOS 查直方图，COPOD 利用经验关联结构（copula）估计多维尾部概率，ECOD 从各维度的经验累积分布构造尾部异常分数\citep{li2020copod,li2023ecod}。三者都可用作快速筛查或比较参考，但直方图或分位统计保留的信息取决于特征如何处理；单个字段不罕见的交易，仍可能在其局部邻域或关系网络中异常。表~\ref{tab:ad-complexity}把这种分布评分与需要构造并聚合邻域的密度评分并列比较。
+如果只需根据变量在各自分布中的位置筛查样本，HBOS、COPOD 和 ECOD 提供了比构造近邻图更轻的评分途径。HBOS 查直方图，COPOD 利用经验关联结构（copula）估计多维尾部概率，ECOD 从各维度的经验累积分布构造尾部异常分数\citep{li2020copod,li2023ecod}。三者都可用作快速筛查或比较参考，但直方图或分位统计保留的信息取决于特征处理方式；单个字段不罕见的交易，仍可能在其局部邻域或关系网络中异常。表~\ref{tab:ad-complexity}把这种分布评分与需要构造并聚合邻域的密度评分并列比较。
 
-集成检测器用多个模型或子空间的结果降低对单一判据的依赖，部署时也要承担多次推理和汇总的成本。孤立森林（Isolation Forest）给出了一种不必计算全量距离矩阵的做法：随机切分生成多棵隔离树，样本在树中经过的平均路径越短，越容易被孤立\citep{liu2008isolationforest}。若交易关系本身提示风险，只观察单条记录又会遗漏信息。比特币反洗钱图数据研究和 CARE-GNN 等工作利用了交易网络或异质邻居，但标签不平衡、噪声联系和构图方式都会影响判断\citep{weber2019bitcoinaml,dou2020caregnn,chen2021graphanomaly,li2023gnnfraud,yu2024rwkgnn}。深度模型可以描述非线性、时序和图关系；能否用于高吞吐检测，还要考虑训练、在线部署及解释一次告警的成本。
+集成检测器用多个模型或子空间的结果降低对单一判据的依赖，部署时也要承担多次推理和汇总的成本。孤立森林（Isolation Forest）给出了一种不必计算全量距离矩阵的做法：随机切分生成多棵隔离树，样本在树中经过的平均路径越短，越容易被孤立\citep{liu2008isolationforest}。若交易关系本身提示风险，只观察单条记录又会遗漏信息。比特币反洗钱图数据研究和 CARE-GNN 等工作利用了交易网络或异质邻居，但标签不平衡、噪声联系和构图方式都会影响判断\citep{weber2019bitcoinaml,dou2020caregnn,chen2021graphanomaly,li2023gnnfraud,yu2024rwkgnn}。深度模型可以描述非线性、时序和图关系；用于高吞吐检测时，还需计入训练、在线部署和告警解释的成本。
 
 本文研究对象是系统协同：选择能够张量化的异常评分，把它放在规模受控的候选集合上运行，并观察效果与系统开销之间的折中。该边界保留了评分方法的可替换性，也避免将 FlashTOD 的系统收益解释为某个新检测模型的贡献。
 
@@ -38,9 +38,9 @@
 
 \section{异常评分的张量化执行基础}
 
-TOD 解决的是异常评分如何统一映射到 GPU。它把算法拆为基础张量算子（Basic Tensor Operations，BTO）和由基础算子组成的功能算子（Functional Operations，FO），再用这些算子表达具体检测器\citep{zhao2022tod}。以 $k$NN 类评分为例，一条典型算子链可以写成，距离计算算子$\rightarrow$ topk算子 $\rightarrow$ 聚合算子 $\rightarrow$ 异常评分算子（ \texttt{cdist} $\rightarrow$ \texttt{topk} $\rightarrow$ local aggregation $\rightarrow$ anomaly score）。距离、近邻筛选和聚合共享统一张量表示后，不再需要为每个检测器单独维护一套 GPU 实现。
+TOD 将异常评分映射为 GPU 上的张量运算。它把算法拆为基础张量算子（Basic Tensor Operations，BTO）和由基础算子组成的功能算子（Functional Operations，FO），再用这些算子表达具体检测器\citep{zhao2022tod}。以 $k$NN 类评分为例，典型算子链为：距离计算算子$\rightarrow$ topk算子 $\rightarrow$ 聚合算子 $\rightarrow$ 异常评分算子（ \texttt{cdist} $\rightarrow$ \texttt{topk} $\rightarrow$ local aggregation $\rightarrow$ anomaly score）。距离、近邻筛选和聚合共享统一张量表示后，不再需要为每个检测器单独维护一套 GPU 实现。
 
-BTO 与 FO 的分工也决定哪些数据必须留在显存中。以近邻评分为例，基础算子 \texttt{cdist} 产生一块距离，\texttt{topk} 从中筛出近邻；后续功能算子做局部聚合时，需要的是筛选结果，而非整块距离。距离、排序和统计算子可以复用。同一套评分逻辑下，距离块取多大、何时释放不再使用的张量，仍会改变显存占用和批处理吞吐。
+BTO 与 FO 之间传递的中间结果影响显存占用。以近邻评分为例，基础算子 \texttt{cdist} 计算一个距离块，\texttt{topk} 从中筛出近邻；后续功能算子做局部聚合时，需要的是筛选结果，而非整块距离。距离、排序和统计算子可以复用。同一套评分逻辑下，距离块大小及张量释放时机会影响显存占用和批处理吞吐。
 
 图~\ref{fig:tod-overview}展示 TOD 的分层结构，图~\ref{fig:algo-to-ops}给出典型算法到算子的映射。自动批处理把超出显存预算的评分任务拆为可执行批次；可证明量化在其约束内压缩部分算子开销；多 GPU 支持允许批处理任务分配到多个设备。这些机制提高的是评分阶段的可执行性。它们并不改变 $k$NN、LOF 等方法对距离和邻域的基本依赖，也不能取消候选预算与检测效果之间的取舍\citep{zhao2022tod}。
 
@@ -62,7 +62,7 @@ BTO 与 FO 的分工也决定哪些数据必须留在显存中。以近邻评分
 
 PyTOD 将上述张量化思想提供为可复用的软件接口。本文使用它承接候选集合上的距离、排序和聚合评分，并保留评分函数可替换的空间。早期 GPU 异常检测工作已经证明特定检测器或特征选择步骤可以并行化\citep{angiulli2013gpuoutlier,azmandian2014gpufeature}；TOD/PyTOD 的差别在于提供较统一的算子抽象和批处理执行基础。
 
-它的能力边界也很清楚。PyTOD 不负责从亿级或外存索引中产生候选，不管理 SSD---GPU 访问路径，也不定义候选 ID、距离、局部排序和索引映射如何跨模块传递。在线请求调度与多 GPU 共享 I/O 同样不属于评分框架本身。FlashTOD 因此把 PyTOD 放在候选召回之后：利用其 GPU 评分能力，但不要求它承担前端检索和端到端系统调度。
+PyTOD 不负责从亿级或外存索引中产生候选，不管理 SSD---GPU 访问路径，也不规定候选 ID、距离、局部排序和索引映射的跨模块传递方式。在线请求调度与多 GPU 共享 I/O 同样不属于评分框架本身。FlashTOD 因此把 PyTOD 放在候选召回之后：利用其 GPU 评分能力，但不要求它承担前端检索和端到端系统调度。
 
 \section{近似最近邻候选召回前端基础}
 
@@ -70,9 +70,9 @@ FlashANNS 是近似最近邻搜索（Approximate Nearest Neighbor Search，ANNS�
 
 近似搜索有不同的成本来源。若关心图上的遍历开销，HNSW 利用分层小世界图缩短搜索路径，NSG 则用稀疏导航图控制边数与遍历代价\citep{malkov2020hnsw,fu2019nsg}。向量存储占用过大时，乘积量化（Product Quantization，PQ）可以用子空间码本表示向量，也可配合倒排索引使用\citep{jegou2011pq}。数据放不进内存时，DiskANN 将图索引放到 SSD 上，SPANN 利用内存和外存之间的分层组织\citep{subramanya2019diskann,chen2021spann}。查询时延和召回率的比较须给出数据集、参数及评价口径；ANN-Benchmarks 展示了这些条件对结果的影响\citep{aumuller2020annbenchmarks}。本文选择 FlashANNS 的依据较窄：索引可能超出显存，而检索出的候选还要在 GPU 上接受异常评分。
 
-图~\ref{fig:flashanns-io-pipeline}给出了索引超出显存时 FlashANNS 如何安排搜索。一个查询批次发起 SSD 读请求后，并不需要等到所有页都返回才开始计算。FlashANNS 放宽部分依赖，用异步 I/O（dependency-relaxed asynchronous I/O）交叠数据获取（Fetch）、距离计算（Compute）与候选更新（Update），并以线程束（warp）为单位并行处理细粒度任务\citep{xiao2025flashanns,song2026vectoranns}。
+图~\ref{fig:flashanns-io-pipeline}展示了索引超出显存时 FlashANNS 的搜索流程。一个查询批次发起 SSD 读请求后，并不需要等到所有页都返回才开始计算。FlashANNS 放宽部分依赖，用异步 I/O（dependency-relaxed asynchronous I/O）交叠数据获取（Fetch）、距离计算（Compute）与候选更新（Update），并以线程束（warp）为单位并行处理细粒度任务\citep{xiao2025flashanns,song2026vectoranns}。
 
-例如，一部分图节点或向量块仍在待读时，Fetch 已经可以为其他所需数据提交请求；对已到达的块，Compute 计算距离，Update 再据此更新候选队列。已就绪的候选因而可以继续搜索。这种重叠能利用多少等待时间，取决于读请求的局部性、SSD 带宽，以及搜索预算内还有多少候选可供处理。
+例如，一部分图节点或向量块仍在待读时，Fetch 已经可以为其他所需数据提交请求；对已到达的块，Compute 计算距离，Update 再据此更新候选队列。已就绪的候选因而可以继续搜索。可由计算掩蔽的读取时间取决于读请求的局部性、SSD 带宽和搜索预算内已就绪的候选数。
 
 \begin{figure}[!htbp]
   \centering
@@ -81,19 +81,19 @@ FlashANNS 是近似最近邻搜索（Approximate Nearest Neighbor Search，ANNS�
   \label{fig:flashanns-io-pipeline}
 \end{figure}
 
-FlashANNS 交出的只是近邻，PyTOD 仍须计算异常分数。搜索深度和候选预算决定后端能看到哪些邻居：漏掉关键邻域会影响评分，而放宽预算又会增加评分工作量。即便候选选得合适，接口也可能抵消检索节约的时间。如果候选编号（candidate ID）、距离（distance）、局部排序（local rank）和索引映射（reference mapping）要经 D2H 返回 CPU 重新打包，再经 H2D 传给 PyTOD，一次检索与一次评分之间就多出两次搬运及相应的同步等待。
+FlashANNS 返回近邻候选，PyTOD 仍须计算异常分数。搜索深度和候选预算限定了参与评分的邻域：漏掉关键邻域会影响评分，而放宽预算又会增加评分工作量。即便召回的候选满足评分要求，接口也可能抵消检索节约的时间。如果候选编号（candidate ID）、距离（distance）、局部排序（local rank）和索引映射（reference mapping）要经 D2H 返回 CPU 重新打包，再经 H2D 传给 PyTOD，一次检索与一次评分之间就多出两次搬运及相应的同步等待。
 
-本文不改写 FlashANNS 的索引或搜索算法。后续工作的切入点是接口组织：使前端输出尽可能保持为设备侧候选缓冲，并与评分张量的布局、批次和生命周期对齐。第四章的数据路径优化由此获得明确问题来源。
+本文不改写 FlashANNS 的索引或搜索算法。本文在接口处组织候选数据，使前端输出尽可能保持为设备侧候选缓冲，并与评分张量的布局、批次和生命周期对齐。第四章分析这一交接过程的数据传输与等待。
 
 \section{单卡数据处理与接口支撑}
 
 RAPIDS 服务于 GPU 侧数据处理。cuDF 以列式 GPU DataFrame 组织表格数据，用于字段筛选、类型转换、特征拼接和窗口统计；RMM 提供设备内存池，也可为必要的主机---设备交互分配页锁定缓冲\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。内存池让尺寸稳定的批次缓冲可以复用，避免候选组织阶段频繁申请和释放设备内存。
 
-FlashTOD 用 RAPIDS 准备向量、组织候选中间结果，异常分数则由 PyTOD 计算。数据留在 GPU 上的前提是实际调用的操作能由设备端执行：兼容模式不支持的操作可能回退到 CPU，转换为 Python 对象或显式调用主机接口也可能引发搬运。第四章据此检查各段的输入、输出究竟在哪一侧。
+FlashTOD 用 RAPIDS 准备向量、组织候选中间结果，异常分数则由 PyTOD 计算。数据留在 GPU 上的前提是实际调用的操作能由设备端执行：兼容模式不支持的操作可能回退到 CPU，转换为 Python 对象或显式调用主机接口也可能引发搬运。第四章区分各阶段输入、输出在主机端或设备端的驻留位置。
 
-验证检索与评分接口时，查询向量放在哪里会直接改变测试的含义。利用 FAISS-GPU 的 ANN 接口及其 GPU 资源管理方式，可以分别检查主机指针（host pointer）和设备指针（device pointer）的传递路径\citep{johnson2019faiss,faiss_gpu_wiki}。查询与索引位于同一张 GPU 时，索引可直接读取设备指针；输入在主机上需要 H2D，输入在另一张卡上也需要设备间搬运。
+检索与评分的接口测试须区分查询向量位于主机端还是设备端。利用 FAISS-GPU 的 ANN 接口及其 GPU 资源管理方式，可以分别检查主机指针（host pointer）和设备指针（device pointer）的传递路径\citep{johnson2019faiss,faiss_gpu_wiki}。查询与索引位于同一张 GPU 时，索引可直接读取设备指针；输入在主机上需要 H2D，输入在另一张卡上也需要设备间搬运。
 
-\texttt{StandardGpuResources} 维护 GPU 索引使用的计算流和临时工作区。预分配的临时显存（scratch memory）可以被多次查询复用，减少热路径中频繁 \texttt{cudaMalloc}/\texttt{cudaFree} 引起的同步和执行抖动\citep{faiss_gpu_wiki}。FAISS-GPU 返回的候选 ID 与距离格式比较稳定，本文因此用它确认“检索输出如何进入 PyTOD”这一接口，再将同样的候选数据契约接入完整外存链路。
+\texttt{StandardGpuResources} 维护 GPU 索引使用的计算流和临时工作区。预分配的临时显存（scratch memory）可以被多次查询复用，减少热路径中频繁 \texttt{cudaMalloc}/\texttt{cudaFree} 引起的同步和执行抖动\citep{faiss_gpu_wiki}。本文使用 FAISS-GPU 返回的候选 ID 与距离，验证检索结果到 PyTOD 评分输入的映射；完整外存链路沿用相同的候选字段及映射关系。
 
 \begin{figure}[!htbp]
   \centering
@@ -114,11 +114,11 @@ FlashTOD 用 RAPIDS 准备向量、组织候选中间结果，异常分数则由
 \Needspace{0.35\textheight}
 \section{多卡调度与在线推理启示}
 
-应当复制索引还是拆分索引，取决于单卡能否同时容纳索引和评分缓冲。放得下时，每张 GPU 可保留一个副本，独立完成分到本卡的查询。索引复制（replicated）以重复占用显存换取较少的跨卡通信，适用于以吞吐为首要目标的部署。改为索引分片（sharded）可以把更大的索引分散到各卡，但一次查询所需的近邻可能来自多个分片，各卡算出的局部名单还要归并。第五章以复制为主，另行讨论容量受限时的归并代价\citep{cuvs_multi_gpu_nn,cuvs_dist_mode}。
+索引布局受单卡可用显存约束。单卡能够同时容纳索引和评分缓冲时，每张 GPU 可保留一个副本，独立完成分到本卡的查询。索引复制（replicated）以重复占用显存换取较少的跨卡通信，适用于以吞吐为首要目标的部署。改为索引分片（sharded）可以把更大的索引分散到各卡，但一次查询所需的近邻可能来自多个分片，各卡算出的局部名单还要归并。第五章以复制为主，另行讨论容量受限时的归并代价\citep{cuvs_multi_gpu_nn,cuvs_dist_mode}。
 
 归并位置决定 CPU 是否重新进入数据平面。CPU归并(aggregation) 实现直接，但各卡局部候选或分数需要 D2H，主机排序后还可能发生 H2D 或额外同步。GPU 聚合（merge ）能保留设备侧结果并减少主机参与，代价是设备间通信、缓冲区管理和 CUDA 的stream协调。NCCL 操作可异步入队到指定 stream；同一 \texttt{ncclGroupStart/End()} 中混用多个 stream 可能引入全局同步点\citep{nccl_stream_semantics}。因此，GPU聚合是容量受限路径下需要权衡通信与缓冲管理成本的工程选择。
 
-多一张 GPU 可以多处理一批查询，却未必增加可用的存储带宽。若几张卡共用 PCIe 路径、跨 NUMA 节点的访存路径或同一 SSD 通道，并发请求仍要排队。GDS 可减少经由 CPU 中转缓冲区（bounce buffer）的搬运，但传输仍受 GPU、存储设备与 PCIe 拓扑约束\citep{gds_overview,gds_design_guide,li2024multigpunuma}。此外，复制索引占用显存，分片搜索需要归并，CPU 控制面也仍需分发请求。第五章考察拓扑感知 I/O 与准入控制，关注的是共享路径等待是否会推高 p99，而不预设吞吐随卡数线性增长。
+增加 GPU 可并行处理更多查询，但共享存储路径的可用带宽未必随卡数增加。若几张卡共用 PCIe 路径、跨 NUMA 节点的访存路径或同一 SSD 通道，并发请求仍要排队。GDS 可减少经由 CPU 中转缓冲区（bounce buffer）的搬运，但传输仍受 GPU、存储设备与 PCIe 拓扑约束\citep{gds_overview,gds_design_guide,li2024multigpunuma}。此外，复制索引占用显存，分片搜索需要归并，CPU 控制面也仍需分发请求。第五章考察拓扑感知 I/O 与准入控制，分析共享路径等待对 p99 延迟和吞吐扩展的影响。
 
 表~\ref{tab:technology-boundary}仅比较文献与成熟技术组件的能力边界。TOD/PyTOD、FAISS-GPU 和 FlashANNS 分别对应 GPU 异常评分、GPU ANN 检索接口和外存 GPU ANNS；FlashTOD 则研究这些能力组合后的候选组织、设备驻留和端到端执行问题。第六章另行区分已有评分方法参考、本文构造的工程组合基线以及内部执行路径对照，各行不构成同口径实验方案。
 
@@ -144,6 +144,6 @@ FlashTOD 用 RAPIDS 准备向量、组织候选中间结果，异常分数则由
 
 \section{本章小结}
 
-从现有工作来看，已经提供了 GPU 异常评分、大规模 ANNS、GPU 数据处理和多 GPU 通信能力。需要注意的是，它们针对的是不同层面的问题，各个组件的能力边界要明确，单项能力不会自行组成低开销的端到端系统。
+现有组件分别支持 GPU 异常评分、大规模 ANNS、设备侧数据处理和多 GPU 通信。检索阶段返回近邻，评分阶段则需要按查询组织的候选张量；单项组件的吞吐无法反映这段交接的开销。
 
-介绍完了现有工作，接下来本文会引出要补充的研究缺口——候选召回与异常评分在统一数据路径中的系统协同。第三章根据这个思路阐述 FlashTOD 的任务模型、模块接口和基础执行流程；第四章再处理功能联通之后仍然存在的候选重组、H2D/D2H 与 I/O 等待问题。
+FlashTOD 将候选召回与异常评分组织在同一条数据路径上。第三章给出任务模型、模块接口与执行流程；第四章分析候选重组、H2D/D2H 传输和 I/O 等待的开销。
