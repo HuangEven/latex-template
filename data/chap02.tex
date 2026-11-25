@@ -111,6 +111,8 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 \textit{数据集名称口径说明：}显存估算使用实验已经导出的向量文件。表中的维度表示预处理后的向量长度，原表字段数记录的是预处理前的输入结构。异常检测基准（ADBench）中，fraud / ADBench 13\_fraud 是金融欺诈导出文件，campaign / ADBench 5\_campaign 是其中的公开异常检测数据；二者均以导出名称标识。fraud\_handbook 来自金融欺诈样例与合成流程，amlsim 对应 IBM AML / AMLSim 生成配置。即使两份文件的样本量相同，只要特征维度不同，输入矩阵和显式成对差分的空间估计就会不同；只保存每对样本的一个距离值时，估计量才与维度无关。finance\_seed\_200k 仅作合成种子或中间调试数据，不计入最终主实验规模。IEEE-CIS 与 DGraphFin 用于说明公开数据和金融图的来源，并无单列的导出向量估算行；表中名称相近的导出任务不代表这两个数据集的实测结果。
 
+这种安排将真实有效性验证与系统压力实验分开：IEEE-CIS、Credit Card Fraud Detection 和 DGraphFin 检验两阶段框架在真实或半真实金融数据上的可用性，1M IBM AML / AMLSim 衔接真实口径和合成规模，后续更大样本层级则逐步进入单卡性能、多 GPU 扩展和压力测试。
+
 \begin{table}[htbp]
   \caption{当前已导出实验文件的向量维度与全量距离计算显存估算}
   \label{tab:dataset-mem-estimation}
