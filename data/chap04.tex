@@ -79,7 +79,7 @@
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
+  \includegraphics[width=0.80\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
   \caption{数据并行与索引复制多 GPU 架构}
   \label{fig:replicated-arch}
 \end{figure}
@@ -141,7 +141,7 @@
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig5-3_topology_aware_io_lane.pdf}
+  \includegraphics[width=0.80\linewidth]{figures/fig5-3_topology_aware_io_lane.pdf}
   \caption{拓扑感知 I/O 通道示意}
   \label{fig:topology}
 \end{figure}
@@ -163,14 +163,14 @@
 
 图~\ref{fig:qps-vs-gpu} 左图给出了索引复制路径下 QPS 随 GPU 数量增加的变化，并加入理想线性扩展参考线；该参考线仅由 1 GPU QPS 线性外推得到，是理论参考而非实测结果。实际吞吐低于理想线性值；该差额涵盖调度、执行与 I/O 路径的综合开销，图中未分解各项开销所占的比例。右图比较了拓扑感知绑定与共享路径冲突下的 p99 延迟，结果显示共享 PCIe/SSD 路径会放大尾延迟。拓扑感知 I/O 通道绑定因此成为多 GPU 场景下维持稳定扩展的重要条件。在索引分片组，图~\ref{fig:latency-quantiles} 对照设备侧归并与主机侧聚合的延迟：前者把局部结果尽量留在设备侧，后者需要回到主机侧排序与聚合，因此会引入更高的路径开销。
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.84\linewidth]{plot_assets/ch05_latency_merge_compare/fig5_16_latency_merge_compare.pdf}
   \caption{平均延迟与 p99 延迟变化}
   \label{fig:latency-quantiles}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{plot_assets/ch05_io_lane_impact/fig5_18_io_lane_impact.pdf}
   \caption{I/O 通道配置对扩展性的影响}

@@ -40,9 +40,9 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 沿一次查询追踪，查询向量、候选缓冲和评分中间张量尽量留在 GPU 上。这样的安排省去了为打包候选而专门返回主机的一次交接。原始输入、必要日志和最终结果仍要跨越主机边界；对必须搬运的数据，可用页锁定内存（pinned memory）配合异步传输。多卡部署若允许索引复制（replicated），一次查询就在一张卡上完成检索与评分；若不能复制，则比较设备侧归并（GPU merge）与主机聚合（CPU aggregation）两条路径。最终输出的是按异常分数排列的前 $k$ 个高风险对象（Top-$k$）和必要日志，供实验评估或下游业务使用。
 
-\begin{figure}[!t]
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{figures/fig3-2_pytod_flashanns_concept_topdown.pdf}
+  \includegraphics[width=0.78\linewidth]{figures/fig3-2_pytod_flashanns_concept_topdown.pdf}
   \caption{FlashTOD 系统概念图}
   \label{fig:pytod-flashanns-concept}% 原有标签
   \label{fig:fig3-2}% 兼容“fig3-2”的引用写法
@@ -146,8 +146,6 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 查询分块和候选召回对计算规模的影响不同。分块计算只在显存中保留当前距离块，降低峰值空间；若每个查询仍与全部参考样本比较，距离计算总数不变。候选召回直接缩小精细评分的参考集合，减少距离计算，但也可能遗漏影响局部密度的近邻。候选预算因此不能仅依据显存估算确定。本章比较候选评分与全量评分的排序差异，第四章分析候选向评分端传递的开销。
 
-\FloatBarrier
-
 \section{数据预处理与特征构造}
 
 由于不同数据集在字段命名、数据类型、缺失值比例、标签分布以及时间粒度上存在较大差异，原始金融数据无法直接输入候选召回和异常评分模块。FlashTOD 通过统一向量接口组织数据预处理与特征构造，使处理结果能够同时服务于候选召回和异常评分。预处理尽量保留原始业务特征，将表格型和图结构金融数据转换为可检索、可评分、可批处理的向量表示 $v_i\in\mathbb{R}^d$。其中，$d$ 由最终预处理脚本确定，并在候选召回与异常评分实验中保持一致。
@@ -223,14 +221,14 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 图~\ref{fig:flashanns-workflow} 展示了候选召回模块的基本执行过程，表~\ref{tab:recall-module-params} 总结了关键控制参数。
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{figures/fig3-4_FlashANNS_candidate_recall_flow.pdf}
   \caption{FlashANNS 候选召回执行流程图}
   \label{fig:flashanns-workflow}
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[!htb]
   \caption{候选召回模块主要参数}
   \label{tab:recall-module-params}
   \centering
@@ -252,8 +250,6 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
   \end{tabular}
   \end{adjustbox}
 \end{table}
-
-\FloatBarrier
 
 \section{FlashTOD 执行流程}
 
@@ -322,6 +318,7 @@ FlashTOD 的总体结构可以划分为输入与特征构造、候选召回、�
 
 \FloatBarrier
 
+\Needspace{16\baselineskip}
 \section{本章小结}
 
 从交易表到图节点，数据来源虽有差异，送入检索端的都是固定维度的样本向量。FlashANNS 返回按查询排列的候选编号和距离；PyTOD 取出对应样本，在候选范围内评分，再按异常分数生成风险名单。两处次序的含义不同，这也是模块交接时必须保留查询与原始样本映射的原因。本章用各任务自己的全量评分名单作参照，检验候选截断对排序的影响；合成数据上的规模实验另作比较，不用来替代公开数据上的效果评价。
