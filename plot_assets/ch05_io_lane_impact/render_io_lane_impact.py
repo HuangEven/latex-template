@@ -69,7 +69,7 @@ def main() -> None:
     width = 0.28
 
     fig, axes = plt.subplots(1, 2, figsize=(11.0, 5.8), dpi=220)
-    colors = ["white", "#D1D1D1"]
+    colors = ["#96BDCD", "#AC632E"]
     translated_labels = [SCHEME_LABELS.get(str(label), str(label)) for label in schemes]
 
     for ax, values, ylabel, ylim, offset in [

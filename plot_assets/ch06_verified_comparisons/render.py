@@ -54,7 +54,7 @@ for ax, metric, title, marker in zip(axes, ["recall_at_k", "topk_overlap"],
     ax.set_title(title, fontsize=10, pad=6)
     for y, key in enumerate(names):
         value = float(fusion[key][metric])
-        ax.plot(value, y, marker=marker, color=".15", mfc=".2" if key == "Full fusion" else "white", ms=5)
+        ax.plot(value, y, marker=marker, color=".15", mfc="#B35523" if key == "Full fusion" else "white", ms=5)
         ax.annotate(f"{value:.3f}", (value, y), xytext=(5, 0), textcoords="offset points",
                     va="center", fontsize=9)
     ax.set_xlim(.69, 1.09)
@@ -69,7 +69,7 @@ fig.subplots_adjust(left=.14, right=.98, top=.96, bottom=.22)
 for key, marker, side in zip(names, ["o", "D", "^", "s"], [1, -1, 1, -1]):
     x, y = float(fusion[key]["qps"]), float(fusion[key]["pr_auc"])
     ax.plot(x, y, marker=marker, markersize=7, color=".12",
-            mfc=".18" if key == "Full fusion" else "white")
+            mfc="#B35523" if key == "Full fusion" else "white")
     ax.annotate(f"{names[key]}  ({x:.0f}, {y:.3f})", (x, y),
                 xytext=(side*7, 7), textcoords="offset points", fontsize=9,
                 ha="left" if side > 0 else "right")
@@ -101,7 +101,7 @@ for ax, metric, title, limits, ticks, fmt in zip(
     ax.axhline(1.6, color=".55", lw=.6, ls="--")
     for i, (pos, row) in enumerate(zip([0, 1, 2.3, 3.3, 4.3], observations)):
         value = float(row[metric])
-        ax.plot(value, pos, marker="o" if i < 2 else "s", ms=4.8, mec=".12", mfc="white" if i < 2 else ".20")
+        ax.plot(value, pos, marker="o" if i < 2 else "s", ms=4.8, mec="#276283" if i < 2 else ".12", mfc="white" if i < 2 else "#276283")
         ax.annotate(format(value, fmt), (value, pos), xytext=(4, 0), textcoords="offset points",
                     va="center", fontsize=8)
 axes[0].set_yticks([0, 1, 2.3, 3.3, 4.3], labels)

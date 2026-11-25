@@ -77,7 +77,7 @@ def main() -> None:
             line = ax.plot(
                 range(len(subset)),
                 subset[metric],
-                color="black",
+                color=["#276283", "#B35523"][idx],
                 linestyle=line_styles[idx],
                 linewidth=1.5,
                 marker=markers[idx],

@@ -170,7 +170,7 @@ def build_single_csv() -> pd.DataFrame:
 
 def render_single(df: pd.DataFrame) -> None:
     labels = [label_for(str(item)) for item in df["scheme"]]
-    colors = ["#FFFFFF", "#D9D9D9", "#BFBFBF", "#7A7A7A"]
+    colors = ["#DFE9EF", "#96BDCD", "#276283", "#B35523"]
     metrics = [
         ("qps", "吞吐率（QPS）", (0, 5200), 90),
         ("p99_ms", "p99延迟（ms）", (0, 75), 1.3),
@@ -247,7 +247,7 @@ def render_multigpu(scaling: pd.DataFrame, io_lane: pd.DataFrame, ideal: pd.Data
         scaling["gpu_count"],
         scaling["qps"],
         marker="o",
-        color="black",
+        color="#276283",
         linewidth=1.4,
         markersize=5.5,
         markerfacecolor="white",
@@ -273,8 +273,8 @@ def render_multigpu(scaling: pd.DataFrame, io_lane: pd.DataFrame, ideal: pd.Data
     width = 0.34
     topo = pivot["Topology-aware"].to_numpy()
     conflict = pivot["Shared conflict"].to_numpy()
-    bars1 = ax.bar([x - width / 2 for x in x_positions], topo, width=width, color="#D9D9D9", edgecolor="black", linewidth=0.9, label="拓扑感知绑定")
-    bars2 = ax.bar([x + width / 2 for x in x_positions], conflict, width=width, color="#7A7A7A", edgecolor="black", linewidth=0.9, label="共享路径冲突")
+    bars1 = ax.bar([x - width / 2 for x in x_positions], topo, width=width, color="#96BDCD", edgecolor="black", linewidth=0.9, label="拓扑感知绑定")
+    bars2 = ax.bar([x + width / 2 for x in x_positions], conflict, width=width, color="#AC632E", edgecolor="black", linewidth=0.9, label="共享路径冲突")
     ax.set_xticks(list(x_positions), [f"{int(item)} GPU" for item in pivot.index])
     ax.set_xlabel("GPU数量", fontsize=10.5)
     ax.set_ylabel("p99延迟（ms）", fontsize=10.5)

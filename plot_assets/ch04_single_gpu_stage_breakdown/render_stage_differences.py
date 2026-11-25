@@ -38,9 +38,9 @@ def main():
     fig, ax = plt.subplots(figsize=(9.2, 3.7))
     fig.patch.set_facecolor("white")
     y = list(range(len(STAGES)))
-    ax.barh([v - 0.18 for v in y], one, height=0.34, color="#d9d9d9",
+    ax.barh([v - 0.18 for v in y], one, height=0.34, color="#96BDCD",
             edgecolor="black", linewidth=0.7, label="1M")
-    ax.barh([v + 0.18 for v in y], ten, height=0.34, color="#666666",
+    ax.barh([v + 0.18 for v in y], ten, height=0.34, color="#276283",
             edgecolor="black", linewidth=0.7, label="10M")
     for index, value in enumerate(one):
         ax.text(value + 0.09, index - 0.18, f"{value:.2f}", va="center", fontsize=9)

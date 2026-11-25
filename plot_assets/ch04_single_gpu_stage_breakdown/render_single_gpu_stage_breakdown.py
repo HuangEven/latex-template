@@ -16,7 +16,7 @@ STAGE_LABELS = {
     "pytod_score": "PyTOD评分",
     "output": "结果输出",
 }
-COLORS = ["#FFFFFF", "#DBDBDB", "#B9B9B9", "#949494", "#666666"]
+COLORS = ["#E3EDF1", "#96BDCD", "#D9A77B", "#508B91", "#465C73"]
 HATCHES = ["", "//", "\\\\", "xx", ".."]
 DATASETS = [
     (

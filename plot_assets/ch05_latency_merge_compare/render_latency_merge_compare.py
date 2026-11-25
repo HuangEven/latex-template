@@ -65,7 +65,7 @@ def main() -> None:
         plot_values[:, 0],
         width,
         label="平均延迟",
-        color="white",
+        color="#96BDCD",
         edgecolor="black",
         linewidth=1.2,
     )
@@ -74,7 +74,7 @@ def main() -> None:
         plot_values[:, 1],
         width,
         label="p99延迟",
-        color="#D1D1D1",
+        color="#276283",
         edgecolor="black",
         linewidth=1.2,
     )
