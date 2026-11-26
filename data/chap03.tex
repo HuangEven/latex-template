@@ -169,25 +169,32 @@ RAPIDS 在本文中用于稳定热路径的数据和内存后端，后端重构�
 
 为了验证前述单卡系统设计与数据路径优化的有效性，本文沿用第三章定义的单卡规模链路组织实验。其中，真实或半真实数据主要用于确认链路可运行和检测效果不失真，1M、10M、50M 三个合成规模主要用于性能、吞吐和压力分析；二者不直接比较绝对吞吐。1M 承担由真实集过渡到系统实验的桥接角色，10M 与 50M 对应单卡性能分析的主体规模。在这一框架下，本节重点比较四类方案：原始分段执行链路、仅启用候选召回加速的链路、启用 GPU 主导执行链路但不做后端重构的链路，以及本文完整的单卡优化方案。这样的对比口径能够区分不同收益来源：候选召回本身带来的收益、执行链路重构带来的收益，以及后端与工程增强叠加后的整体收益。换言之，这四类方案构成递进式消融实验，用于观察候选召回、数据路径压缩和后端重构在端到端性能中的累积贡献。实验关注的指标包括每秒查询数（Queries Per Second，QPS）、平均延迟与第 99 百分位延迟（p99 延迟）、CPU$\leftrightarrow$GPU 传输次数与体积、GPU 利用率、I/O 利用率以及各阶段耗时分解。
 
+\begin{figure}[!hb]
+  \centering
+  \includegraphics[width=0.94\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_14_single_gpu_stage_breakdown_1m.pdf}
+  \caption{1M 数据规模下单卡各阶段耗时分解}
+  \label{fig:single-stage-breakdown}
+\end{figure}
+
 实验结果显示，单纯依赖候选召回加速虽然能够降低部分检索耗时，但若候选结果仍需回到 CPU 侧整理再进入评分，端到端吞吐提升并不充分。相比之下，当查询特征、候选结果与评分中间张量更多地留在 GPU 一侧后，主机---设备边界交互次数明显减少，系统吞吐率和延迟分位数都表现出更稳定的改善。进一步地，当已有外存 ANNS 前端的异步 I/O---计算流水线与设备侧连续执行链路结合后，候选召回阶段的等待可以被部分隐藏，评分阶段也更容易连续接收输入，反映在更高的 GPU 利用率上。
 
 从阶段耗时分解来看，优化前系统的主要开销集中在查询组织、候选结果主机侧重组和阶段同步等待；优化后，性能决定因素转向 GPU 侧核心阶段，主要耗时集中到设备侧检索与评分本身。
 
 考虑到本节结果展示需要兼顾版面与代表性，图~\ref{fig:single-stage-breakdown} 与图~\ref{fig:single-stage-breakdown-large} 选取 1M 与 10M 两个具有代表性的合成规模展示阶段耗时分解，图~\ref{fig:single-gpu-overview} 汇总比较四种方案在 QPS、p99 延迟、PCIe 传输次数与 GPU 利用率上的综合表现。
 
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_14_single_gpu_stage_breakdown_1m.pdf}
-  \caption{1M 数据规模下单卡各阶段耗时分解}
-  \label{fig:single-stage-breakdown}
-\end{figure}
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_15_single_gpu_stage_breakdown_10m.pdf}
+  \includegraphics[width=0.94\linewidth]{plot_assets/ch04_single_gpu_stage_breakdown/fig4_15_single_gpu_stage_breakdown_10m.pdf}
   \caption{10M 数据规模下单卡各阶段耗时分解}
   \label{fig:single-stage-breakdown-large}
 \end{figure}
+
+图~\ref{fig:single-gpu-overview} 展示递进式消融结果。实验从原始分段链路出发，逐步加入候选召回加速、GPU 主导执行链路和完整后端优化，以观察主要系统优化项对端到端吞吐、尾延迟、PCIe 传输次数和 GPU 利用率的累积影响。设备侧候选缓冲、异步 I/O---计算流水线、后端资源管理和评分张量组织之间存在耦合关系，因此结果用于递进验证单卡链路的优化收益来源。
+
+图~\ref{fig:single-stage-breakdown}和图~\ref{fig:single-stage-breakdown-large}将候选组织与候选检索分开记录。1M 规模下，原始分段链路的候选组织耗时为 11.80~ms，高于候选检索的 9.90~ms；完整优化后，两者分别为 7.05~ms 和 7.95~ms。10M 规模下，原始链路的对应耗时为 23.90~ms 和 18.50~ms，完整优化后为 15.10~ms 和 15.30~ms。两种规模下，原本耗时高于检索的候选组织均降至与检索接近。缩短阶段交接之后，检索和评分本身仍占用较多时间。
+
+\Needspace{11\baselineskip}
+阶段耗时的变化与递进实验的安排一致。仅加速召回时，检索结果仍要经过原有的阶段交接；改为设备侧组织后，候选结果不再为重组专门绕回主机。完整优化配置还加入后端资源复用和异步执行，多个阶段的耗时随之变化。因此，阶段图反映的是不同执行路径中时间开销的分布，不能把相邻配置的全部差额单独归给某个内存池、某次拷贝或某项 I/O 机制。
 
 \begin{figure}[!htbp]
   \centering
@@ -195,12 +202,6 @@ RAPIDS 在本文中用于稳定热路径的数据和内存后端，后端重构�
   \caption{单卡执行链路递进式消融结果（该图为递进式消融，非完全独立的单因素消融）}
   \label{fig:single-gpu-overview}
 \end{figure}
-
-图~\ref{fig:single-gpu-overview} 展示递进式消融结果。实验从原始分段链路出发，逐步加入候选召回加速、GPU 主导执行链路和完整后端优化，以观察主要系统优化项对端到端吞吐、尾延迟、PCIe 传输次数和 GPU 利用率的累积影响。设备侧候选缓冲、异步 I/O---计算流水线、后端资源管理和评分张量组织之间存在耦合关系，因此结果用于递进验证单卡链路的优化收益来源。
-
-图~\ref{fig:single-stage-breakdown}和图~\ref{fig:single-stage-breakdown-large}将候选组织与候选检索分开记录。1M 规模下，原始分段链路的候选组织耗时为 11.80~ms，高于候选检索的 9.90~ms；完整优化后，两者分别为 7.05~ms 和 7.95~ms。10M 规模下，原始链路的对应耗时为 23.90~ms 和 18.50~ms，完整优化后为 15.10~ms 和 15.30~ms。两种规模下，原本耗时高于检索的候选组织均降至与检索接近。缩短阶段交接之后，检索和评分本身仍占用较多时间。
-
-阶段耗时的变化与递进实验的安排一致。仅加速召回时，检索结果仍要经过原有的阶段交接；改为设备侧组织后，候选结果不再为重组专门绕回主机。完整优化配置还加入后端资源复用和异步执行，多个阶段的耗时随之变化。因此，阶段图反映的是不同执行路径中时间开销的分布，不能把相邻配置的全部差额单独归给某个内存池、某次拷贝或某项 I/O 机制。
 
 \section{本章小结}
 

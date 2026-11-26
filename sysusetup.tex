@@ -64,9 +64,11 @@
   %
   series-id = {[学号]},
   %
-  font = times,
   math-font = xits,
 }
+
+% 保留正式稿的西文字体；预览环境无法加载系统字体时，沿用 Fandol 预设的 TeX Gyre Termes。
+\IfFontExistsTF{Times New Roman}{\sysusetup{font = times}}{}
 
 % 载入所需的宏包
 

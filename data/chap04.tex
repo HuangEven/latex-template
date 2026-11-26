@@ -73,16 +73,16 @@
 \end{equation}
 式~\eqref{eq:multi-gpu-local-loop} 中，$\mathcal{R}$ 表示候选召回，$\mathcal{F}$ 表示异常评分。由于每张 GPU 都能本地完成完整闭环，因此系统不需要在查询处理中途引入设备间依赖。
 
-从系统工程角度看，索引复制虽然会增加显存占用，但换来了更低的执行复杂度和更清晰的数据路径。其优势主要体现在三个方面：查询之间天然独立，便于按请求或微批次做吞吐扩展；每张 GPU 都能沿用第四章已经优化好的本地执行链路，不需要为多卡场景重新拆解候选召回与评分接口；系统只需在极小规模结果层面做收口，无需在处理过程中持续维护跨卡依赖。基于这些特点，本文将索引复制定义为多 GPU 扩展的主方案。
-
-图~\ref{fig:replicated-arch} 给出了索引复制主方案的总体结构，直观展示了 CPU 控制面与 GPU 本地闭环在多卡场景下的分工关系。
-
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.80\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
+  \includegraphics[width=0.76\linewidth]{figures/fig5-1_multi_gpu_overall_architecture.pdf}
   \caption{数据并行与索引复制多 GPU 架构}
   \label{fig:replicated-arch}
 \end{figure}
+
+从系统工程角度看，索引复制虽然会增加显存占用，但换来了更低的执行复杂度和更清晰的数据路径。其优势主要体现在三个方面：查询之间天然独立，便于按请求或微批次做吞吐扩展；每张 GPU 都能沿用第四章已经优化好的本地执行链路，不需要为多卡场景重新拆解候选召回与评分接口；系统只需在极小规模结果层面做收口，无需在处理过程中持续维护跨卡依赖。基于这些特点，本文将索引复制定义为多 GPU 扩展的主方案。
+
+图~\ref{fig:replicated-arch} 给出了索引复制主方案的总体结构，直观展示了 CPU 控制面与 GPU 本地闭环在多卡场景下的分工关系。
 
 \section{CPU 控制面调度与负载均衡}
 
@@ -153,21 +153,18 @@ I/O 通道绑定依据的是端到端的访问路径。以第六章表~\ref{tab:
 
 图~\ref{fig:qps-vs-gpu} 左图给出了索引复制路径下 QPS 随 GPU 数量增加的变化，并加入理想线性扩展参考线；该参考线仅由 1 GPU QPS 线性外推得到，是理论参考而非实测结果。实际曲线与理想线性之间存在差距，说明 CPU 控制面调度、查询分发、设备侧资源竞争和 I/O 路径都会削弱扩展效率。右图比较了拓扑感知绑定与共享路径冲突下的 p99 延迟，结果显示共享 PCIe/SSD 路径会放大尾延迟。拓扑感知 I/O 通道绑定因此成为多 GPU 场景下维持稳定扩展的重要条件。对于索引无法完整复制的容量受限场景，仍需结合图~\ref{fig:latency-quantiles} 比较设备侧归并与主机侧聚合：前者把局部结果尽量留在设备侧，后者需要回到主机侧排序与聚合，因此会引入更高的路径开销。
 
-\begin{figure}[!htb]
+表~\ref{tab:multi-gpu-summary}中的三组对比各有独立的参照。10M 索引复制组在候选数和批大小固定时改变 GPU 数量，1、2、4 卡的 QPS 分别为 4550、7780 和 13620；以单卡为参照，2 卡和 4 卡约为 1.71 倍和 2.99 倍。副本使每张设备可以独立完成本地评分，因而增加卡数扩大了同时执行查询的能力。四卡结果仍低于由单卡外推的理想线性参考，表明查询内部没有跨卡归并，并不意味着控制面分发和共享资源访问也随卡数同比扩展。
+
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.84\linewidth]{plot_assets/ch05_latency_merge_compare/fig5_16_latency_merge_compare.pdf}
+  \includegraphics[width=0.80\linewidth]{plot_assets/ch05_latency_merge_compare/fig5_16_latency_merge_compare.pdf}
   \caption{平均延迟与 p99 延迟变化}
   \label{fig:latency-quantiles}
 \end{figure}
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{plot_assets/ch05_io_lane_impact/fig5_18_io_lane_impact.pdf}
-  \caption{I/O 通道配置对扩展性的影响}
-  \label{fig:io-lane-impact}
-\end{figure}
+100M 的两种压力对照分别改变归并位置和 I/O 路径。按附录表~\ref{tab:multi-gpu-exp-setup}，归并实验在四卡分片索引下固定批大小为 3072，比较设备侧归并与主机侧聚合。采用设备侧归并后，QPS 从 9580 提高到 11380，p99 延迟由 39.00~ms 降至 33.80~ms。两条路径均需收集分片产生的局部结果。设备侧路径通过 NCCL 全收集交换局部结果，在 GPU 上完成合并，省去了主机侧的大规模回传与排序；设备间通信及归并同步仍属于该路径的一部分。
 
-\begin{table}[htbp]
+\begin{table}[!htb]
   \caption{多 GPU 扩展结果汇总}
   \label{tab:multi-gpu-summary}
   \centering
@@ -195,12 +192,17 @@ I/O 通道绑定依据的是端到端的访问路径。以第六章表~\ref{tab:
   \end{adjustbox}
 \end{table}
 
-表~\ref{tab:multi-gpu-summary}中的三组对比各有独立的参照。10M 索引复制组在候选数和批大小固定时改变 GPU 数量，1、2、4 卡的 QPS 分别为 4550、7780 和 13620；以单卡为参照，2 卡和 4 卡约为 1.71 倍和 2.99 倍。副本使每张设备可以独立完成本地评分，因而增加卡数扩大了同时执行查询的能力。四卡结果仍低于由单卡外推的理想线性参考，表明查询内部没有跨卡归并，并不意味着控制面分发和共享资源访问也随卡数同比扩展。
-
-100M 的两种压力对照分别改变归并位置和 I/O 路径。按附录表~\ref{tab:multi-gpu-exp-setup}，归并实验在四卡分片索引下固定批大小为 3072，比较设备侧归并与主机侧聚合。采用设备侧归并后，QPS 从 9580 提高到 11380，p99 延迟由 39.00~ms 降至 33.80~ms。两条路径均需收集分片产生的局部结果。设备侧路径通过 NCCL 全收集交换局部结果，在 GPU 上完成合并，省去了主机侧的大规模回传与排序；设备间通信及归并同步仍属于该路径的一部分。
-
+\Needspace{14\baselineskip}
 I/O 对照使用完整副本，批大小为 4096，且不含跨卡结果归并。四卡共享路径下，QPS 为 10420，p99 延迟为 56.60~ms；采用拓扑感知绑定时，分别为 12650 和 45.10~ms。归并组和 I/O 组的索引组织、批大小均不同，两组差值分别反映归并与存储访问路径调整后的结果，不构成同一配置下的累计收益。
 
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=\linewidth]{plot_assets/ch05_io_lane_impact/fig5_18_io_lane_impact.pdf}
+  \caption{I/O 通道配置对扩展性的影响}
+  \label{fig:io-lane-impact}
+\end{figure}
+
+\Needspace{14\baselineskip}
 绑定组内部的延迟变化也不一致。由两卡增加到四卡，QPS 从 7520 提高至 12650，平均延迟由 23.40~ms 降至 22.10~ms，而 p99 延迟由 37.20~ms 升至 45.10~ms。更多设备同时完成查询，提高了单位时间内的请求完成量，但尾部请求并未随平均延迟一并缩短。四卡绑定相对四卡共享路径有收益，与绑定组从两卡扩展到四卡后尾延迟上升并不矛盾：前者改变存储访问路径，后者改变参与处理的设备数。
 
 \section{本章小结}

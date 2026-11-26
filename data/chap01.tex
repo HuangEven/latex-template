@@ -42,21 +42,21 @@ TOD 解决的是异常评分如何统一映射到 GPU。它把算法拆为基础
 
 图~\ref{fig:tod-overview}展示 TOD 的分层结构，图~\ref{fig:algo-to-ops}给出典型算法到算子的映射。自动批处理把超出显存预算的评分任务拆为可执行批次；可证明量化在其约束内压缩部分算子开销；多 GPU 支持允许批处理任务分配到多个设备。这些机制提高的是评分阶段的可执行性。它们并不改变 $k$NN、LOF 等方法对距离和邻域的基本依赖，也不能取消候选预算与检测效果之间的取舍\citep{zhao2022tod}。
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/fig2-1.pdf}
   \caption{TOD 系统总览图\citep{zhao2022tod}}
   \label{fig:tod-overview}
 \end{figure}
 
-\begin{figure}[!htbp]
+PyTOD 将上述张量化思想提供为可复用的软件接口。本文使用它承接候选集合上的距离、排序和聚合评分，并保留评分函数可替换的空间。早期 GPU 异常检测工作已经证明特定检测器或特征选择步骤可以并行化\citep{angiulli2013gpuoutlier,azmandian2014gpufeature}；TOD/PyTOD 的差别在于提供较统一的算子抽象和批处理执行基础。
+
+\begin{figure}[!hb]
   \centering
   \includegraphics[width=\linewidth]{figures/fig2-2_editable_cn.pdf}
   \caption{典型异常检测算法到张量算子的映射\citep{zhao2022tod}}
   \label{fig:algo-to-ops}
 \end{figure}
-
-PyTOD 将上述张量化思想提供为可复用的软件接口。本文使用它承接候选集合上的距离、排序和聚合评分，并保留评分函数可替换的空间。早期 GPU 异常检测工作已经证明特定检测器或特征选择步骤可以并行化\citep{angiulli2013gpuoutlier,azmandian2014gpufeature}；TOD/PyTOD 的差别在于提供较统一的算子抽象和批处理执行基础。
 
 它的能力边界也很清楚。PyTOD 不负责从亿级或外存索引中产生候选，不管理 SSD---GPU 访问路径，也不定义候选 ID、距离、局部排序和索引映射如何跨模块传递。在线请求调度与多 GPU 共享 I/O 同样不属于评分框架本身。FlashTOD 因此把 PyTOD 放在候选召回之后：利用其 GPU 评分能力，但不要求它承担前端检索和端到端系统调度。
 
@@ -83,18 +83,18 @@ ANNS 已形成多条技术路线。HNSW 以分层小世界图缩短搜索路径�
 
 RAPIDS 服务于 GPU 侧数据处理。cuDF 用于字段筛选、类型转换、特征拼接和窗口统计，RMM 为设备内存池及必要的页锁定主机缓冲提供资源管理支持\citep{paul2021dbgpus,rapids_cudf_pandas,rapids_rmm_pinned}。在 FlashTOD 中，这些能力主要用于向量输入准备和候选中间结果组织，不承担异常评分。能否保持全 GPU 执行仍取决于具体操作：兼容模式未覆盖的操作、Python 对象转换或显式主机接口都可能触发 CPU 回退（fallback），继而产生额外搬运。第四章需要据实际执行路径检查这些边界。
 
-FAISS 的标准 GPU 资源管理类（\texttt{StandardGpuResources}）维护索引使用的计算流和临时工作区。预分配的临时显存（scratch memory）可以被多次查询复用，减少热路径中反复调用显存分配与释放函数（\texttt{cudaMalloc} 和 \texttt{cudaFree}）引起的同步和执行抖动\citep{faiss_gpu_wiki}。本文使用 FAISS-GPU 返回的候选 ID 与距离，验证检索结果到 PyTOD 评分输入的映射；完整外存链路沿用相同的候选字段及映射关系。
-
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=\linewidth]{figures/fig2-4_RAPIDS_position.pdf}
   \caption{RAPIDS 在本文系统中的数据处理位置}
   \label{fig:rapids-position}
 \end{figure}
 
-\begin{figure}[!htbp]
+FAISS 的标准 GPU 资源管理类（\texttt{StandardGpuResources}）维护索引使用的计算流和临时工作区。预分配的临时显存（scratch memory）可以被多次查询复用，减少热路径中反复调用显存分配与释放函数（\texttt{cudaMalloc} 和 \texttt{cudaFree}）引起的同步和执行抖动\citep{faiss_gpu_wiki}。本文使用 FAISS-GPU 返回的候选 ID 与距离，验证检索结果到 PyTOD 评分输入的映射；完整外存链路沿用相同的候选字段及映射关系。
+
+\begin{figure}[!hb]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/fig2-5_rapids_faiss_paths.pdf}
+  \includegraphics[width=0.90\linewidth]{figures/fig2-5_rapids_faiss_paths.pdf}
   \caption{FAISS-GPU 的 CPU/GPU 互操作路径}
   \label{fig:faiss-interop}
 \end{figure}
