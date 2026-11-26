@@ -46,23 +46,25 @@ names = {"Full scoring": "PyTOD 全量评分", "Recall-only": "仅召回",
 fusion = {r["scheme"]: r for r in rows("ch06_fusion_compare/fusion_scheme_compare.csv")}
 assert set(names) == set(fusion)
 
-# These are different statistics, so no lines joining the two series.
+# The annotated edition reports PR-AUC and QPS for the four bridge scenarios.
 fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.0), sharey=True)
 fig.subplots_adjust(left=.23, right=.95, bottom=.20, top=.82, wspace=.18)
-for ax, metric, title, marker in zip(axes, ["recall_at_k", "topk_overlap"],
-                                      ["前 k 项召回率", "与全量评分的前 k 项重合度"], ["o", "s"]):
+for ax, metric, title, marker, limits, ticks, fmt in zip(
+        axes, ["pr_auc", "qps"], ["PR-AUC", "吞吐率（QPS）"], ["o", "s"],
+        [(.80, .99), (2000, 5400)], [[.80, .85, .90, .95], [2500, 3500, 4500]],
+        [".3f", ".0f"]):
     ax.set_title(title, fontsize=10, pad=6)
     for y, key in enumerate(names):
         value = float(fusion[key][metric])
         ax.plot(value, y, marker=marker, color=".15", mfc="#B35523" if key == "Full fusion" else "white", ms=5)
-        ax.annotate(f"{value:.3f}", (value, y), xytext=(5, 0), textcoords="offset points",
+        ax.annotate(format(value, fmt), (value, y), xytext=(5, 0), textcoords="offset points",
                     va="center", fontsize=9)
-    ax.set_xlim(.69, 1.09)
-    ax.set_xticks([.7, .8, .9, 1.0])
+    ax.set_xlim(*limits)
+    ax.set_xticks(ticks)
     grid(ax, "x")
 axes[0].set_yticks(range(4), list(names.values()))
 axes[0].set_ylim(3.5, -.5)
-finish(fig, "ranking")
+finish(fig, "effect_qps")
 
 fig, ax = plt.subplots(figsize=(6.3, 2.65))
 fig.subplots_adjust(left=.14, right=.98, top=.96, bottom=.22)
@@ -78,14 +80,13 @@ ax.set_yticks([.82, .85, .88, .91, .94])
 grid(ax, "both")
 finish(fig, "tradeoff")
 
-# Source the single-device scenarios from the single-device comparison only.
-# The 1-card replica baseline comes from the multi-device experiment table.
+# Keep the two single-device paths and the two replicated scaling paths
+# shown in the annotated edition. The 1-card replica baseline stays in Table 5-2.
 single = {r["scheme"]: r for r in rows("ch06_single_multi_summary/single_multi_benefit_summary.csv")}
-replica = {int(r["gpu_count"]): r for r in rows("ch05_multi_gpu_tables/multi_gpu_experiment_results.csv")
-           if r["scheme"] == "Replicated" and r["data_scale"] == "10M"}
-labels = ["原始分段链路", "完整单卡优化", "1 卡复制", "2 卡复制", "4 卡复制"]
-observations = [single["Original baseline"], single["Single-GPU optimized"],
-                *[replica[g] for g in (1, 2, 4)]]
+labels = ["原始分段链路", "完整单卡优化", "2 卡复制", "4 卡复制"]
+observations = [single[k] for k in ("Original baseline", "Single-GPU optimized",
+                                    "2-GPU replicated", "4-GPU replicated")]
+positions = [0, 1, 2.3, 3.3]
 fig, axes = plt.subplots(1, 3, figsize=(6.6, 2.35), sharey=True)
 fig.subplots_adjust(left=.15, right=.98, top=.82, bottom=.16, wspace=.28)
 for ax, metric, title, limits, ticks, fmt in zip(
@@ -99,11 +100,11 @@ for ax, metric, title, limits, ticks, fmt in zip(
     ax.tick_params(axis="x", labelsize=8)
     grid(ax, "x")
     ax.axhline(1.6, color=".55", lw=.6, ls="--")
-    for i, (pos, row) in enumerate(zip([0, 1, 2.3, 3.3, 4.3], observations)):
+    for i, (pos, row) in enumerate(zip(positions, observations)):
         value = float(row[metric])
         ax.plot(value, pos, marker="o" if i < 2 else "s", ms=4.8, mec="#276283" if i < 2 else ".12", mfc="white" if i < 2 else "#276283")
         ax.annotate(format(value, fmt), (value, pos), xytext=(4, 0), textcoords="offset points",
                     va="center", fontsize=8)
-axes[0].set_yticks([0, 1, 2.3, 3.3, 4.3], labels)
-axes[0].set_ylim(4.85, -.5)
+axes[0].set_yticks(positions, labels)
+axes[0].set_ylim(3.85, -.5)
 finish(fig, "execution")
