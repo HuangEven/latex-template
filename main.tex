@@ -15,12 +15,18 @@
 
 \begin{document}
 
+% 封面仍由模板生成；扉页使用签字终稿的整页扫描件。
 \makecover
-% 封面
+\begingroup
+\makeatletter
+\renewcommand{\sysu@titlepage}{%
+  \includepdf[pages=1,fitpaper=true,noautoscale]{data/title_page_official.pdf}%
+}
+\makeatother
 \maketitle
+\endgroup
 
-% 声明
-% % 声明页
+% 原创性及使用授权声明使用签字终稿的整页扫描件。
 \statementpage
 
 \frontmatter
