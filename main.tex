@@ -29,6 +29,10 @@
 % 原创性及使用授权声明使用签字终稿的整页扫描件。
 \statementpage
 
+% 双面打印：两份声明各起于正面，背面留白。
+\cleardoublepage
+\includepdf[pages=1,pagecommand={\thispagestyle{empty}}]{data/ai_tool_disclosure.pdf}
+
 \frontmatter
 \input{data/abstract}
 
